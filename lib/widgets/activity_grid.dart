@@ -15,9 +15,58 @@ class ActivityGrid extends StatelessWidget {
           children: [
             Text(
               'Activity Overview',
-              style: Theme.of(context).textTheme.titleLarge,
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
             ),
             const SizedBox(height: 16),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // ElevatedButton.icon(
+                //   onPressed: () {},
+                //   icon: const Icon(Icons.arrow_forward_ios_rounded),
+                //   label: const Text('Next'),
+                //   style: ElevatedButton.styleFrom(
+                //     shape: const RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.all(
+                //         Radius.circular(8),
+                //       ),
+                //     ),
+                //     backgroundColor: Theme.of(context).primaryColor,
+                //     foregroundColor: Colors.white,
+                //     padding: const EdgeInsets.symmetric(
+                //       horizontal: 16,
+                //       vertical: 8,
+                //     ),
+                //   ),
+                // ),
+                // Text(
+                //   DateFormat('MMMM yyyy').format(DateTime.now()),
+                //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                //         color: Colors.grey[600],
+                //       ),
+                // ),
+                // ElevatedButton.icon(
+                //   onPressed: () {},
+                //   label: const Text('Previous'),
+                //   icon: const Icon(Icons.arrow_back_ios_new_rounded),
+                //   style: ElevatedButton.styleFrom(
+                //     shape: const RoundedRectangleBorder(
+                //       borderRadius: BorderRadius.all(
+                //         Radius.circular(8),
+                //       ),
+                //     ),
+                //     backgroundColor: Theme.of(context).primaryColor,
+                //     foregroundColor: Colors.white,
+                //     padding: const EdgeInsets.symmetric(
+                //       horizontal: 16,
+                //       vertical: 8,
+                //     ),
+                //   ),
+                // ),
+              ],
+            ),
             SizedBox(
               height: 120,
               child: GridView.builder(
@@ -30,8 +79,32 @@ class ActivityGrid extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final date =
                       DateTime.now().subtract(Duration(days: 34 - index));
+
                   final count = TaskService.getTaskCountForDay(date);
-                  return _ActivityCell(date: date, count: count);
+                  return _ActivityCell(
+                    date: date,
+                    count: count,
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              // mainAxisSize: MainAxisSize.max,
+              // crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: List.generate(
+                7,
+                (index) {
+                  final date =
+                      DateTime.now().subtract(Duration(days: 6 - index));
+                  return Text(
+                    DateFormat('E').format(date),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: Colors.grey.shade600),
+                  );
                 },
               ),
             ),
@@ -60,14 +133,19 @@ class _ActivityCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tooltip(
-      message: '${DateFormat('MMM d').format(date)}: $count tasks',
-      child: Container(
-        decoration: BoxDecoration(
-          color: _getColor(),
-          borderRadius: BorderRadius.circular(4),
+    return LayoutBuilder(builder: (context, constraints) {
+      final size = constraints.biggest.shortestSide / 7;
+      return Tooltip(
+        message: '${DateFormat('MMM d').format(date)}: $count tasks',
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            color: _getColor(),
+            borderRadius: BorderRadius.circular(4),
+          ),
         ),
-      ),
-    );
+      );
+    });
   }
 }

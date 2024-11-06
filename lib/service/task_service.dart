@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:convert';
 
-import 'package:smart_task/models/task.dart';
+import 'package:smart_task/data/models/task.dart';
 
 class TaskService {
   static final ValueNotifier<List<Task>> tasksNotifier =
@@ -22,6 +22,11 @@ class TaskService {
       tasks.map((task) => task.category).toSet();
 
   static void addTask(Task task) {
+    //please add task to database
+    //add task to user_tasks
+
+    //add task to tasks
+
     final newTasks = [...tasks, task];
     tasksNotifier.value = newTasks;
     _saveTasks();

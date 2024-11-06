@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_task/models/task.dart';
+import 'package:smart_task/data/models/task.dart';
 import 'package:smart_task/service/task_service.dart';
 
 class AddTaskModal extends StatefulWidget {
@@ -20,6 +20,7 @@ class _AddTaskModalState extends State<AddTaskModal> {
   void _submit() {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
+
       TaskService.addTask(Task(
         id: DateTime.now().millisecondsSinceEpoch,
         title: _title,

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
-import 'package:smart_task/models/task.dart';
+import 'package:smart_task/data/models/task.dart';
 import 'package:smart_task/service/task_service.dart';
 
 class TaskList extends StatelessWidget {

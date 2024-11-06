@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:smart_task/screens/home_screen.dart';
+import 'package:smart_task/data/datasources/base_database.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final db = SqfliteDatabase();
+  await db.init();
+
   runApp(const TaskTrackerApp());
 }
 
 class TaskTrackerApp extends StatelessWidget {
+  @override
   const TaskTrackerApp({super.key});
 
   @override
