@@ -5,7 +5,7 @@ import '../../repositories/category_repository.dart';
 class GetCategory {
   final CategoryRepository _repository;
   GetCategory(this._repository);
-  Future<CategoryModel?> call(int categoryId) async {
-    return _repository.getCategory(categoryId);
+  Future<List<CategoryModel>> call() async {
+    return _repository.getCategories();
   }
 }

@@ -36,12 +36,6 @@ class CategoryRepositoryImpl extends CategoryRepository {
   }
 
   @override
-  Future<CategoryModel?> getCategory(int categoryId) {
-    return Future.value(categoryNotifier.value
-        .firstWhereOrNull((category) => category.categoryId == categoryId));
-  }
-
-  @override
   Future<int> getCategoryCount() {
     return Future.value(categoryNotifier.value.length);
   }

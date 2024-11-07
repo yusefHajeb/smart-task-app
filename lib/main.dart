@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:smart_task/screens/home_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
+import 'package:smart_task/presentation/screens/home_page.dart';
 import 'package:smart_task/data/datasources/base_database.dart';
 
 void main() async {
@@ -7,7 +9,12 @@ void main() async {
   final db = SqfliteDatabase();
   await db.init();
 
-  runApp(const TaskTrackerApp());
+  runApp(
+    BlocProvider(
+      create: (_) => BottomNavigationBloc(),
+      child: const TaskTrackerApp(),
+    ),
+  );
 }
 
 class TaskTrackerApp extends StatelessWidget {
@@ -27,7 +34,7 @@ class TaskTrackerApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'Inter',
       ),
-      home: const HomeScreen(),
+      home: HomePage(),
     );
   }
 }

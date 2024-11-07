@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_task/service/task_service.dart';
+import 'package:smart_task/common_widgets/responsive_widgets_scrollable.dart';
 
 class ActivityGrid extends StatelessWidget {
   const ActivityGrid({super.key});
@@ -10,105 +11,60 @@ class ActivityGrid extends StatelessWidget {
     return Card(
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Activity Overview',
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
+        child: ResponsiveCenterScrollable(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Activity Overview',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+              const SizedBox(height: 16),
+              SizedBox(
+                height: 120,
+                child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 7,
+                    mainAxisSpacing: 4,
+                    crossAxisSpacing: 4,
                   ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // ElevatedButton.icon(
-                //   onPressed: () {},
-                //   icon: const Icon(Icons.arrow_forward_ios_rounded),
-                //   label: const Text('Next'),
-                //   style: ElevatedButton.styleFrom(
-                //     shape: const RoundedRectangleBorder(
-                //       borderRadius: BorderRadius.all(
-                //         Radius.circular(8),
-                //       ),
-                //     ),
-                //     backgroundColor: Theme.of(context).primaryColor,
-                //     foregroundColor: Colors.white,
-                //     padding: const EdgeInsets.symmetric(
-                //       horizontal: 16,
-                //       vertical: 8,
-                //     ),
-                //   ),
-                // ),
-                // Text(
-                //   DateFormat('MMMM yyyy').format(DateTime.now()),
-                //   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                //         color: Colors.grey[600],
-                //       ),
-                // ),
-                // ElevatedButton.icon(
-                //   onPressed: () {},
-                //   label: const Text('Previous'),
-                //   icon: const Icon(Icons.arrow_back_ios_new_rounded),
-                //   style: ElevatedButton.styleFrom(
-                //     shape: const RoundedRectangleBorder(
-                //       borderRadius: BorderRadius.all(
-                //         Radius.circular(8),
-                //       ),
-                //     ),
-                //     backgroundColor: Theme.of(context).primaryColor,
-                //     foregroundColor: Colors.white,
-                //     padding: const EdgeInsets.symmetric(
-                //       horizontal: 16,
-                //       vertical: 8,
-                //     ),
-                //   ),
-                // ),
-              ],
-            ),
-            SizedBox(
-              height: 120,
-              child: GridView.builder(
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 7,
-                  mainAxisSpacing: 4,
-                  crossAxisSpacing: 4,
-                ),
-                itemCount: 35,
-                itemBuilder: (context, index) {
-                  final date =
-                      DateTime.now().subtract(Duration(days: 34 - index));
+                  itemCount: 35,
+                  itemBuilder: (context, index) {
+                    final date =
+                        DateTime.now().subtract(Duration(days: 34 - index));
 
-                  final count = TaskService.getTaskCountForDay(date);
-                  return _ActivityCell(
-                    date: date,
-                    count: count,
-                  );
-                },
+                    final count = TaskService.getTaskCountForDay(date);
+                    return _ActivityCell(
+                      date: date,
+                      count: count,
+                    );
+                  },
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            Row(
-              // mainAxisSize: MainAxisSize.max,
-              // crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: List.generate(
-                7,
-                (index) {
-                  final date =
-                      DateTime.now().subtract(Duration(days: 6 - index));
-                  return Text(
-                    DateFormat('E').format(date),
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodySmall
-                        ?.copyWith(color: Colors.grey.shade600),
-                  );
-                },
+              const SizedBox(height: 8),
+              Row(
+                // mainAxisSize: MainAxisSize.max,
+                // crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: List.generate(
+                  7,
+                  (index) {
+                    final date =
+                        DateTime.now().subtract(Duration(days: 6 - index));
+                    return Text(
+                      DateFormat('E').format(date),
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodySmall
+                          ?.copyWith(color: Colors.grey.shade600),
+                    );
+                  },
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
