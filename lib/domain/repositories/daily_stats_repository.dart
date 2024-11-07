@@ -8,6 +8,6 @@ abstract class DailyStatsRepository {
   Future<void> getStatsRange(int userId, DateTime startDate, DateTime endDate);
   Future<int> getTotalTasks();
   Future<int> getCompletedTasks(DateTime date);
-  Future<int> getOverdueTasks();
+  Future<int> getTodayOverdueTasks();
   Future<int> getTotalDays(DateTime startDate);
 }

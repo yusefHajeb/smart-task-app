@@ -1,10 +1,12 @@
 import 'package:smart_task/data/models/task.dart';
 
 abstract class TaskRepository {
-  Future<List<Task>> getTasks();
-
+  Future<List<Task>> getTasks(int userId);
+  Future<List<Task>> getTodayTask(DateTime date);
+  Future<void> deleteTask(int taskId);
   Future<void> insertTask(Map<String, dynamic> data);
-  Future<void> updateTask(Map<String, dynamic> data);
+  Future<void> updateTask(Task data);
+  Future<List<Task>> getTasksByCategory(String category);
 }
 
 // Future<void> insertTask(Map<String, dynamic> data);

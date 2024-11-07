@@ -1,13 +1,13 @@
 import 'dart:convert';
 
-class Category {
+class CategoryModel {
   final int categoryId;
   final int userId;
   final String name;
   final DateTime createdAt;
   final DateTime updatedAt;
 
-  Category({
+  CategoryModel({
     required this.categoryId,
     required this.userId,
     required this.name,
@@ -15,14 +15,14 @@ class Category {
     required this.updatedAt,
   });
 
-  Category copyWith({
+  CategoryModel copyWith({
     int? categoryId,
     int? userId,
     String? name,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) {
-    return Category(
+    return CategoryModel(
       categoryId: categoryId ?? this.categoryId,
       userId: userId ?? this.userId,
       name: name ?? this.name,
@@ -41,8 +41,8 @@ class Category {
     };
   }
 
-  factory Category.fromMap(Map<String, dynamic> map) {
-    return Category(
+  factory CategoryModel.fromMap(Map<String, dynamic> map) {
+    return CategoryModel(
       categoryId: map['categoryId'] as int,
       userId: map['userId'] as int,
       name: map['name'] as String,
@@ -53,8 +53,8 @@ class Category {
 
   String toJson() => json.encode(toMap());
 
-  factory Category.fromJson(String source) =>
-      Category.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory CategoryModel.fromJson(String source) =>
+      CategoryModel.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
@@ -62,7 +62,7 @@ class Category {
   }
 
   @override
-  bool operator ==(covariant Category other) {
+  bool operator ==(covariant CategoryModel other) {
     if (identical(this, other)) return true;
 
     return other.categoryId == categoryId &&

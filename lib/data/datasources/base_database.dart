@@ -162,15 +162,20 @@ class SqfliteDatabase extends BaseDatabase {
     return maps.length;
   }
 
-  Future<int> getTasks(DateTime date) async {
-    final List<Map<String, dynamic>> maps = await query('user_tasks',
-        where: 'due_date BETWEEN ? AND ?',
-        whereArgs: [
-          DateTime(date.year, date.month, date.day).millisecondsSinceEpoch,
-          DateTime(date.year, date.month, date.day + 1).millisecondsSinceEpoch -
-              1
-        ]);
-    return maps.length;
+  Future<List<Map<String, dynamic>>> getTasks(int userID) async {
+    return await query('task', where: 'user_id = ?', whereArgs: [userID]);
+  }
+
+  Future<List<Map<String, dynamic>>> getAllUserTasks(int userId) async {
+    return await query('user_tasks', where: 'user_id = ?', whereArgs: [userId]);
+  }
+
+  Future<List<Map<String, dynamic>>> getAllUserCompletedTasks(
+      int userId) async {
+    return await query('tasks',
+        where:
+            'completed = 1 AND id IN (SELECT task_id FROM user_tasks WHERE user_id = ?)',
+        whereArgs: [userId]);
   }
 
   @override

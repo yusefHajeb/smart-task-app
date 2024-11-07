@@ -1,5 +1,6 @@
 class Task {
   final int id;
+  final int userId;
   final String title;
   final String description;
   final String category;
@@ -9,6 +10,7 @@ class Task {
   DateTime? completedAt;
 
   Task({
+    required this.userId,
     required this.id,
     required this.title,
     required this.description,
@@ -19,27 +21,29 @@ class Task {
     this.completedAt,
   });
 
-  Map<String, dynamic> toJson() => {
+  Map<String, dynamic> toMap() => {
         'id': id,
+        'userId': userId,
         'title': title,
         'description': description,
         'category': category,
         'dueDate': dueDate.toIso8601String(),
         'priority': priority,
         'completed': completed,
-        'completedAt': completedAt?.toIso8601String(),
+        'completed_at': completedAt?.toIso8601String(),
       };
 
-  factory Task.fromJson(Map<String, dynamic> json) => Task(
+  factory Task.fromMap(Map<String, dynamic> json) => Task(
         id: json['id'],
+        userId: json['user_id'],
         title: json['title'],
         description: json['description'],
         category: json['category'],
         dueDate: DateTime.parse(json['dueDate']),
         priority: json['priority'],
         completed: json['completed'],
-        completedAt: json['completedAt'] != null
-            ? DateTime.parse(json['completedAt'])
+        completedAt: json['completed_at'] != null
+            ? DateTime.parse(json['completed_at'])
             : null,
       );
 }

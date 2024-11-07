@@ -36,6 +36,7 @@ class TaskService {
     final newTasks = tasks.map((task) {
       if (task.id == id) {
         return Task(
+          userId: task.userId,
           id: task.id,
           title: task.title,
           description: task.description,
@@ -78,13 +79,13 @@ class TaskService {
     final tasksJson = prefs.getString('tasks');
     if (tasksJson != null) {
       final List<dynamic> decoded = json.decode(tasksJson);
-      tasksNotifier.value = decoded.map((item) => Task.fromJson(item)).toList();
+      tasksNotifier.value = decoded.map((item) => Task.fromMap(item)).toList();
     }
   }
 
   static Future<void> _saveTasks() async {
     final prefs = await SharedPreferences.getInstance();
-    final tasksJson = json.encode(tasks.map((task) => task.toJson()).toList());
+    final tasksJson = json.encode(tasks.map((task) => task.toMap()).toList());
     await prefs.setString('tasks', tasksJson);
   }
 }

@@ -22,6 +22,7 @@ class _AddTaskModalState extends State<AddTaskModal> {
       _formKey.currentState!.save();
 
       TaskService.addTask(Task(
+        userId: 1,
         id: DateTime.now().millisecondsSinceEpoch,
         title: _title,
         description: _description,
