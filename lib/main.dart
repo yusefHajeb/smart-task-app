@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_task/presentation/bloc/app_management/app_management_bloc.dart';
 import 'package:smart_task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
+import 'package:smart_task/presentation/screens/add_task_page.dart';
 import 'package:smart_task/presentation/screens/home_page.dart';
 import 'package:smart_task/data/datasources/base_database.dart';
 
@@ -10,8 +12,15 @@ void main() async {
   await db.init();
 
   runApp(
-    BlocProvider(
-      create: (_) => BottomNavigationBloc(),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider<BottomNavigationBloc>(
+          create: (_) => BottomNavigationBloc(),
+        ),
+        BlocProvider<AppManagementBloc>(
+          create: (_) => AppManagementBloc(),
+        ),
+      ],
       child: const TaskTrackerApp(),
     ),
   );
@@ -24,6 +33,11 @@ class TaskTrackerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      initialRoute: HomePage.routeName,
+      routes: {
+        '/home-page': (context) => HomePage(),
+        '/create_task': (context) => const TaskCreationPage(),
+      },
       title: 'TaskMaster',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

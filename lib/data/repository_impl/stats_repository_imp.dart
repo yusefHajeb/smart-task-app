@@ -4,8 +4,8 @@ import 'package:smart_task/data/models/daily_stats.dart';
 import '../../domain/repositories/daily_stats_repository.dart';
 
 class StatsRepositoryImp implements DailyStatsRepository {
-  final SqfliteDatabase _database;
-  StatsRepositoryImp(this._database);
+  final SqfliteDatabase database;
+  StatsRepositoryImp(this.database);
   @override
   Future<int> getCompletedTasks(DateTime date) {
     throw UnimplementedError();

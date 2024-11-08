@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
-import 'package:smart_task/widgets/add_task_modal.dart';
+import 'package:smart_task/presentation/screens/add_task_page.dart';
 
 class BottomNavigationBarWidget extends StatefulWidget {
   const BottomNavigationBarWidget({super.key});
@@ -61,6 +61,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                           context
                               .read<BottomNavigationBloc>()
                               .add(BottomNavigationTabChanged(1));
+
                           setState(() {
                             _selectedIndex = 1;
                           });
@@ -78,11 +79,15 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                   right: 0,
                   child: GestureDetector(
                     onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        isScrollControlled: true,
-                        builder: (context) => const AddTaskModal(),
+                      Navigator.pushNamed(
+                        context,
+                        TaskCreationPage.routeName,
                       );
+                      // showModalBottomSheet(
+                      //   context: context,
+                      //   isScrollControlled: true,
+                      //   builder: (context) => const AddTaskModal(),
+                      // );
                     },
                     child: Container(
                       height: 60,

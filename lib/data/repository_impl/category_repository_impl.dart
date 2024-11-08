@@ -6,14 +6,15 @@ import 'package:smart_task/data/models/category.dart';
 import 'package:smart_task/domain/repositories/category_repository.dart';
 
 class CategoryRepositoryImpl extends CategoryRepository {
-  final SqfliteDatabase _database = SqfliteDatabase();
+  final SqfliteDatabase database;
+  CategoryRepositoryImpl(this.database);
   static final ValueNotifier<List<CategoryModel>> categoryNotifier =
       ValueNotifier<List<CategoryModel>>([]);
   static final ValueNotifier<String?> selectedCategoryNotifier =
       ValueNotifier<String?>(null);
   @override
   Future<void> addCategory(CategoryModel category) {
-    _database.insert('categories', category.toMap());
+    database.insert('categories', category.toMap());
     return Future.value();
   }
 
@@ -22,14 +23,14 @@ class CategoryRepositoryImpl extends CategoryRepository {
     categoryNotifier.value = categoryNotifier.value.where((category) {
       return category.categoryId != categoryId;
     }).toList();
-    _database
+    database
         .delete('categories', where: 'categoryId = ?', whereArgs: [categoryId]);
     return Future.value();
   }
 
   @override
   Future<List<CategoryModel>> getCategories() async {
-    final maps = await _database.query('categories');
+    final maps = await database.query('categories');
     categoryNotifier.value =
         maps.map((map) => CategoryModel.fromMap(map)).toList();
     return categoryNotifier.value;
@@ -42,19 +43,19 @@ class CategoryRepositoryImpl extends CategoryRepository {
 
   @override
   Future<void> insertCategoryTasks(Map<String, dynamic> data) {
-    _database.insertCategoryTasks(data);
+    database.insertCategoryTasks(data);
     return Future.value();
   }
 
   @override
   Future<void> insertUserCategory(Map<String, dynamic> data) async {
-    await _database.insertUserCategories(data);
+    await database.insertUserCategories(data);
     return Future.value();
   }
 
   @override
   Future<void> updateCategory(CategoryModel category) async {
-    _database.update('categories', category.toMap());
+    database.update('categories', category.toMap());
     return Future.value();
   }
 }
