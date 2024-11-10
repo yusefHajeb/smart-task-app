@@ -1,5 +1,169 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_task/core/constant/size.dart';
+import 'package:smart_task/core/theme/app_theme_model.dart';
+
+class GlobalThemData {
+
+  static Future<void> initialize() async {
+    await ScreenUtil.ensureScreenSize();
+    // await ScreenUtil.ensureScreenSizeAndInit(context)
+  }
+
+  static const ColorScheme lightColorScheme = ColorScheme(
+    primary: Color.fromARGB(255, 54, 131, 255),
+    onPrimary: Color.fromARGB(255, 0, 0, 0),
+    secondary: Color(0xFFE6EBEB),
+    onSecondary: Color(0xFF241E30),
+    error: Colors.redAccent,
+    onError: Colors.white,
+    background: Color(0xFFF5F5F5),
+    onBackground: Color(0xFF241E30),
+    surface: Color(0xFFF5F5F5),
+    onSurface: Color(0xFF241E30),
+    brightness: Brightness.light,
+  );
+
+  static const ColorScheme darkColorScheme = ColorScheme(
+    primary: Color(0xFF4F46E5),
+    onPrimary: Colors.white,
+    secondary: Color(0xFF241E30),
+    onSecondary: Color(0xFFE6EBEB),
+    error: Colors.redAccent,
+    onError: Colors.white,
+    background: Color(0xFF241E30),
+    onBackground: Colors.white,
+    surface: Color(0xFF241E30),
+    onSurface: Colors.white,
+    brightness: Brightness.dark,
+  );
+
+  static final Color _lightFocusColor = Colors.black.withOpacity(0.12);
+  static final Color _darkFocusColor = Colors.white.withOpacity(0.12);
+  static ThemeData lightThemeData =
+      themeData(lightColorScheme, _lightFocusColor);
+  static ThemeData darkThemeData = themeData(darkColorScheme, _darkFocusColor);
+
+  static ThemeData themeData(ColorScheme colorScheme, Color focusColor) {
+    return ThemeData(
+        textTheme: TextTheme(
+          displayLarge: AppTextStyles.headline6,
+          displayMedium: AppTextStyles.headline6,
+          displaySmall: AppTextStyles.headline6,
+          labelLarge: AppTextStyles.mediumHeadline,
+          labelMedium: AppTextStyles.mediumHeadline,
+          labelSmall: AppTextStyles.bodyText
+              .copyWith(fontSize: 12.0, letterSpacing: 1.5),
+          bodyLarge: AppTextStyles.mediumHeadline.copyWith(
+              letterSpacing: 0.5,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w600),
+          bodyMedium:
+              AppTextStyles.mediumHeadline.copyWith(letterSpacing: 0.25),
+          bodySmall: AppTextStyles.smallBodyText
+              .copyWith(fontSize: 12.0, letterSpacing: 0.4),
+          headlineLarge: AppTextStyles.largeHeadline.copyWith(
+            letterSpacing: 0.25,
+            color: Colors.grey[600],
+            fontWeight: FontWeight.w600,
+          ),
+          headlineMedium: AppTextStyles.mediumHeadline
+              .copyWith(fontSize: 20.0, fontWeight: FontWeight.w400),
+          headlineSmall: AppTextStyles.smallHeadline
+              .copyWith(fontWeight: FontWeight.w400, letterSpacing: 0.15),
+          titleLarge: AppTextStyles.mediumTitle.copyWith(
+              fontWeight: FontWeight.w500,
+              letterSpacing: 0.15,
+              color: Colors.grey[600]),
+          titleMedium: AppTextStyles.mediumTitle
+              .copyWith(fontWeight: FontWeight.w400, letterSpacing: 0.15),
+          titleSmall: AppTextStyles.bodyText.copyWith(
+              fontSize: 14.0, fontWeight: FontWeight.w500, letterSpacing: 0.1),
+        ),
+        //button style :
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            elevation: 8.0,
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(30.0)),
+            minimumSize: const Size(double.infinity, 56.0),
+            shadowColor: colorScheme.primaryContainer,
+            backgroundColor: colorScheme.primary,
+            disabledBackgroundColor: colorScheme.primary.withOpacity(0.4),
+            disabledForegroundColor: Colors.grey,
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+            textStyle: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.secondary),
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            elevation: 8.0,
+            minimumSize: const Size(double.infinity, 56.0),
+            shadowColor: colorScheme.primaryContainer,
+            side: BorderSide(color: colorScheme.secondary, width: 1.5),
+            disabledForegroundColor: Colors.grey,
+            foregroundColor: colorScheme.primary,
+            textStyle: TextStyle(
+                fontSize: 16.0,
+                fontWeight: FontWeight.bold,
+                color: colorScheme.secondary),
+            padding:
+                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10.0)),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          hintStyle: TextStyle(color: Colors.grey.withOpacity(0.4)),
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
+          border: OutlineInputBorder(
+            borderSide:
+                BorderSide(color: Colors.grey.withOpacity(0.4), width: 1.0),
+            borderRadius: const BorderRadius.all(Radius.circular(14)),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: colorScheme.primary, width: 1.0),
+            borderRadius: const BorderRadius.all(Radius.circular(14)),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderSide:
+                BorderSide(color: Colors.grey.withOpacity(0.4), width: 1.0),
+            borderRadius: const BorderRadius.all(Radius.circular(14)),
+          ),
+          errorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: colorScheme.error, width: 1.0),
+            borderRadius: const BorderRadius.all(Radius.circular(14)),
+          ),
+          focusedErrorBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: colorScheme.onError, width: 2.0),
+            borderRadius: const BorderRadius.all(Radius.circular(14)),
+          ),
+        ),
+        colorScheme: colorScheme,
+        primaryColor: colorScheme.primary,
+        appBarTheme: AppBarTheme(
+          shadowColor: Colors.transparent,
+          elevation: 0.0,
+          centerTitle: true,
+          color: colorScheme.secondary,
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.light,
+            statusBarBrightness: Brightness.dark,
+          ),
+        ),
+        canvasColor: colorScheme.background,
+        scaffoldBackgroundColor: colorScheme.background,
+        highlightColor: Colors.transparent,
+        focusColor: focusColor);
+  }
+}
 
 extension AppThemeData on ThemeData {
   // static ThemeData light() =>

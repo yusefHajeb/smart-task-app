@@ -7,12 +7,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:smart_task/core/routes/app_routes.dart';
 import 'package:smart_task/main.dart';
 
 void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
-    await tester.pumpWidget(const TaskTrackerApp());
+    await tester.pumpWidget(TaskTrackerApp(
+      appRoutes: AppRoutes(),
+    ));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

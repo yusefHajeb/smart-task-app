@@ -16,6 +16,7 @@ class TextInputField extends StatelessWidget {
     this.enabled = true,
     this.radius = 14.0,
     this.maxLines = 1,
+    this.readOnly = false,
     this.onTap,
     this.controller,
     this.contentPadding =
@@ -33,7 +34,7 @@ class TextInputField extends StatelessWidget {
   final FormFieldSetter<String>? onSaved;
   final IconData? icon;
   final Color focusColor, blurColor;
-  final bool isPassword, enabled;
+  final bool isPassword, enabled, readOnly;
   final double radius;
   final int maxLines;
   final void Function()? onTap;
@@ -49,6 +50,7 @@ class TextInputField extends StatelessWidget {
       onChanged: onChange,
       validator: validator,
       onSaved: onSaved,
+      readOnly: readOnly,
       keyboardType: keyBoardType,
       maxLines: maxLines,
       onTap: onTap,
@@ -57,7 +59,6 @@ class TextInputField extends StatelessWidget {
         prefixIcon: icon != null
             ? Icon(
                 icon!,
-                color: Colors.black45,
               )
             : null,
         hintText: hint,
@@ -66,25 +67,6 @@ class TextInputField extends StatelessWidget {
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(10),
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: blurColor,
-            width: 1,
-          ),
-          borderRadius: borderRadius ??
-              BorderRadius.all(
-                Radius.circular(radius),
-              ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: focusColor,
-            width: 2,
-          ),
-          borderRadius: BorderRadius.all(
-            Radius.circular(radius),
           ),
         ),
       ),

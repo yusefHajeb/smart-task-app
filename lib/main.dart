@@ -1,54 +1,49 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_task/presentation/bloc/app_management/app_management_bloc.dart';
-import 'package:smart_task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
-import 'package:smart_task/presentation/screens/add_task_page.dart';
-import 'package:smart_task/presentation/screens/home_page.dart';
-import 'package:smart_task/data/datasources/base_database.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:smart_task/core/di/dependence_injection.dart';
+import 'package:smart_task/core/routes/app_routes.dart';
+import 'package:smart_task/core/routes/routes.dart';
+import 'package:smart_task/core/theme/app_theme_data.dart';
+
+import 'package:smart_task/features/task/data/datasources/base_database.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final db = SqfliteDatabase();
-  await db.init();
 
+  await ScreenUtil.ensureScreenSize();
+  final db = SqfliteDatabase();
+
+  await db.init();
+  await GlobalThemData.initialize();
+  setupGetIt();
   runApp(
-    MultiBlocProvider(
-      providers: [
-        BlocProvider<BottomNavigationBloc>(
-          create: (_) => BottomNavigationBloc(),
-        ),
-        BlocProvider<AppManagementBloc>(
-          create: (_) => AppManagementBloc(),
-        ),
-      ],
-      child: const TaskTrackerApp(),
+    TaskTrackerApp(
+      appRoutes: AppRoutes(),
     ),
   );
 }
 
+// ignore: must_be_immutable
 class TaskTrackerApp extends StatelessWidget {
-  @override
-  const TaskTrackerApp({super.key});
+  AppRoutes appRoutes;
+
+  TaskTrackerApp({required this.appRoutes, super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      initialRoute: HomePage.routeName,
-      routes: {
-        '/home-page': (context) => HomePage(),
-        '/create_task': (context) => const TaskCreationPage(),
-      },
-      title: 'TaskMaster',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF4F46E5),
-          primary: const Color(0xFF4F46E5),
-        ),
-        useMaterial3: true,
-        fontFamily: 'Inter',
+    ScreenUtil.init(context, designSize: Size(375, 689));
+
+    return ScreenUtilInit(
+      minTextAdapt: false,
+      splitScreenMode: true,
+      child: MaterialApp(
+        initialRoute: Routes.homePage,
+        title: 'TaskMaster',
+        onGenerateRoute: appRoutes.generateRoute,
+        debugShowCheckedModeBanner: false,
+        theme: GlobalThemData.lightThemeData,
+        darkTheme: GlobalThemData.darkThemeData,
       ),
-      home: HomePage(),
     );
   }
 }

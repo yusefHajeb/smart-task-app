@@ -3,7 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'dart:convert';
 
-import 'package:smart_task/data/models/task.dart';
+import 'package:smart_task/features/task/data/models/task.dart';
 
 class TaskService {
   static final ValueNotifier<List<Task>> tasksNotifier =

@@ -41,6 +41,7 @@ dependencies:
   bloc: ^8.1.4
   flutter_bloc: ^8.1.6
   get_it: ^8.0.2
+  flutter_screenutil: ^5.9.3
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +81,10 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: Almarai
+      fonts:
+        - asset: assets/fonts/Almarai-Regular.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:

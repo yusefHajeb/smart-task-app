@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:intl/intl.dart';
-import 'package:smart_task/data/models/task.dart';
+import 'package:smart_task/features/task/data/models/task.dart';
 import 'package:smart_task/service/task_service.dart';
 
 class TaskList extends StatelessWidget {
@@ -53,6 +53,7 @@ class _CategoryFilter extends StatelessWidget {
         builder: (context, selectedCategory, _) {
           return Row(
             children: [
+              const _AddNewCategory(),
               _FilterChip(
                 label: 'All',
                 selected: selectedCategory == null,
@@ -130,6 +131,30 @@ class _TaskItem extends StatelessWidget {
       trailing: IconButton(
         icon: const Icon(Icons.delete_outline),
         onPressed: () => TaskService.deleteTask(task.id),
+      ),
+    );
+  }
+}
+
+class _AddNewCategory extends StatelessWidget {
+  const _AddNewCategory();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(50),
+        color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+      ),
+      child: IconButton(
+        icon: const Icon(Icons.add),
+        onPressed: () {
+          // Add new category logic here
+        },
+        color: Theme.of(context).colorScheme.primary,
+        iconSize: 30.0,
+        splashRadius: 25.0,
+        tooltip: 'Add New Category',
       ),
     );
   }

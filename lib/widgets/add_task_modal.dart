@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smart_task/data/models/task.dart';
+import 'package:smart_task/features/task/data/models/task.dart';
 import 'package:smart_task/service/task_service.dart';
 
 class AddTaskModal extends StatefulWidget {
