@@ -1,8 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_task/core/constant/size.dart';
+import 'package:smart_task/features/task/presentation/bloc/app_theme/app_theme_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import 'package:smart_task/common_widgets/responsive_widgets_scrollable.dart';
 import 'package:smart_task/widgets/activity_grid.dart';
@@ -14,7 +13,7 @@ import '../widgets/bottom_navigation_bar.dart';
 // ignore: must_be_immutable
 class HomePage extends StatelessWidget {
   HomePage({super.key});
-  List<Widget> content = [const HomePageBody(), Text('search')];
+  List<Widget> content = [const HomePageBody(), const Text('search')];
   static const String routeName = '/home-page';
   @override
   Widget build(BuildContext context) {
@@ -33,7 +32,7 @@ class HomePage extends StatelessWidget {
             return content[state.index];
           },
         ),
-        bottomNavigationBar: BottomNavigationBarWidget());
+        bottomNavigationBar: const BottomNavigationBarWidget());
   }
 }
 
@@ -44,23 +43,56 @@ class HomePageBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ResponsiveCenterScrollable(
-      maxContentWidth: 800,
-      padding: const EdgeInsets.all(16.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _Header(),
-            AppSize.h16(),
-            const ActivityGrid(),
-            AppSize.h24(),
+    return BlocProvider(
+      create: (context) => AppThemeBloc(),
+      child: ResponsiveCenterScrollable(
+        maxContentWidth: 800,
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              BlocBuilder<AppThemeBloc, AppThemeState>(
+                builder: (context, state) {
+                  return IconButton(
+                      onPressed: () {
+                        context.read<AppThemeBloc>().add(AppThemeChanged(
+                            themeMode: state.themeMode == ThemeMode.light
+                                ? ThemeMode.dark
+                                : ThemeMode.light));
+                      },
+                      icon: state.themeMode == ThemeMode.light
+                          ? const Icon(Icons.light_mode)
+                          : const Icon(Icons.dark_mode));
+                },
+              ),
 
-            const StatsOverview(),
-            AppSize.h24(),
-            const TaskList(),
-            // User Information
-          ],
+              // BlocProvider(
+              //   create: (context) => AppThemeBloc(),
+              //   child: IconButton(
+              //       onPressed: () {
+              //         final state = context.watch<AppThemeBloc>().state.themeMode;
+              //         context.read<AppThemeBloc>().add(AppThemeChanged(
+              //               themeMode: state == ThemeMode.dark
+              //                   ? ThemeMode.light
+              //                   : ThemeMode.dark,
+              //             ));
+              //       },
+              //       icon:
+              //           //  const Icon(Icons.light_mode)
+              //           const Icon(Icons.dark_mode)),
+              // ),
+              const _Header(),
+              AppSize.h16(),
+              const ActivityGrid(),
+              AppSize.h24(),
+
+              const StatsOverview(),
+              AppSize.h24(),
+              const TaskList(),
+              // User Information
+            ],
+          ),
         ),
       ),
     );
