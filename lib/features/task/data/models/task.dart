@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 class Task {
   final int id;
   final int userId;
@@ -54,4 +55,32 @@ class Task {
         updatedAt: DateTime.parse(json['updated_at']),
         createdAt: DateTime.parse(json['created_at']),
       );
+
+  Task copyWith({
+    int? id,
+    int? userId,
+    String? title,
+    String? description,
+    String? category,
+    DateTime? dueDate,
+    String? priority,
+    bool? completed,
+    DateTime? completedAt,
+    DateTime? updatedAt,
+    DateTime? createdAt,
+  }) {
+    return Task(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      category: category ?? this.category,
+      dueDate: dueDate ?? this.dueDate,
+      priority: priority ?? this.priority,
+      completed: completed ?? this.completed,
+      completedAt: completedAt ?? this.completedAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      createdAt: createdAt ?? this.createdAt,
+    );
+  }
 }

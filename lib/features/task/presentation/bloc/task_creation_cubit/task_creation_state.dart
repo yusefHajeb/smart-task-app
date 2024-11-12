@@ -1,13 +1,13 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'task_creation_cubit.dart';
 
-class TasKCreationState {
-  final String? taskName;
-  final String? description;
-  final String? categoryName;
-  final String? priority;
-  final DateTime? dueDate;
-
-  const TasKCreationState({
+class TaskCreationState {
+  String? taskName;
+  String? description;
+  String? categoryName;
+  String? priority;
+  DateTime? dueDate;
+  TaskCreationState({
     this.taskName,
     this.description,
     this.categoryName,
@@ -15,18 +15,19 @@ class TasKCreationState {
     this.dueDate,
   });
 
-  TasKCreationState copyWith({
+  TaskCreationState copyWith({
     String? taskName,
     String? description,
     String? categoryName,
     String? priority,
     DateTime? dueDate,
-  }) =>
-      TasKCreationState(
-        taskName: taskName ?? this.taskName,
-        description: description ?? this.description,
-        categoryName: categoryName ?? this.categoryName,
-        priority: priority ?? this.priority,
-        dueDate: dueDate ?? this.dueDate,
-      );
+  }) {
+    return TaskCreationState(
+      taskName: taskName ?? this.taskName,
+      description: description ?? this.description,
+      categoryName: categoryName ?? this.categoryName,
+      priority: priority ?? this.priority,
+      dueDate: dueDate ?? this.dueDate,
+    );
+  }
 }

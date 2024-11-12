@@ -5,7 +5,7 @@ abstract class TaskRepository {
   Future<List<Task>> getTodayTask(DateTime date);
   Future<void> deleteTask(int taskId);
   Future<void> insertTask(Task task);
-  Future<void> updateTask(Task data);
+  Future<Task> updateTask(Task data);
   Future<List<Task>> getTasksByCategory(String category);
 }
 

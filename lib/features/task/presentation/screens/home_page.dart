@@ -52,36 +52,6 @@ class HomePageBody extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              BlocBuilder<AppThemeBloc, AppThemeState>(
-                builder: (context, state) {
-                  return IconButton(
-                      onPressed: () {
-                        context.read<AppThemeBloc>().add(AppThemeChanged(
-                            themeMode: state.themeMode == ThemeMode.light
-                                ? ThemeMode.dark
-                                : ThemeMode.light));
-                      },
-                      icon: state.themeMode == ThemeMode.light
-                          ? const Icon(Icons.light_mode)
-                          : const Icon(Icons.dark_mode));
-                },
-              ),
-
-              // BlocProvider(
-              //   create: (context) => AppThemeBloc(),
-              //   child: IconButton(
-              //       onPressed: () {
-              //         final state = context.watch<AppThemeBloc>().state.themeMode;
-              //         context.read<AppThemeBloc>().add(AppThemeChanged(
-              //               themeMode: state == ThemeMode.dark
-              //                   ? ThemeMode.light
-              //                   : ThemeMode.dark,
-              //             ));
-              //       },
-              //       icon:
-              //           //  const Icon(Icons.light_mode)
-              //           const Icon(Icons.dark_mode)),
-              // ),
               const _Header(),
               AppSize.h16(),
               const ActivityGrid(),

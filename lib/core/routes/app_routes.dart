@@ -5,9 +5,9 @@ import 'package:smart_task/core/di/dependence_injection.dart';
 import 'package:smart_task/core/routes/animation_navigation.dart';
 import 'package:smart_task/core/routes/routes.dart';
 import 'package:smart_task/features/task/presentation/bloc/app_theme/app_theme_bloc.dart';
+import 'package:smart_task/features/task/presentation/bloc/task_creation_cubit/task_creation_cubit.dart';
 import 'package:smart_task/features/task/presentation/screens/home_page.dart';
 import '../../features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
-import '../../features/task/presentation/bloc/task_creation_cubit/task_creation_cubit.dart';
 import '../../features/task/presentation/screens/add_task_page.dart';
 
 class AppRoutes {
@@ -23,6 +23,8 @@ class AppRoutes {
               BlocProvider<BottomNavigationBloc>(
                 create: (context) => sl<BottomNavigationBloc>(),
               ),
+              // BlocProvider<TasKCreationCubit>(
+              //     create: (context) => sl<TasKCreationCubit>())
             ],
             child: MultiBlocListener(
               listeners: [
@@ -58,7 +60,7 @@ class AppRoutes {
         return SlideRoute(
           fullscreenDialog: true,
           builder: (context) => BlocProvider(
-            create: (context) => sl<TasKCreationCubit>(),
+            create: (context) => sl<TaskCreationCubit>(),
             child: const TaskCreationPage(),
           ),
         );

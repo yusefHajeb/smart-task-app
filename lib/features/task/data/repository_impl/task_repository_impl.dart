@@ -33,7 +33,7 @@ class TaskRepositoryImpl implements TaskRepository {
   }
 
   @override
-  Future<void> updateTask(Task task) {
+  Future<Task> updateTask(Task task) {
     database.update('tasks', task.toMap());
     tasksNotifier.value = tasksNotifier.value.map((task) {
       if (task.id == task.id) {
@@ -41,7 +41,7 @@ class TaskRepositoryImpl implements TaskRepository {
       }
       return task;
     }).toList();
-    return Future.value();
+    return Future.value(task);
   }
 
   @override

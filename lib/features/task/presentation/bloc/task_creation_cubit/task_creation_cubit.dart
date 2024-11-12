@@ -1,18 +1,16 @@
+import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_task/features/task/data/models/task.dart';
-import 'package:smart_task/features/task/domain/usecases/task/add_task.dart';
-import 'package:smart_task/features/task/domain/usecases/task/update_task.dart';
 
+import '../../../domain/usecases/task/add_task.dart';
 part 'task_creation_state.dart';
 
-class TasKCreationCubit extends Cubit<TasKCreationState> {
+class TaskCreationCubit extends Cubit<TaskCreationState> {
   final InsertTaskUseCase insertTask;
-  final UpdateTaskUseCase updateTask;
+  TaskCreationCubit(
+    this.insertTask,
+  ) : super(TaskCreationState());
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
-  TasKCreationCubit({required this.insertTask, required this.updateTask})
-      : super(TasKCreationState());
-
   void taskNameChanged(String value) {
     emit(state.copyWith(taskName: value));
   }

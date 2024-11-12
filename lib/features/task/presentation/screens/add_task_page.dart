@@ -11,9 +11,9 @@ class TaskCreationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final formKey = context.watch<TasKCreationCubit>().formKey;
+    final formKey = context.watch<TaskCreationCubit>().formKey;
 
-    final readTaskCubit = context.read<TasKCreationCubit>();
+    final readTaskCubit = context.read<TaskCreationCubit>();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Create Task'),
@@ -21,7 +21,7 @@ class TaskCreationPage extends StatelessWidget {
       body: ResponsiveCenterScrollable(
         padding: const EdgeInsets.all(16),
         child: SingleChildScrollView(
-          child: BlocBuilder<TasKCreationCubit, TasKCreationState>(
+          child: BlocBuilder<TaskCreationCubit, TaskCreationState>(
             builder: (context, state) {
               return Form(
                 key: formKey,
@@ -49,13 +49,7 @@ class TaskCreationPage extends StatelessWidget {
                     const SizedBox(height: 8),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
-                      child: Wrap(
-                        alignment: WrapAlignment.start,
-                        spacing: 8,
-                        runSpacing: 8,
-                        runAlignment: WrapAlignment.start,
-                        crossAxisAlignment: WrapCrossAlignment.start,
-                        direction: Axis.horizontal,
+                      child: Row(
                         children: [
                           for (final category in [
                             'Work',
@@ -72,7 +66,8 @@ class TaskCreationPage extends StatelessWidget {
                                 color: state.categoryName == category
                                     ? Theme.of(context).colorScheme.primary
                                     : null,
-                                category: category,
+                                isSelected: state.categoryName == category,
+                                category: category.toString(),
                               ),
                             ),
                         ],
@@ -105,8 +100,7 @@ class TaskCreationPage extends StatelessWidget {
                     const SizedBox(height: 16),
                     const Text('Priority'),
                     const SizedBox(height: 8),
-                    Wrap(
-                      alignment: WrapAlignment.start,
+                    Row(
                       children: [
                         for (final priority in ['Low', 'Medium', 'High'])
                           GestureDetector(
@@ -137,7 +131,7 @@ class TaskCreationPage extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         if (formKey.currentState?.validate() ?? false) {
-                          context.read<TasKCreationCubit>().submit();
+                          context.read<TaskCreationCubit>().submit();
                         }
                         // Add your onPressed functionality here
                       },
@@ -162,24 +156,42 @@ class TaskCreationPage extends StatelessWidget {
 class CategoryChip extends StatelessWidget {
   final String category;
   Color? color;
-  CategoryChip({required this.category, this.color, super.key});
+  bool isSelected;
+  CategoryChip({
+    required this.category,
+    this.color,
+    this.isSelected = false,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
     Theme.of(context).colorScheme.primary.withOpacity(0.2);
     return Container(
-      height: 35,
-      // width: MediaQuery.sizeOf(context).width / 3,
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      margin: const EdgeInsets.symmetric(vertical: 8),
+      height: isSelected ? 35 : null,
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 8),
       decoration: BoxDecoration(
-        color: color ?? Theme.of(context).colorScheme.primary.withOpacity(0.2),
+        color: color ?? Theme.of(context).colorScheme.primary.withOpacity(0.1),
         borderRadius: BorderRadius.circular(10),
+        boxShadow: [
+          BoxShadow(
+            offset: const Offset(0, 2),
+            blurRadius: 1,
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+          ),
+        ],
       ),
       child: Center(
         child: Text(
           category,
-          // style: AppTextStyles.category,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.w500,
+            color: isSelected
+                ? Theme.of(context).colorScheme.onPrimary
+                : Theme.of(context).colorScheme.onSurface,
+          ),
         ),
       ),
     );

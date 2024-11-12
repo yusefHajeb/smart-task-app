@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_task/features/task/data/models/task.dart';
+import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
 import 'package:smart_task/service/task_service.dart';
+
+import '../features/task/presentation/bloc/task_cubit/task_creation_state.dart';
 
 class TaskList extends StatelessWidget {
   const TaskList({super.key});
@@ -22,15 +25,38 @@ class TaskList extends StatelessWidget {
           ),
           const _CategoryFilter(),
           const Divider(height: 1),
-          ValueListenableBuilder<List<Task>>(
-            valueListenable: TaskService.tasksNotifier,
-            builder: (context, tasks, _) {
-              return ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: tasks.length,
-                separatorBuilder: (_, __) => const Divider(height: 1),
-                itemBuilder: (context, index) => _TaskItem(task: tasks[index]),
+          BlocBuilder<TaskCubit, TaskState>(
+            buildWhen: (previous, current) =>
+                current is TaskLoading || current is TaskSuccess,
+            builder: (context, state) {
+              return state.maybeWhen(
+                orElse: () => const Center(child: Text('Error')),
+                error: (message) {
+                  return Center(
+                    child: Text(
+                      message,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  );
+                },
+                initial: () {
+                  return const Center(child: CircularProgressIndicator());
+                },
+                loading: () {
+                  return const Center(child: CircularProgressIndicator());
+                },
+                success: (tasks) {
+                  return ListView.separated(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: tasks.length,
+                    separatorBuilder: (_, __) => const Divider(height: 1),
+                    itemBuilder: (context, index) {
+                      final task = tasks[index];
+                      return _TaskItem(task: task);
+                    },
+                  );
+                },
               );
             },
           ),
@@ -108,7 +134,7 @@ class _TaskItem extends StatelessWidget {
     return ListTile(
       leading: Checkbox(
         value: task.completed,
-        onChanged: (_) => TaskService.toggleTask(task.id),
+        onChanged: (_) => context.read<TaskCubit>().updateTask(task),
       ),
       title: Text(
         task.title,
@@ -117,7 +143,7 @@ class _TaskItem extends StatelessWidget {
           color: task.completed ? Colors.grey : null,
         ),
       ),
-      subtitle: Row(
+      subtitle: Wrap(
         children: [
           Icon(Icons.label_outline, size: 16, color: Colors.grey[600]),
           const SizedBox(width: 4),

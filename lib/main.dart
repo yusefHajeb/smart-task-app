@@ -8,6 +8,7 @@ import 'package:smart_task/core/theme/app_theme_data.dart';
 
 import 'package:smart_task/features/task/data/datasources/base_database.dart';
 import 'package:smart_task/features/task/presentation/bloc/app_theme/app_theme_bloc.dart';
+import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,11 +19,17 @@ void main() async {
   await db.init();
   await GlobalThemData.initialize();
   setupGetIt();
-  runApp(
-    TaskTrackerApp(
+  runApp(MultiBlocProvider(
+    providers: [
+      BlocProvider<AppThemeBloc>(
+        create: (context) => AppThemeBloc(),
+      ),
+      BlocProvider(create: (context) => sl<TaskCubit>()..fetchTasks()),
+    ],
+    child: TaskTrackerApp(
       appRoutes: AppRoutes(),
     ),
-  );
+  ));
 }
 
 // ignore: must_be_immutable

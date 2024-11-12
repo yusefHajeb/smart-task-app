@@ -14,9 +14,10 @@ import 'package:smart_task/features/task/domain/usecases/task/get_task.dart';
 import 'package:smart_task/features/task/domain/usecases/task/update_task.dart';
 import 'package:smart_task/features/task/presentation/bloc/app_theme/app_theme_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
-import 'package:smart_task/features/task/presentation/bloc/task_creation_cubit/task_creation_cubit.dart';
+import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
 
 import '../../features/task/domain/usecases/task/get_today_task.dart';
+import '../../features/task/presentation/bloc/task_creation_cubit/task_creation_cubit.dart';
 
 var sl = GetIt.instance;
 
@@ -46,6 +47,7 @@ Future<void> setupGetIt() async {
 
   sl.registerFactory<AppThemeBloc>(() => AppThemeBloc());
   sl.registerFactory<BottomNavigationBloc>(() => BottomNavigationBloc());
-  sl.registerFactory<TasKCreationCubit>(
-      () => TasKCreationCubit(insertTask: sl(), updateTask: sl()));
+  sl.registerFactory<TaskCubit>(() =>
+      TaskCubit(insertTask: sl(), updateTaskUseCase: sl(), fetchTask: sl()));
+  sl.registerFactory<TaskCreationCubit>(() => TaskCreationCubit(sl()));
 }
