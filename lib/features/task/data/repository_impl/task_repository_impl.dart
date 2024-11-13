@@ -5,8 +5,7 @@ import '../../domain/repositories/task_repository.dart';
 
 class TaskRepositoryImpl implements TaskRepository {
   final SqfliteDatabase database;
-  static final ValueNotifier<List<Task>> tasksNotifier =
-      ValueNotifier<List<Task>>([]);
+
   static final ValueNotifier<String?> selectedCategoryNotifier =
       ValueNotifier<String?>(null);
 
@@ -16,31 +15,26 @@ class TaskRepositoryImpl implements TaskRepository {
   Future<List<Task>> getTasks(int userId) async {
     final tasks = await database.getTasks(userId);
 
-    tasksNotifier.value = tasks.map((task) => Task.fromMap(task)).toList();
-
-    return tasksNotifier.value;
+    return tasks.map((task) => Task.fromMap(task)).toList();
   }
 
   @override
   Future<void> insertTask(Task task) async {
-    // database.removeDb();
-
+    print('task to Map');
+    print(task.toMap());
     database.insert('tasks', task.toMap());
+
     database.insertUserTasks({'task_id': task.id, 'user_id': 1});
-    tasksNotifier.value = [...tasksNotifier.value, task];
 
     return Future.value();
   }
 
   @override
-  Future<Task> updateTask(Task task) {
-    database.update('tasks', task.toMap());
-    tasksNotifier.value = tasksNotifier.value.map((task) {
-      if (task.id == task.id) {
-        return task;
-      }
-      return task;
-    }).toList();
+  Future<Task> updateTask(Task task) async {
+    await database.update(
+        'tasks', task.copyWith(completed: !task.completed).toMap(),
+        where: 'id = ${task.id}');
+
     return Future.value(task);
   }
 

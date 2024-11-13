@@ -84,11 +84,8 @@ class _Header extends StatelessWidget {
               ),
         ),
         const SizedBox(height: 4),
-        Text(
+        const Text(
           'Track and manage your daily tasks efficiently',
-          // style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-          //       color: Colors.grey[600],
-          //     ),
         ),
       ],
     );

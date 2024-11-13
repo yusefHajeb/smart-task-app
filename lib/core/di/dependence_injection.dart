@@ -6,7 +6,6 @@ import 'package:smart_task/features/task/domain/repositories/category_repository
 import 'package:smart_task/features/task/domain/repositories/task_repository.dart';
 import 'package:smart_task/features/task/domain/usecases/category/add_category.dart';
 import 'package:smart_task/features/task/domain/usecases/category/delete_category.dart';
-import 'package:smart_task/features/task/domain/usecases/category/get_categories.dart';
 import 'package:smart_task/features/task/domain/usecases/category/get_category.dart';
 import 'package:smart_task/features/task/domain/usecases/task/add_task.dart';
 import 'package:smart_task/features/task/domain/usecases/task/delete_task.dart';
@@ -41,13 +40,15 @@ Future<void> setupGetIt() async {
 
   //==categoryUseCase
   sl.registerLazySingleton<AddCategoryUseCase>(() => sl.call());
-  sl.registerLazySingleton<GetCategoriesUseCase>(() => sl.call());
   sl.registerLazySingleton<DeleteCategoryUseCase>(() => sl.call());
-  sl.registerLazySingleton<GetCategoryUseCase>(() => sl.call());
-
+  sl.registerLazySingleton<GetCategoryUseCase>(
+      () => GetCategoryUseCase(sl.call()));
   sl.registerFactory<AppThemeBloc>(() => AppThemeBloc());
   sl.registerFactory<BottomNavigationBloc>(() => BottomNavigationBloc());
-  sl.registerFactory<TaskCubit>(() =>
-      TaskCubit(insertTask: sl(), updateTaskUseCase: sl(), fetchTask: sl()));
+  sl.registerFactory<TaskCubit>(() => TaskCubit(
+      insertTask: sl(),
+      updateTaskUseCase: sl(),
+      fetchTask: sl(),
+      delete: sl()));
   sl.registerFactory<TaskCreationCubit>(() => TaskCreationCubit(sl()));
 }

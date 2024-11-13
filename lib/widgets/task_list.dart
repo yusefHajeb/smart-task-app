@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_task/core/constant/proiority_icons.dart';
 import 'package:smart_task/features/task/data/models/task.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
-import 'package:smart_task/service/task_service.dart';
 
 import '../features/task/presentation/bloc/task_cubit/task_creation_state.dart';
 
@@ -13,90 +13,86 @@ class TaskList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Text(
-              'Tasks',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-          ),
-          const _CategoryFilter(),
-          const Divider(height: 1),
-          BlocBuilder<TaskCubit, TaskState>(
-            buildWhen: (previous, current) =>
-                current is TaskLoading || current is TaskSuccess,
-            builder: (context, state) {
-              return state.maybeWhen(
-                orElse: () => const Center(child: Text('Error')),
-                error: (message) {
-                  return Center(
+      child: BlocBuilder<TaskCubit, TaskState>(
+        buildWhen: (previous, current) =>
+            current is TaskLoading || current is TaskSuccess,
+        builder: (context, state) {
+          return state.maybeWhen(
+            orElse: () => const Center(child: Text('Error')),
+            error: (message) {
+              return Center(child: Text(message));
+            },
+            loading: () {
+              return const SizedBox(
+                  height: 200,
+                  child: Center(child: CircularProgressIndicator()));
+            },
+            success: (tasks, selectedCategory) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
                     child: Text(
-                      message,
-                      style: Theme.of(context).textTheme.bodyLarge,
+                      'Tasks',
+                      style: Theme.of(context).textTheme.titleLarge,
                     ),
-                  );
-                },
-                initial: () {
-                  return const Center(child: CircularProgressIndicator());
-                },
-                loading: () {
-                  return const Center(child: CircularProgressIndicator());
-                },
-                success: (tasks) {
-                  return ListView.separated(
+                  ),
+
+                  // _CategoryFilter(
+                  //   tasks: tasks,
+                  //   selectedCategory: selectedCategory,
+                  // ),
+                  const Divider(height: 1),
+                  ListView.separated(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemCount: tasks.length,
                     separatorBuilder: (_, __) => const Divider(height: 1),
                     itemBuilder: (context, index) {
                       final task = tasks[index];
-                      return _TaskItem(task: task);
+                      return TaskItem(task: task);
                     },
-                  );
-                },
+                  ),
+                ],
               );
             },
-          ),
-        ],
+          );
+        },
       ),
     );
   }
 }
 
 class _CategoryFilter extends StatelessWidget {
-  const _CategoryFilter();
-
+  const _CategoryFilter({required this.tasks, this.selectedCategory});
+  final List<Task> tasks;
+  final String? selectedCategory;
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ValueListenableBuilder<String?>(
-        valueListenable: TaskService.selectedCategoryNotifier,
-        builder: (context, selectedCategory, _) {
-          return Row(
-            children: [
-              const _AddNewCategory(),
-              _FilterChip(
-                label: 'All',
-                selected: selectedCategory == null,
-                onSelected: (_) => TaskService.setSelectedCategory(null),
-              ),
-              ...TaskService.categories.map((category) => Padding(
-                    padding: const EdgeInsets.only(left: 8),
-                    child: _FilterChip(
-                      label: category,
-                      selected: category == selectedCategory,
-                      onSelected: (_) =>
-                          TaskService.setSelectedCategory(category),
-                    ),
-                  )),
-            ],
-          );
-        },
+      child: Row(
+        children: [
+          const _AddNewCategory(),
+          _FilterChip(
+            label: 'All',
+            selected: selectedCategory != null,
+            onSelected: (_) {
+              context.read<TaskCubit>().fetchTasks();
+            },
+          ),
+          ...tasks.map((task) => Padding(
+              padding: const EdgeInsets.only(left: 8),
+              child: _FilterChip(
+                label: task.category,
+                selected: task.category == selectedCategory,
+                onSelected: (_) => context
+                    .read<TaskCubit>()
+                    .setSelectedCategory(task.category),
+              ))),
+        ],
       ),
     );
   }
@@ -156,11 +152,85 @@ class _TaskItem extends StatelessWidget {
       ),
       trailing: IconButton(
         icon: const Icon(Icons.delete_outline),
-        onPressed: () => TaskService.deleteTask(task.id),
+        onPressed: () {
+          context.read<TaskCubit>().deleteTask(task.id);
+        },
       ),
     );
   }
 }
+
+class TaskItem extends StatelessWidget {
+  final Task task;
+  const TaskItem({super.key, required this.task});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              offset: const Offset(0, 2),
+              blurRadius: 1,
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+            ),
+          ],
+        ),
+        child: Column(
+          children: [
+            const SizedBox(height: 16),
+            Text(task.title),
+            Text(
+              task.title,
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+            Row(
+              children: [
+                const SizedBox(width: 16),
+                GestureDetector(
+                  onTap: () {
+                    context.read<TaskCubit>().updateTask(task);
+                  },
+                  child: task.completed == true
+                      ? Icon(Icons.check_box, size: 32)
+                      : Icon(Icons.check_box_outline_blank, size: 32),
+                ),
+                const SizedBox(width: 12),
+                PriorityIconWidget(priority: task.priority),
+              ],
+            ),
+          ],
+        ));
+  }
+}
+
+class PriorityIconWidget extends StatelessWidget {
+  const PriorityIconWidget({
+    Key? key,
+    required this.priority,
+  }) : super(key: key);
+
+  final String priority;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 4),
+      child: Icon(
+        PriorityType.fromName(priority).icon,
+        size: 32,
+        color: PriorityType.fromName(priority).color,
+      ),
+    );
+  }
+}
+
+// please build priorityIcons
 
 class _AddNewCategory extends StatelessWidget {
   const _AddNewCategory();

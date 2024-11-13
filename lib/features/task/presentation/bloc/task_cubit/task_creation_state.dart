@@ -8,6 +8,7 @@ class TaskState with _$TaskState {
   const factory TaskState.initial() = _Initial;
   const factory TaskState.success(
     List<Task> tasks,
+    String? selectedCategory,
   ) = TaskSuccess;
 
   const factory TaskState.loading() = TaskLoading;

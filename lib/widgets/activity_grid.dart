@@ -39,8 +39,8 @@ class ActivityGrid extends StatelessWidget {
                               TaskService.getTaskCountForDay(date, []);
                           print(count);
                           return _ActivityCell(
-                            date: date,
-                            count: count,
+                            date: DateTime.now(),
+                            count: 0,
                           );
                         },
                       ),
@@ -65,29 +65,10 @@ class ActivityGrid extends StatelessWidget {
                       },
                     ),
                   ),
-                  const SizedBox(height: 8),
-                  Row(
-                    // mainAxisSize: MainAxisSize.max,
-                    // crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(
-                      7,
-                      (index) {
-                        final date =
-                            DateTime.now().subtract(Duration(days: 6 - index));
-                        return Text(
-                          DateFormat('E').format(date),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: Colors.grey.shade600),
-                        );
-                      },
-                    ),
-                  ),
+                  // const SizedBox(height: 8),
                 ]),
                 loading: () => const Center(child: CircularProgressIndicator()),
-                success: (tasks) {
+                success: (tasks, selectedCategory) {
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [

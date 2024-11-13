@@ -100,31 +100,16 @@ class SqfliteDatabase extends BaseDatabase {
             'user_id INTEGER NOT NULL,'
             'category_id INTEGER NOT NULL'
             ')');
+        await db.insert('users', <String, dynamic>{
+          'name': 'John Doe',
+          'email': 'john@example.com',
+          'password': 'password123',
+          'phone': '1234567890',
+          'address': '123 Main St',
+          'created_at': DateTime.now().millisecondsSinceEpoch,
+          'updated_at': DateTime.now().millisecondsSinceEpoch,
+        });
 
-        await db.insert('tasks', <String, dynamic>{
-          'user_id': 1,
-          'title': 'Task 1',
-          'description': 'This is the first task',
-          'category': 'Work',
-          'due_date': DateTime.now().millisecondsSinceEpoch,
-          'priority': 'High',
-          'completed': 0,
-          'completed_at': null,
-          'created_at': DateTime.now().millisecondsSinceEpoch,
-          'updated_at': DateTime.now().millisecondsSinceEpoch,
-        });
-        await db.insert('tasks', <String, dynamic>{
-          'user_id': 1,
-          'title': 'Task 2',
-          'description': 'This is the second task',
-          'category': 'Personal',
-          'due_date': DateTime.now().millisecondsSinceEpoch,
-          'priority': 'Low',
-          'completed': 0,
-          'completed_at': null,
-          'created_at': DateTime.now().millisecondsSinceEpoch,
-          'updated_at': DateTime.now().millisecondsSinceEpoch,
-        });
         //category
         await db.insert('categories', <String, dynamic>{
           'category_id': 1,
@@ -270,7 +255,6 @@ class SqfliteDatabase extends BaseDatabase {
 
   @override
   Future<void> removeDb() async {
-    // TODO: implement removeDb
     await delete('tasks');
     await delete('categories');
     await delete('daily_stats');

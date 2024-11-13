@@ -35,14 +35,14 @@ class TaskCreationPage extends StatelessWidget {
                     const Text('Task Name'),
                     const SizedBox(height: 8),
                     TextInputField(
-                      hint: 'Enter Task Name',
-                      onChange: readTaskCubit.categoryChanged,
+                      onChange: readTaskCubit.taskNameChanged,
                       validator: (value) {
-                        if (value?.isEmpty ?? true) {
-                          return 'Please enter a task name';
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a name';
                         }
                         return null;
                       },
+                      hint: 'Enter Name',
                     ),
                     const SizedBox(height: 16),
                     const Text('Category'),

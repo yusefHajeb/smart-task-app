@@ -43,11 +43,11 @@ class Task {
   factory Task.fromMap(Map<String, dynamic> json) => Task(
         id: json['id'] ?? 0,
         userId: json['user_id'] ?? 0,
-        title: json['title'] ?? '',
-        description: json['description'] ?? '',
-        category: json['category'],
+        title: json['title']?.toString() ?? '',
+        description: json['description']?.toString() ?? '',
+        category: json['category']?.toString() ?? "",
         dueDate: DateTime.parse(json['due_date']),
-        priority: json['priority'],
+        priority: json['priority']?.toString() ?? '',
         completed: json['completed'] == 1 ? true : false,
         completedAt: json['completed_at'] != null
             ? DateTime.parse(json['completed_at'])

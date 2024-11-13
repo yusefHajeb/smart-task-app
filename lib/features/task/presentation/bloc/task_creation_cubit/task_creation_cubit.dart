@@ -35,11 +35,11 @@ class TaskCreationCubit extends Cubit<TaskCreationState> {
     if (formKey.currentState?.validate() ?? false) {
       await insertTask(
         Task(
+          title: state.taskName ?? '',
           completed: false,
           completedAt: DateTime.now(),
           userId: 1,
           id: DateTime.now().millisecondsSinceEpoch,
-          title: state.taskName ?? '',
           description: state.description ?? '',
           category: state.categoryName ?? '',
           dueDate: state.dueDate ?? DateTime.now(),
