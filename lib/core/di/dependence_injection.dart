@@ -11,7 +11,6 @@ import 'package:smart_task/features/task/domain/usecases/task/add_task.dart';
 import 'package:smart_task/features/task/domain/usecases/task/delete_task.dart';
 import 'package:smart_task/features/task/domain/usecases/task/get_task.dart';
 import 'package:smart_task/features/task/domain/usecases/task/update_task.dart';
-import 'package:smart_task/features/task/presentation/bloc/app_theme/app_theme_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
 
@@ -43,7 +42,7 @@ Future<void> setupGetIt() async {
   sl.registerLazySingleton<DeleteCategoryUseCase>(() => sl.call());
   sl.registerLazySingleton<GetCategoryUseCase>(
       () => GetCategoryUseCase(sl.call()));
-  sl.registerFactory<AppThemeBloc>(() => AppThemeBloc());
+  // sl.registerFactory<AppThemeBloc>(() => AppThemeBloc());
   sl.registerFactory<BottomNavigationBloc>(() => BottomNavigationBloc());
   sl.registerFactory<TaskCubit>(() => TaskCubit(
       insertTask: sl(),

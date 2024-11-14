@@ -12,54 +12,66 @@ class TaskList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: BlocBuilder<TaskCubit, TaskState>(
-        buildWhen: (previous, current) =>
-            current is TaskLoading || current is TaskSuccess,
-        builder: (context, state) {
-          return state.maybeWhen(
-            orElse: () => const Center(child: Text('Error')),
-            error: (message) {
-              return Center(child: Text(message));
-            },
-            loading: () {
-              return const SizedBox(
-                  height: 200,
-                  child: Center(child: CircularProgressIndicator()));
-            },
-            success: (tasks, selectedCategory) {
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Text(
-                      'Tasks',
+    return BlocBuilder<TaskCubit, TaskState>(
+      buildWhen: (previous, current) =>
+          current is TaskLoading || current is TaskSuccess,
+      builder: (context, state) {
+        return state.maybeWhen(
+          orElse: () => const Center(child: Text('Error')),
+          error: (message) {
+            return Center(child: Text(message));
+          },
+          loading: () {
+            return const SizedBox(
+                height: 200, child: Center(child: CircularProgressIndicator()));
+          },
+          success: (tasks, selectedCategory) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: Text(
+                        'Tasks',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ),
+                    Text(
+                      'for today ... ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
                       style: Theme.of(context).textTheme.titleLarge,
                     ),
-                  ),
+                  ],
+                ),
 
-                  // _CategoryFilter(
-                  //   tasks: tasks,
-                  //   selectedCategory: selectedCategory,
-                  // ),
-                  const Divider(height: 1),
-                  ListView.separated(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: tasks.length,
-                    separatorBuilder: (_, __) => const Divider(height: 1),
-                    itemBuilder: (context, index) {
-                      final task = tasks[index];
-                      return TaskItem(task: task);
-                    },
-                  ),
-                ],
-              );
-            },
-          );
-        },
-      ),
+                // _CategoryFilter(
+                //   tasks: tasks,
+                //   selectedCategory: selectedCategory,
+                // ),
+                const Divider(height: 1),
+                ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: tasks
+                      .where(
+                        (task) =>
+                            DateFormat('MMM d, y').format(task.dueDate) ==
+                            DateFormat('MMM d, y').format(DateTime.now()),
+                      )
+                      .length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) {
+                    final task = tasks[index];
+                    return TaskItem(task: task);
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }
@@ -166,46 +178,56 @@ class TaskItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Padding(
         padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary.withOpacity(0.1),
-          borderRadius: BorderRadius.circular(10),
-          boxShadow: [
-            BoxShadow(
-              offset: const Offset(0, 2),
-              blurRadius: 1,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-            ),
-          ],
-        ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(height: 16),
-            Text(task.title),
-            Text(
-              task.title,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.cancel),
+                  onPressed: () {
+                    context.read<TaskCubit>().deleteTask(task.id);
+                  },
+                ),
+                Text(
+                  task.title,
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ],
             ),
+            const SizedBox(height: 8),
             Row(
               children: [
-                const SizedBox(width: 16),
                 GestureDetector(
                   onTap: () {
                     context.read<TaskCubit>().updateTask(task);
                   },
                   child: task.completed == true
-                      ? Icon(Icons.check_box, size: 32)
-                      : Icon(Icons.check_box_outline_blank, size: 32),
+                      ? const Icon(
+                          Icons.check_box,
+                          size: 24,
+                        )
+                      : const Icon(
+                          Icons.check_box_outline_blank,
+                          size: 24,
+                        ),
                 ),
                 const SizedBox(width: 12),
                 PriorityIconWidget(priority: task.priority),
               ],
             ),
           ],
-        ));
+        ),
+      ),
+    );
   }
 }
 

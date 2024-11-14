@@ -6,8 +6,6 @@ part 'app_theme_state.dart';
 class AppThemeBloc extends Bloc<AppThemeEvent, AppThemeState> {
   AppThemeBloc() : super(const AppThemeState(themeMode: ThemeMode.dark)) {
     on<AppThemeChanged>((event, emit) {
-      print('event.themeModel');
-      print(event.themeMode);
       emit(AppThemeState(themeMode: event.themeMode));
     });
   }

@@ -46,28 +46,20 @@ class TaskTrackerApp extends StatelessWidget {
     return ScreenUtilInit(
       minTextAdapt: false,
       splitScreenMode: true,
-      child: BlocProvider(
-        create: (context) => AppThemeBloc()
-          ..add(AppThemeChanged(
-            themeMode: ThemeMode.dark,
-          )),
-        child: BlocBuilder<AppThemeBloc, AppThemeState>(
-          builder: (context, state) {
-            return MaterialApp(
-              initialRoute: Routes.homePage,
-              title: 'TaskMaster',
-              onGenerateRoute: appRoutes.generateRoute,
-              debugShowCheckedModeBanner: false,
-              themeMode: state.themeMode == ThemeMode.dark
-                  ? ThemeMode.dark
-                  : ThemeMode.light,
-              theme: state.themeMode == ThemeMode.dark
-                  ? GlobalThemData.darkThemeData
-                  : GlobalThemData.lightThemeData,
-              darkTheme: GlobalThemData.darkThemeData,
-            );
-          },
-        ),
+      child: BlocBuilder<AppThemeBloc, AppThemeState>(
+        buildWhen: (previous, current) =>
+            previous.themeMode != current.themeMode,
+        builder: (context, state) {
+          return MaterialApp(
+            initialRoute: Routes.homePage,
+            title: 'TaskMaster',
+            onGenerateRoute: appRoutes.generateRoute,
+            debugShowCheckedModeBanner: false,
+            themeMode: state.themeMode,
+            theme: GlobalThemData.themeDataSelect(state.themeMode),
+            darkTheme: GlobalThemData.darkThemeData,
+          );
+        },
       ),
     );
   }

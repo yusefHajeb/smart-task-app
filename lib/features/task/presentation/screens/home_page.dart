@@ -43,26 +43,41 @@ class HomePageBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AppThemeBloc(),
-      child: ResponsiveCenterScrollable(
-        maxContentWidth: 800,
-        padding: const EdgeInsets.all(16.0),
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const _Header(),
-              AppSize.h16(),
-              const ActivityGrid(),
-              AppSize.h24(),
+    return ResponsiveCenterScrollable(
+      maxContentWidth: 800,
+      padding: const EdgeInsets.all(16.0),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            BlocBuilder<AppThemeBloc, AppThemeState>(
+              builder: (context, state) {
+                return IconButton(
+                  onPressed: () {
+                    context.read<AppThemeBloc>().add(AppThemeChanged(
+                          themeMode: state.themeMode == ThemeMode.dark
+                              ? ThemeMode.light
+                              : ThemeMode.dark,
+                        ));
+                  },
+                  icon: Icon(
+                    state.themeMode == ThemeMode.dark
+                        ? Icons.light_mode_outlined
+                        : Icons.dark_mode_outlined,
+                  ),
+                );
+              },
+            ),
+            const _Header(),
+            AppSize.h16(),
+            const ActivityGrid(),
+            AppSize.h24(),
 
-              const StatsOverview(),
-              AppSize.h24(),
-              const TaskList(),
-              // User Information
-            ],
-          ),
+            const StatsOverview(),
+            AppSize.h24(),
+            const TaskList(),
+            // User Information
+          ],
         ),
       ),
     );

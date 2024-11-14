@@ -65,7 +65,12 @@ class GlobalThemData {
   static ThemeData lightThemeData =
       themeData(lightColorScheme, _lightFocusColor);
   static ThemeData darkThemeData = themeData(darkColorScheme, _darkFocusColor);
-  static ThemeData themeData(ColorScheme colorScheme, Color focusColor) =>
+  static ThemeData themeDataSelect(ThemeMode mode) =>
+      mode == ThemeMode.dark ? darkThemeData : lightThemeData;
+  static ThemeData themeData(
+    ColorScheme colorScheme,
+    Color focusColor,
+  ) =>
       ThemeData(
         colorScheme: colorScheme,
         primaryColor: colorScheme.inversePrimary,

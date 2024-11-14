@@ -23,11 +23,11 @@ extension PriorityIcons on PriorityType {
   IconData get icon {
     switch (this) {
       case PriorityType.low:
-        return Icons.low_priority;
+        return Icons.flag_rounded;
       case PriorityType.medium:
-        return Icons.priority_high;
+        return Icons.flag_outlined;
       case PriorityType.high:
-        return Icons.warning;
+        return Icons.flag_outlined;
       default:
         return Icons.error;
     }

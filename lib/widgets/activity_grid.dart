@@ -16,70 +16,12 @@ class ActivityGrid extends StatelessWidget {
         child: Padding(
             padding: const EdgeInsets.all(16),
             child: ResponsiveCenterScrollable(
-                child: BlocBuilder<TaskCubit, TaskState>(
-              builder: (context, state) => state.when(
-                error: (message) => Text(message),
-                initial: () => Column(children: [
-                  Center(
-                    child: SizedBox(
-                      height: 120,
-                      child: GridView.builder(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 7,
-                          mainAxisSpacing: 4,
-                          crossAxisSpacing: 4,
-                        ),
-                        itemCount: 35,
-                        itemBuilder: (context, index) {
-                          final date = DateTime.now()
-                              .subtract(Duration(days: 34 - index));
-
-                          final count =
-                              TaskService.getTaskCountForDay(date, []);
-                          print(count);
-                          return _ActivityCell(
-                            date: DateTime.now(),
-                            count: 0,
-                          );
-                        },
-                      ),
-                    ),
-                  ),
-                  Row(
-                    // mainAxisSize: MainAxisSize.max,
-                    // crossAxisAlignment: CrossAxisAlignment.stretch,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: List.generate(
-                      7,
-                      (index) {
-                        final date =
-                            DateTime.now().subtract(Duration(days: 6 - index));
-                        return Text(
-                          DateFormat('E').format(date),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodySmall
-                              ?.copyWith(color: Colors.grey.shade600),
-                        );
-                      },
-                    ),
-                  ),
-                  // const SizedBox(height: 8),
-                ]),
-                loading: () => const Center(child: CircularProgressIndicator()),
-                success: (tasks, selectedCategory) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Activity Overview',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                      const SizedBox(height: 16),
-                      SizedBox(
+              child: BlocBuilder<TaskCubit, TaskState>(
+                builder: (context, state) => state.when(
+                  error: (message) => Text(message),
+                  initial: () => Column(children: [
+                    Center(
+                      child: SizedBox(
                         height: 120,
                         child: GridView.builder(
                           gridDelegate:
@@ -94,40 +36,105 @@ class ActivityGrid extends StatelessWidget {
                                 .subtract(Duration(days: 34 - index));
 
                             final count =
-                                TaskService.getTaskCountForDay(date, tasks);
+                                TaskService.getTaskCountForDay(date, []);
                             print(count);
                             return _ActivityCell(
-                              date: date,
-                              count: count,
+                              date: DateTime.now(),
+                              count: 0,
                             );
                           },
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      Row(
-                        // mainAxisSize: MainAxisSize.max,
-                        // crossAxisAlignment: CrossAxisAlignment.stretch,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: List.generate(
-                          7,
-                          (index) {
-                            final date = DateTime.now()
-                                .subtract(Duration(days: 6 - index));
-                            return Text(
-                              DateFormat('E').format(date),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(color: Colors.grey.shade600),
-                            );
-                          },
-                        ),
+                    ),
+                    Row(
+                      // mainAxisSize: MainAxisSize.max,
+                      // crossAxisAlignment: CrossAxisAlignment.stretch,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: List.generate(
+                        7,
+                        (index) {
+                          final date = DateTime.now()
+                              .subtract(Duration(days: 6 - index));
+                          return Text(
+                            DateFormat('E').format(date),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(color: Colors.grey.shade600),
+                          );
+                        },
                       ),
-                    ],
-                  );
-                },
+                    ),
+                    // const SizedBox(height: 8),
+                  ]),
+                  loading: () =>
+                      const Center(child: CircularProgressIndicator()),
+                  success: (tasks, selectedCategory) {
+                    return ListView(
+                      // reverse: true,
+                      shrinkWrap: true,
+                      // mainAxisSize: MainAxisSize.max,
+                      // crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Activity Overview',
+                          style:
+                              Theme.of(context).textTheme.titleLarge?.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                        ),
+                        const SizedBox(height: 16),
+                        SizedBox(
+                          height: 120,
+                          child: GridView.builder(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 7,
+                              mainAxisSpacing: 2,
+                              crossAxisSpacing: 2,
+                              childAspectRatio: 1,
+                            ),
+                            itemCount: 35,
+                            itemBuilder: (context, index) {
+                              final date = DateTime.now()
+                                  .subtract(Duration(days: 34 - index));
+
+                              final count =
+                                  TaskService.getTaskCountForDay(date, tasks);
+                              print(count);
+                              return _ActivityCell(
+                                date: date,
+                                count: count,
+                              );
+                            },
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          // mainAxisSize: MainAxisSize.max,
+                          // crossAxisAlignment: CrossAxisAlignment.stretch,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: List.generate(
+                            7,
+                            (index) {
+                              final date = DateTime.now()
+                                  .subtract(Duration(days: 6 - index));
+                              return Text(
+                                DateFormat('E').format(date),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(color: Colors.grey.shade600),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
-            ))));
+            )));
   }
 }
 
@@ -150,14 +157,16 @@ class _ActivityCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
-      final size = constraints.biggest.shortestSide / 7;
+      final size = constraints.maxWidth / 7;
       return Tooltip(
         message: '${DateFormat('MMM d').format(date)}: $count tasks',
         child: Container(
           width: size,
           height: size,
           decoration: BoxDecoration(
-            color: _getColor(),
+            color: count == 0
+                ? Theme.of(context).colorScheme.onPrimary.withOpacity(0.1)
+                : _getColor(),
             borderRadius: BorderRadius.circular(4),
           ),
         ),
