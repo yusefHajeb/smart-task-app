@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:smart_task/core/constant/proiority_icons.dart';
 import 'package:smart_task/features/task/data/models/task.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
+import 'package:smart_task/features/task/presentation/screens/schedule_task_page.dart';
 
 import '../features/task/presentation/bloc/task_cubit/task_creation_state.dart';
 
@@ -39,9 +40,19 @@ class TaskList extends StatelessWidget {
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),
-                    Text(
-                      'for today ... ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
-                      style: Theme.of(context).textTheme.titleLarge,
+                    InkWell(
+                      onTap: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ScheduleScreen(
+                                      tasksByDate: tasks,
+                                    )));
+                      },
+                      child: Text(
+                        'for today ... ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
                     ),
                   ],
                 ),

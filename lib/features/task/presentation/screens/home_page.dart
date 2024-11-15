@@ -7,7 +7,6 @@ import 'package:smart_task/common_widgets/responsive_widgets_scrollable.dart';
 import 'package:smart_task/widgets/activity_grid.dart';
 import 'package:smart_task/widgets/stats_overview.dart';
 import 'package:smart_task/widgets/task_list.dart';
-
 import '../widgets/bottom_navigation_bar.dart';
 
 // ignore: must_be_immutable
@@ -25,6 +24,10 @@ class HomePage extends StatelessWidget {
               SizedBox(width: 12),
               Text('TaskMaster'),
             ],
+          ),
+          leading: IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.menu),
           ),
         ),
         body: BlocBuilder<BottomNavigationBloc, BottomNavigationState>(

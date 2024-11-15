@@ -68,6 +68,15 @@ class AppRoutes {
             child: const TaskCreationPage(),
           ),
         );
+      // case Routes.schedulePage:
+      //   return SlideRoute(
+      //     fullscreenDialog: true,
+      //     builder: (context) => ScheduleScreen(
+      //       tasksByDate: {
+      //         DateTime.now():
+      //       },
+      //     ),
+      //   );
 
       default:
         return MaterialPageRoute(
