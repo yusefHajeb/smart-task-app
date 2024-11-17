@@ -75,6 +75,9 @@ class SqfliteDatabase extends BaseDatabase {
             'completed_at INTEGER,'
             'created_at INTEGER NOT NULL,'
             'updated_at INTEGER NOT NULL'
+            'start_time INTEGER NOT NULL,'
+            'end_time INTEGER NOT NULL,'
+            'is_daily_reminder INTEGER NOT NULL'
             ')');
         //daily stats
         await db.execute('CREATE TABLE IF NOT EXISTS daily_stats ('
@@ -110,21 +113,6 @@ class SqfliteDatabase extends BaseDatabase {
           'updated_at': DateTime.now().millisecondsSinceEpoch,
         });
 
-        //category
-        await db.insert('categories', <String, dynamic>{
-          'category_id': 1,
-          'user_id': 1,
-          'name': 'Work',
-          'created_at': DateTime.now().millisecondsSinceEpoch,
-          'updated_at': DateTime.now().millisecondsSinceEpoch,
-        });
-        await db.insert('categories', <String, dynamic>{
-          'category_id': 2,
-          'user_id': 1,
-          'name': 'Personal',
-          'created_at': DateTime.now().millisecondsSinceEpoch,
-          'updated_at': DateTime.now().millisecondsSinceEpoch,
-        });
         //others table relations ship
         await db.insert(
             'user_tasks', <String, dynamic>{'user_id': 1, 'task_id': 1});
@@ -139,6 +127,7 @@ class SqfliteDatabase extends BaseDatabase {
             <String, dynamic>{'category_id': 1, 'task_id': 1});
         await db.insert('category_tasks',
             <String, dynamic>{'category_id': 2, 'task_id': 2});
+        await insertDataToTasksTable();
       },
     );
   }
@@ -262,5 +251,28 @@ class SqfliteDatabase extends BaseDatabase {
     await delete('category_tasks');
     await delete('user_categories');
     await delete('users');
+  }
+
+  Future<void> insertDataToTasksTable() async {
+    await _database?.query(
+      'tasks',
+      columns: [
+        'id',
+      ],
+    ).then((tasks) async {
+      await Future.forEach(tasks, (task) async {
+        await _database?.update(
+          'tasks',
+          {
+            'start_time': DateTime.now().millisecondsSinceEpoch,
+            'end_time': DateTime.now().millisecondsSinceEpoch,
+            'is_daily_reminder': 0,
+          },
+          where: 'id = ?',
+          whereArgs: [task['id']],
+        );
+      });
+    });
+    //category
   }
 }

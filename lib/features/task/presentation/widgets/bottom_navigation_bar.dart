@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
-import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
 import 'package:smart_task/features/task/presentation/screens/add_task_page.dart';
 
 class BottomNavigationBarWidget extends StatefulWidget {
@@ -81,16 +80,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                   Navigator.pushNamed(
                     context,
                     TaskCreationPage.routeName,
-                  ).then((value) {
-                    if (value == null && context.mounted) {
-                      context.read<TaskCubit>().fetchTasks();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Task created successfully'),
-                        ),
-                      );
-                    }
-                  });
+                  ).then((value) {});
                   // showModalBottomSheet(
                   //   context: context,
                   //   isScrollControlled: true,

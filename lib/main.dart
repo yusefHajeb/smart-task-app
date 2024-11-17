@@ -10,10 +10,12 @@ import 'package:smart_task/features/task/data/datasources/base_database.dart';
 import 'package:smart_task/features/task/presentation/bloc/app_theme/app_theme_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
 
+import 'core/services/notifications.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await ScreenUtil.ensureScreenSize();
+  await NotificationService().initialize();
   final db = SqfliteDatabase();
 
   await db.init();

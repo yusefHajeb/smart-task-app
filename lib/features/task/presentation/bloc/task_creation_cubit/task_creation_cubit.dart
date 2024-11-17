@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_task/core/services/notifications.dart';
 import 'package:smart_task/features/task/data/models/task.dart';
 
 import '../../../domain/usecases/task/add_task.dart';
@@ -27,27 +28,51 @@ class TaskCreationCubit extends Cubit<TaskCreationState> {
     emit(state.copyWith(priority: value));
   }
 
-  void dueDateChanged(DateTime value) {
-    emit(state.copyWith(dueDate: value));
+  void dueDateChanged(value) {
+    emit(state.copyWith(
+      dueDate: value,
+    ));
+  }
+
+  void startTimeChanged(TimeOfDay value) {
+    emit(state.copyWith(
+      startTime: value,
+    ));
+  }
+
+  void endTimeChanged(TimeOfDay value) {
+    emit(state.copyWith(
+      endTime: value,
+    ));
+  }
+
+  void isDailyReminderChanged(bool value) {
+    emit(state.copyWith(isDailyReminder: value));
   }
 
   void submit() async {
     if (formKey.currentState?.validate() ?? false) {
-      await insertTask(
-        Task(
-          title: state.taskName ?? '',
-          completed: false,
-          completedAt: DateTime.now(),
-          userId: 1,
-          id: DateTime.now().millisecondsSinceEpoch,
-          description: state.description ?? '',
-          category: state.categoryName ?? '',
-          dueDate: state.dueDate ?? DateTime.now(),
-          priority: state.priority ?? '',
-          createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
-        ),
+      final task = Task(
+        title: state.taskName ?? '',
+        completed: false,
+        startTime: DateTime.now().copyWith(
+            hour: state.startTime?.hour, minute: state.startTime?.minute),
+        endTime: state.dueDate?.copyWith(
+            hour: state.endTime?.hour, minute: state.endTime?.minute),
+        isDailyReminder: true,
+        completedAt: DateTime.now(),
+        userId: 1,
+        id: DateTime.now().millisecondsSinceEpoch,
+        description: state.description ?? '',
+        category: state.categoryName ?? '',
+        dueDate: state.dueDate ?? DateTime.now(),
+        priority: state.priority ?? '',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
       );
+      await NotificationService().scheduleTaskReminder(task);
+
+      await insertTask(task);
     }
   }
 }

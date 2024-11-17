@@ -171,7 +171,7 @@ class GlobalThemData {
           color: colorScheme.onPrimary,
           size: 24,
           opacity: 0.8,
-          weight: Icon(Icons.add).weight,
+          weight: const Icon(Icons.add).weight,
         ),
         //button style
         elevatedButtonTheme: ElevatedButtonThemeData(
@@ -243,16 +243,20 @@ class GlobalThemData {
             color: colorScheme.onPrimary,
             size: 24,
             opacity: 0.8,
-            weight: Icon(Icons.add).weight,
+            weight: const Icon(Icons.add).weight,
           ),
           shadowColor: Colors.transparent,
           elevation: 0.0,
           centerTitle: true,
           color: colorScheme.secondary,
-          systemOverlayStyle: const SystemUiOverlayStyle(
+          systemOverlayStyle: SystemUiOverlayStyle(
             statusBarColor: Colors.transparent,
-            statusBarIconBrightness: Brightness.light,
-            statusBarBrightness: Brightness.dark,
+            statusBarIconBrightness: colorScheme.brightness == Brightness.dark
+                ? Brightness.light
+                : Brightness.dark,
+            statusBarBrightness: colorScheme.brightness == Brightness.dark
+                ? Brightness.light
+                : Brightness.dark,
           ),
         ),
       );

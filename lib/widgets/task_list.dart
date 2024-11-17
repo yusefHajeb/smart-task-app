@@ -50,8 +50,10 @@ class TaskList extends StatelessWidget {
                                     )));
                       },
                       child: Text(
-                        'for today ... ${DateFormat('dd-MM-yyyy').format(DateTime.now())}',
-                        style: Theme.of(context).textTheme.titleLarge,
+                        'see all..',
+                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                              color: Colors.blue,
+                            ),
                       ),
                     ),
                   ],

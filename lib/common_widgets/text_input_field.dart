@@ -15,7 +15,7 @@ class TextInputField extends StatelessWidget {
     this.blurColor = Colors.grey,
     this.enabled = true,
     this.radius = 14.0,
-    this.maxLines = 1,
+    this.maxLines,
     this.readOnly = false,
     this.onTap,
     this.controller,
@@ -36,7 +36,7 @@ class TextInputField extends StatelessWidget {
   final Color focusColor, blurColor;
   final bool isPassword, enabled, readOnly;
   final double radius;
-  final int maxLines;
+  final int? maxLines;
   final void Function()? onTap;
   final TextEditingController? controller;
   final EdgeInsetsGeometry contentPadding;

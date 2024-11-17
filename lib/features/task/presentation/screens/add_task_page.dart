@@ -5,6 +5,8 @@ import 'package:smart_task/common_widgets/responsive_widgets_scrollable.dart';
 import 'package:smart_task/common_widgets/text_input_field.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_creation_cubit/task_creation_cubit.dart';
 
+import '../bloc/task_cubit/task_cubit.dart';
+
 class TaskCreationPage extends StatelessWidget {
   static String routeName = '/create_task';
   const TaskCreationPage({super.key});
@@ -77,18 +79,36 @@ class TaskCreationPage extends StatelessWidget {
                     const Text('Due Date'),
                     const SizedBox(height: 8),
                     TextInputField(
-                      onTap: () {
-                        showDatePicker(
+                      onTap: () async {
+                        final selectedDate = await showDatePicker(
                           context: context,
                           initialDate: DateTime.now(),
                           firstDate: DateTime.now(),
                           lastDate:
                               DateTime.now().add(const Duration(days: 365)),
-                        ).then((value) {
-                          if (value != null) {
-                            readTaskCubit.dueDateChanged(value);
+                        );
+
+                        if (selectedDate != null) {
+                          readTaskCubit.dueDateChanged(selectedDate);
+                          final startTime = await showTimePicker(
+                            context: context,
+                            helpText: 'Start Time',
+                            initialTime: TimeOfDay.now(),
+                          );
+
+                          if (startTime != null) {
+                            readTaskCubit.startTimeChanged(startTime);
                           }
-                        });
+                          final selectedTime = await showTimePicker(
+                            context: context,
+                            helpText: 'End Time',
+                            initialTime: TimeOfDay.now(),
+                          );
+
+                          if (selectedTime != null) {
+                            readTaskCubit.endTimeChanged(selectedTime);
+                          }
+                        }
                       },
                       readOnly: true,
                       icon: Icons.calendar_today_outlined,
@@ -97,6 +117,54 @@ class TaskCreationPage extends StatelessWidget {
                           : DateFormat('MMM d, y')
                               .format(state.dueDate ?? DateTime.now()),
                     ),
+                    const SizedBox(height: 16),
+                    if (state.dueDate != null &&
+                        state.startTime != null &&
+                        state.endTime != null)
+                      Flex(
+                        direction: Axis.horizontal,
+                        children: [
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Text('Start Time'),
+                                const SizedBox(height: 8),
+                                _buildTimeSelector(
+                                  label: 'Start Time',
+                                  value: state.startTime,
+                                  onSelect: (TimeOfDay time) {
+                                    readTaskCubit.startTimeChanged(time);
+                                  },
+                                  context: context,
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const Text('End Time'),
+                                const SizedBox(height: 8),
+                                _buildTimeSelector(
+                                  label: 'End Time ',
+                                  value: state.endTime,
+                                  onSelect: (TimeOfDay time) {
+                                    readTaskCubit.endTimeChanged(time);
+                                  },
+                                  context: context,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     const SizedBox(height: 16),
                     const Text('Priority'),
                     const SizedBox(height: 8),
@@ -118,6 +186,7 @@ class TaskCreationPage extends StatelessWidget {
                     const Text('Description'),
                     const SizedBox(height: 8),
                     TextInputField(
+                      keyBoardType: TextInputType.multiline,
                       onChange: readTaskCubit.descriptionChanged,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -128,12 +197,16 @@ class TaskCreationPage extends StatelessWidget {
                       hint: 'Enter Description',
                     ),
                     const SizedBox(height: 16),
+                    _buildReminderSettings(state.isDailyReminder, (value) {
+                      readTaskCubit.isDailyReminderChanged(value);
+                    }),
                     ElevatedButton(
                       onPressed: () {
                         if (formKey.currentState?.validate() ?? false) {
                           context.read<TaskCreationCubit>().submit();
+                          context.read<TaskCubit>().fetchTasks();
+                          Navigator.pop(context);
                         }
-                        // Add your onPressed functionality here
                       },
                       child: Text(
                         'Create Task',
@@ -147,6 +220,76 @@ class TaskCreationPage extends StatelessWidget {
             },
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildReminderSettings(
+      bool? isDailyReminder, Function(bool)? onChanged) {
+    return Card(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'Reminder Settings',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            DropdownButtonFormField<int>(
+              decoration: const InputDecoration(
+                labelText: 'Remind me before',
+                border: OutlineInputBorder(),
+              ),
+              // value: ,
+              items: const [
+                DropdownMenuItem(value: 10, child: Text('10 minutes')),
+                DropdownMenuItem(value: 30, child: Text('30 minutes')),
+                DropdownMenuItem(value: 60, child: Text('1 hour')),
+              ],
+              onChanged: (value) {
+                if (value != null) {}
+              },
+            ),
+            const SizedBox(height: 16),
+            SwitchListTile(
+              title: const Text('Daily Reminder'),
+              subtitle: const Text('Remind me every day at the start time'),
+              value: isDailyReminder ?? false,
+              onChanged: (value) => onChanged?.call(value),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTimeSelector({
+    required String label,
+    required TimeOfDay? value,
+    required Function(TimeOfDay) onSelect,
+    required BuildContext context,
+  }) {
+    return InkWell(
+      onTap: () async {},
+      child: TextInputField(
+        icon: Icons.access_time,
+        hint: value?.format(context),
+        readOnly: true,
+        onTap: () async {
+          final time = await showTimePicker(
+            context: context,
+            initialTime: value ?? TimeOfDay.fromDateTime(DateTime.now()),
+          );
+
+          if (time != null) {
+            onSelect(time);
+          }
+        },
       ),
     );
   }

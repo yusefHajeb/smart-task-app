@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:smart_task/widgets/activity_grid.dart';
-import 'package:smart_task/widgets/add_task_modal.dart';
 import 'package:smart_task/widgets/stats_overview.dart';
 import 'package:smart_task/widgets/task_list.dart';
 
@@ -36,11 +35,11 @@ class HomeScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showModalBottomSheet(
-            context: context,
-            isScrollControlled: true,
-            builder: (context) => const AddTaskModal(),
-          );
+          // showModalBottomSheet(
+          //   context: context,
+          //   isScrollControlled: true,
+          //   builder: (context) => const AddTaskModal(),
+          // );
         },
         child: const Icon(Icons.add),
       ),

@@ -1,4 +1,5 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+
 class Task {
   final int id;
   final int userId;
@@ -11,6 +12,9 @@ class Task {
   DateTime? completedAt;
   DateTime? updatedAt;
   DateTime? createdAt;
+  final DateTime? startTime;
+  final DateTime? endTime;
+  bool? isDailyReminder;
 
   Task({
     required this.userId,
@@ -24,6 +28,9 @@ class Task {
     this.completedAt,
     this.createdAt,
     this.updatedAt,
+    this.startTime,
+    this.endTime,
+    this.isDailyReminder,
   });
 
   Map<String, dynamic> toMap() => {
@@ -38,6 +45,12 @@ class Task {
         'completed_at': completedAt?.toIso8601String(),
         'created_at': updatedAt?.toIso8601String(),
         'updated_at': createdAt?.toIso8601String(),
+        'start_time': startTime?.toIso8601String(),
+        'end_time': endTime?.toIso8601String(),
+
+        'is_daily_reminder': isDailyReminder == true
+            ? 1
+            : 0, // ignore: unnecessary_null_awareness
       };
 
   factory Task.fromMap(Map<String, dynamic> json) => Task(
@@ -54,6 +67,9 @@ class Task {
             : null,
         updatedAt: DateTime.parse(json['updated_at']),
         createdAt: DateTime.parse(json['created_at']),
+        startTime: DateTime.now(),
+        endTime: DateTime.now(),
+        isDailyReminder: false,
       );
 
   Task copyWith({
@@ -68,6 +84,9 @@ class Task {
     DateTime? completedAt,
     DateTime? updatedAt,
     DateTime? createdAt,
+    DateTime? startTime,
+    DateTime? endTime,
+    bool? isDailyReminder,
   }) {
     return Task(
       id: id ?? this.id,
@@ -81,6 +100,9 @@ class Task {
       completedAt: completedAt ?? this.completedAt,
       updatedAt: updatedAt ?? this.updatedAt,
       createdAt: createdAt ?? this.createdAt,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      isDailyReminder: isDailyReminder ?? this.isDailyReminder,
     );
   }
 }

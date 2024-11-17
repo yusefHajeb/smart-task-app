@@ -7,12 +7,19 @@ class TaskCreationState {
   String? categoryName;
   String? priority;
   DateTime? dueDate;
+  TimeOfDay? startTime;
+  TimeOfDay? endTime;
+  bool? isDailyReminder;
+
   TaskCreationState({
     this.taskName,
     this.description,
     this.categoryName,
     this.priority,
     this.dueDate,
+    this.startTime,
+    this.endTime,
+    this.isDailyReminder,
   });
 
   TaskCreationState copyWith({
@@ -21,6 +28,9 @@ class TaskCreationState {
     String? categoryName,
     String? priority,
     DateTime? dueDate,
+    TimeOfDay? startTime,
+    TimeOfDay? endTime,
+    bool? isDailyReminder,
   }) {
     return TaskCreationState(
       taskName: taskName ?? this.taskName,
@@ -28,6 +38,9 @@ class TaskCreationState {
       categoryName: categoryName ?? this.categoryName,
       priority: priority ?? this.priority,
       dueDate: dueDate ?? this.dueDate,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      isDailyReminder: isDailyReminder ?? this.isDailyReminder,
     );
   }
 }

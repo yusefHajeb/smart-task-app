@@ -45,6 +45,7 @@ dependencies:
   freezed_annotation: ^2.4.4
   build_runner: ^2.4.13
   freezed: ^2.5.7
+  flutter_local_notifications: ^18.0.1
 
 dev_dependencies:
   flutter_test:

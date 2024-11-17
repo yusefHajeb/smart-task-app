@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../../data/models/task.dart';
@@ -30,11 +31,15 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         child: Column(
           children: [
             // _buildMonthSelector(),
-            _buildCalendarHeader(),
+            // _buildCalendarHeader(),
             Expanded(
               child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: _buildTaskTable(),
+                child: Stack(
+                  children: [
+                    _buildTaskTable(),
+                  ],
+                ),
               ),
             ),
           ],
@@ -101,29 +106,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     );
   }
 
-  Widget _buildCalendarHeader() {
-    const weekDays = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: weekDays
-            .map((day) => SizedBox(
-                  width: 40,
-                  child: Text(
-                    day,
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.bold,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ))
-            .toList(),
-      ),
-    );
-  }
-
   DataTable _buildTaskTable() {
     List<String> getMonthDayList() {
       final now = DateTime.now();
@@ -134,13 +116,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     }
 
     final List<String> weekDaysEn = [
-      'Sun',
       'Mon',
       'Tue',
       'Wed',
       'Thu',
       'Fri',
       'Sat',
+      'Sun',
     ];
 
     String getDay(int dayIndex) {
@@ -155,76 +137,128 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     // Build columns
     final column = <DataColumn>[];
 
-    column.add(DataColumn(
-        label: Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                color: Colors.grey,
-                width: 1,
-              ),
-            ),
-            child: const Text('القيم'))));
+    column.add(const DataColumn(label: Text('')));
     final List<DataColumn> columnsTow = <DataColumn>[];
     for (int i = 0; i < getMonthDayList().length; i++) {
       final date = getDay(i);
       columnsTow.add(
         DataColumn(
+            headingRowAlignment: MainAxisAlignment.center,
+            mouseCursor: WidgetStateProperty.resolveWith((states) {
+              if (states.contains(WidgetState.values[3])) {
+                return SystemMouseCursors.cell;
+              }
+              return SystemMouseCursors.click;
+            }),
+            numeric: true,
+            tooltip: '${DateTime.now().year}.${DateTime.now().month}.${i + 1}',
             label: Container(
-          padding: const EdgeInsets.all(5.0),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: Colors.grey,
-              width: 1,
-            ),
-          ),
-          child: Column(
-            children: [
-              date == 'Fri' ? const Text('HoleDay') : Text(date),
-              Text(i.toString())
-            ],
-          ),
-        )),
+              padding: const EdgeInsets.all(5.0),
+              decoration: BoxDecoration(
+                color: DateTime.now().day == i
+                    ? Theme.of(context).colorScheme.primary
+                    : Colors.transparent,
+                border: Border.all(
+                  color: DateTime.now().day == i
+                      ? Theme.of(context).colorScheme.primaryFixed
+                      : Colors.transparent,
+                  width: 1,
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                children: [Text(date), Text((i + 1).toString())],
+              ),
+            )),
       );
     }
     column.addAll(columnsTow);
 
     for (int i = 0; i < widget.tasksByDate.length; i++) {
-      rows.add(DataRow(cells: [
-        DataCell(
-          Column(
-            children: [
-              Text(i.toString()),
-            ],
-          ),
-        ),
-        ...getMonthDayList().map(
-          (day) => DataCell(
-            widget.tasksByDate[i].createdAt?.day == int.parse(day)
-                ? _buildTaskCard(widget.tasksByDate[i])
-                : const SizedBox(),
-          ),
-        ),
-      ]));
+      rows.add(DataRow(
+          onLongPress: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) {
+                return AlertDialog(
+                  title: const Text(
+                    'Task Details',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  content: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: _buildTaskCard(widget.tasksByDate[i]),
+                  ),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(context).pop;
+                      },
+                      child: const Text('Close'),
+                    ),
+                  ],
+                );
+              },
+            );
+          },
+          cells: [
+            const DataCell(
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(''),
+                ],
+              ),
+            ),
+            ...getMonthDayList().map(
+              (day) => DataCell(
+                placeholder: true,
+                widget.tasksByDate[i].createdAt?.day == int.parse(day)
+                    ? _buildTaskCard(widget.tasksByDate[i])
+                    : const SizedBox(width: 1),
+              ),
+            ),
+          ]));
     }
 
     return DataTable(
+      checkboxHorizontalMargin: 0,
+      columnSpacing: 20,
+      // headingRowHeight: 40,
+      headingRowColor: MaterialStateProperty.resolveWith((states) {
+        if (states.contains(MaterialState.values[3])) {
+          return Colors.red;
+        }
+        return Theme.of(context).colorScheme.primary.withOpacity(0.1);
+      }),
+      showCheckboxColumn: true,
+      horizontalMargin: 3,
+      dataRowHeight: 60,
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Theme.of(context).colorScheme.surface,
+            Theme.of(context).colorScheme.secondary,
+          ],
+        ),
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            spreadRadius: 2,
+            blurRadius: 5,
+            offset: Offset(0, 3),
+          ),
+        ],
+      ),
       columns: column,
       rows: rows,
     );
   }
-
-  // List<Widget> _getTaskWidgetsForDate(Task task, DateTime? date) {
-  //   final widgets = <Widget>[];
-  //   if (date == null || task.createdAt!.month == date.month) {
-  //     widgets.add(const SizedBox(width: 80, height: 80));
-  //   }
-  //   if (task.completed &&
-  //       (date == null || task.completedAt!.month == date.month)) {
-  //     widgets.add(_buildTaskCard(task, date ?? DateTime.now()));
-  //   }
-  //   return widgets;
-  // }
 
   Widget _buildTaskCard(
     Task task,
@@ -245,13 +279,12 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     // تحديد الارتفاع بناءً على عدد الأيام
     final double width = 80 + (daysPassed * 10).toDouble();
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8, left: 24),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 900),
+      curve: Curves.easeIn,
       width: width,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 900), // مدة الرسوم المتحركة
-        curve: Curves.easeIn, // منحنى الرسوم المتحركة
-        width: width, // استخدام ارتفاع الرسوم المتحركة
+      child: SizedBox(
+        width: width,
         child: Card(
           color: color,
           elevation: 0,
@@ -262,43 +295,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             padding: const EdgeInsets.all(12),
             child: Wrap(
               children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        task.title,
-                        style: const TextStyle(
-                          fontSize: 8,
-                          fontWeight: FontWeight.bold,
-                        ),
+                ListView(
+                  shrinkWrap: true,
+                  children: [
+                    Text(
+                      task.title,
+                      style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
                       ),
-                      Text(
-                        task.description,
-                        style: TextStyle(
-                          color: Colors.grey[700],
-                          fontSize: 7,
-                        ),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
                 // إذا كانت المهمة لم تنفذ بعد
-                if (!task.completed)
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8,
-                      vertical: 4,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.5),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      DateFormat('MMM d').format(task.dueDate),
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  ),
               ],
             ),
           ),

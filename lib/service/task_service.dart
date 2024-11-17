@@ -36,6 +36,9 @@ class TaskService {
     final newTasks = tasks.map((task) {
       if (task.id == id) {
         return Task(
+          endTime: DateTime.now(),
+          isDailyReminder: true,
+          startTime: DateTime.now(),
           userId: task.userId,
           id: task.id,
           title: task.title,
