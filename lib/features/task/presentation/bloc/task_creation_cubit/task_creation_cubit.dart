@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_task/core/services/notifications.dart';
 import 'package:smart_task/features/task/data/models/task.dart';
 
 import '../../../domain/usecases/task/add_task.dart';
@@ -31,6 +30,18 @@ class TaskCreationCubit extends Cubit<TaskCreationState> {
   void dueDateChanged(value) {
     emit(state.copyWith(
       dueDate: value,
+    ));
+  }
+
+  void updateTask(Task task) {
+    emit(state.copyWith(
+      categoryName: task.category,
+      description: task.description,
+      dueDate: task.dueDate,
+      priority: task.priority,
+      taskName: task.title,
+      // endTime: task.endTime,
+      // startTime: task.startTime?.toTimeOfDay(),
     ));
   }
 
@@ -70,7 +81,7 @@ class TaskCreationCubit extends Cubit<TaskCreationState> {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
-      await NotificationService().scheduleTaskReminder(task);
+      // await NotificationService().scheduleTaskReminder(task);
 
       await insertTask(task);
     }

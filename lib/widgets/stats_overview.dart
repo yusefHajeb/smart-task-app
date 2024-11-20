@@ -1,41 +1,66 @@
 import 'package:flutter/material.dart';
-import 'package:smart_task/service/task_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_creation_state.dart';
+import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
 
 class StatsOverview extends StatelessWidget {
-  const StatsOverview({super.key});
+  const StatsOverview({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: _StatCard(
-            title: 'Total Tasks',
-            value: TaskService.totalTasks.toString(),
-            icon: Icons.list_alt,
-            color: Colors.blue,
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _StatCard(
-            title: 'Completed',
-            value: TaskService.completedTasks.toString(),
-            icon: Icons.check_circle_outline,
-            color: Colors.green,
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          child: _StatCard(
-            title: 'Overdue',
-            value: TaskService.overdueTasks.toString(),
-            icon: Icons.warning_amber_rounded,
-            color: Colors.red,
-          ),
-        ),
-      ],
-    );
+    return BlocBuilder<TaskCubit, TaskState>(builder: (context, state) {
+      if (state is TaskLoading) {
+        return const Center(child: CircularProgressIndicator());
+      }
+      if (state is TaskSuccess) {
+        return Row(
+          children: [
+            Expanded(
+              child: _StatCard(
+                title: 'Total Tasks',
+                value: state.tasks
+                    .where((task) =>
+                        !task.completed &&
+                        task.dueDate.isBefore(DateTime.now()))
+                    .length
+                    .toString(),
+                icon: Icons.list_alt,
+                color: Colors.blue,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _StatCard(
+                title: 'Completed',
+                value: state.tasks
+                    .where((context) => context.completed)
+                    .length
+                    .toString(),
+                icon: Icons.check_circle_outline,
+                color: Colors.green,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: _StatCard(
+                title: 'Overdue',
+                value: state.tasks
+                    .where((task) =>
+                        !task.completed &&
+                        task.dueDate.isBefore(DateTime.now()))
+                    .length
+                    .toString(),
+                icon: Icons.warning_amber_rounded,
+                color: Colors.red,
+              ),
+            ),
+          ],
+        );
+      }
+      return Container();
+    });
   }
 }
 

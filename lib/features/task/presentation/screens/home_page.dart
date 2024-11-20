@@ -4,6 +4,7 @@ import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/features/task/presentation/bloc/app_theme/app_theme_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import 'package:smart_task/common_widgets/responsive_widgets_scrollable.dart';
+import 'package:smart_task/features/task/presentation/screens/category_page.dart';
 import 'package:smart_task/widgets/activity_grid.dart';
 import 'package:smart_task/widgets/stats_overview.dart';
 import 'package:smart_task/widgets/task_list.dart';
@@ -12,7 +13,12 @@ import '../widgets/bottom_navigation_bar.dart';
 // ignore: must_be_immutable
 class HomePage extends StatelessWidget {
   HomePage({super.key});
-  List<Widget> content = [const HomePageBody(), const Text('search')];
+  List<Widget> content = [
+    const HomePageBody(),
+    const Text('search'),
+    const CategoryTaskPage(),
+    const Text('Matrix'),
+  ];
   static const String routeName = '/home-page';
   @override
   Widget build(BuildContext context) {
@@ -30,12 +36,46 @@ class HomePage extends StatelessWidget {
             icon: const Icon(Icons.menu),
           ),
         ),
-        body: BlocBuilder<BottomNavigationBloc, BottomNavigationState>(
-          builder: (context, state) {
-            return content[state.index];
-          },
+        body: Row(
+          children: [
+            Expanded(
+              child: BlocBuilder<BottomNavigationBloc, BottomNavigationState>(
+                builder: (context, state) {
+                  return content[state.index];
+                },
+              ),
+            ),
+          ],
         ),
         bottomNavigationBar: const BottomNavigationBarWidget());
+  }
+}
+
+class Sidebar extends StatelessWidget {
+  const Sidebar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 200,
+      color: Colors.grey[200],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          ListTile(
+            leading: const Icon(Icons.dashboard),
+            title: const Text('Dashboard'),
+            onTap: () {},
+          ),
+          ListTile(
+            leading: const Icon(Icons.settings),
+            title: const Text('Settings'),
+            onTap: () {},
+          ),
+          // Add more items as needed
+        ],
+      ),
+    );
   }
 }
 
@@ -75,11 +115,9 @@ class HomePageBody extends StatelessWidget {
             AppSize.h16(),
             const ActivityGrid(),
             AppSize.h24(),
-
             const StatsOverview(),
             AppSize.h24(),
             const TaskList(),
-            // User Information
           ],
         ),
       ),

@@ -33,21 +33,23 @@ class CategoryModel {
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
-      'categoryId': categoryId,
-      'userId': userId,
+      'category_id': categoryId,
+      'user_id': userId,
       'name': name,
-      'createdAt': createdAt.millisecondsSinceEpoch,
-      'updatedAt': updatedAt.millisecondsSinceEpoch,
+      'created_at': createdAt.millisecondsSinceEpoch,
+      'updated_at': updatedAt.millisecondsSinceEpoch,
     };
   }
 
   factory CategoryModel.fromMap(Map<String, dynamic> map) {
     return CategoryModel(
-      categoryId: map['categoryId'] as int,
-      userId: map['userId'] as int,
-      name: map['name'] as String,
-      createdAt: DateTime.fromMillisecondsSinceEpoch(map['createdAt'] as int),
-      updatedAt: DateTime.fromMillisecondsSinceEpoch(map['updatedAt'] as int),
+      categoryId: map['category_id'] ?? 0,
+      userId: map['user_id'] ?? 1,
+      name: map['name']?.toString() ?? '',
+      createdAt: DateTime.fromMillisecondsSinceEpoch(
+          map['created_at'] ?? DateTime.now().millisecondsSinceEpoch),
+      updatedAt: DateTime.fromMillisecondsSinceEpoch(
+          map['updated_at'] ?? DateTime.now().millisecondsSinceEpoch),
     );
   }
 

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:smart_task/core/constant/proiority_icons.dart';
 import 'package:smart_task/features/task/data/models/task.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
+import 'package:smart_task/features/task/presentation/screens/add_task_page.dart';
 import 'package:smart_task/features/task/presentation/screens/schedule_task_page.dart';
 
 import '../features/task/presentation/bloc/task_cubit/task_creation_state.dart';
@@ -43,11 +44,13 @@ class TaskList extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => ScheduleScreen(
-                                      tasksByDate: tasks,
-                                    )));
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ScheduleScreen(
+                              tasksByDate: tasks,
+                            ),
+                          ),
+                        );
                       },
                       child: Text(
                         'see all..',
@@ -58,27 +61,20 @@ class TaskList extends StatelessWidget {
                     ),
                   ],
                 ),
-
-                // _CategoryFilter(
-                //   tasks: tasks,
-                //   selectedCategory: selectedCategory,
-                // ),
                 const Divider(height: 1),
-                ListView.separated(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: tasks
-                      .where(
-                        (task) =>
-                            DateFormat('MMM d, y').format(task.dueDate) ==
-                            DateFormat('MMM d, y').format(DateTime.now()),
-                      )
-                      .length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 8),
-                  itemBuilder: (context, index) {
-                    final task = tasks[index];
-                    return TaskItem(task: task);
-                  },
+                Column(
+                  children: tasks
+                      .map((task) =>
+                          DateFormat('MMM d, y').format(task.dueDate) ==
+                                      DateFormat('MMM d, y')
+                                          .format(DateTime.now()) ||
+                                  (task.dueDate.isBefore(DateTime.now()) &&
+                                      task.completed == false)
+                              ? TaskItem(
+                                  task: task,
+                                )
+                              : Container())
+                      .toList(),
                 ),
               ],
             );
@@ -89,6 +85,7 @@ class TaskList extends StatelessWidget {
   }
 }
 
+// ignore: unused_element
 class _CategoryFilter extends StatelessWidget {
   const _CategoryFilter({required this.tasks, this.selectedCategory});
   final List<Task> tasks;
@@ -191,53 +188,70 @@ class TaskItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.cancel),
-                  onPressed: () {
-                    context.read<TaskCubit>().deleteTask(task.id);
-                  },
-                ),
-                Text(
-                  task.title,
-                  style: Theme.of(context).textTheme.titleSmall,
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    context.read<TaskCubit>().updateTask(task);
-                  },
-                  child: task.completed == true
-                      ? const Icon(
-                          Icons.check_box,
-                          size: 24,
-                        )
-                      : const Icon(
-                          Icons.check_box_outline_blank,
-                          size: 24,
-                        ),
-                ),
-                const SizedBox(width: 12),
-                PriorityIconWidget(priority: task.priority),
-              ],
-            ),
-          ],
+    return InkWell(
+      onTap: () {
+        context.read<TaskCubit>().updateTask(task);
+        Navigator.pushNamed(context, TaskCreationPage.routeName);
+      },
+      child: Card(
+        surfaceTintColor: (task.dueDate
+                .isBefore(DateTime.now().subtract(const Duration(days: 1))))
+            ? Colors.red
+            : null,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      task.title,
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.delete_outline, color: Colors.red),
+                    onPressed: () {
+                      context.read<TaskCubit>().deleteTask(task.id);
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                task.description,
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Checkbox(
+                    onChanged: (value) {
+                      context.read<TaskCubit>().updateTask(task);
+                    },
+                    activeColor: Colors.green,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4)),
+                    value: task.completed,
+                  ),
+                  const SizedBox(width: 12),
+                  PriorityIconWidget(priority: task.priority),
+                  const SizedBox(width: 12),
+                  Icon(Icons.calendar_today, size: 16, color: Colors.grey[600]),
+                  const SizedBox(width: 4),
+                  Text(
+                    '${DateFormat.jm().format(task.startTime!)} - ${DateFormat.jm().format(task.endTime!)}',
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

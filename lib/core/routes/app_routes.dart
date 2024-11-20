@@ -5,8 +5,10 @@ import 'package:smart_task/core/di/dependence_injection.dart';
 import 'package:smart_task/core/routes/animation_navigation.dart';
 import 'package:smart_task/core/routes/routes.dart';
 import 'package:smart_task/features/task/presentation/bloc/app_theme/app_theme_bloc.dart';
+import 'package:smart_task/features/task/presentation/bloc/category_task_bloc/category_task_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_creation_cubit/task_creation_cubit.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
+import 'package:smart_task/features/task/presentation/screens/category_page.dart';
 import 'package:smart_task/features/task/presentation/screens/home_page.dart';
 import '../../features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import '../../features/task/presentation/bloc/task_cubit/task_creation_state.dart';
@@ -21,6 +23,10 @@ class AppRoutes {
             providers: [
               BlocProvider<BottomNavigationBloc>(
                 create: (context) => sl<BottomNavigationBloc>(),
+              ),
+              BlocProvider<CategoryTaskBloc>(
+                create: (context) => sl<CategoryTaskBloc>()
+                  ..add(const CategoryTaskEvent.started()),
               ),
             ],
             child: MultiBlocListener(
@@ -66,6 +72,15 @@ class AppRoutes {
           builder: (context) => BlocProvider(
             create: (context) => sl<TaskCreationCubit>(),
             child: const TaskCreationPage(),
+          ),
+        );
+      case Routes.categoryPage:
+        return MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (context) => BlocProvider(
+            create: (context) =>
+                sl<CategoryTaskBloc>()..add(CategoryTaskEvent.started()),
+            child: const CategoryTaskPage(),
           ),
         );
       // case Routes.schedulePage:

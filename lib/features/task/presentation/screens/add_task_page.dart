@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_task/common_widgets/responsive_widgets_scrollable.dart';
 import 'package:smart_task/common_widgets/text_input_field.dart';
+import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_creation_cubit/task_creation_cubit.dart';
 
 import '../bloc/task_cubit/task_cubit.dart';
@@ -37,6 +38,7 @@ class TaskCreationPage extends StatelessWidget {
                     const Text('Task Name'),
                     const SizedBox(height: 8),
                     TextInputField(
+                      initialValue: state.taskName,
                       onChange: readTaskCubit.taskNameChanged,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -200,6 +202,7 @@ class TaskCreationPage extends StatelessWidget {
                     _buildReminderSettings(state.isDailyReminder, (value) {
                       readTaskCubit.isDailyReminderChanged(value);
                     }),
+                    AppSize.h16(),
                     ElevatedButton(
                       onPressed: () {
                         if (formKey.currentState?.validate() ?? false) {
@@ -225,46 +228,39 @@ class TaskCreationPage extends StatelessWidget {
   }
 
   Widget _buildReminderSettings(
-      bool? isDailyReminder, Function(bool)? onChanged) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              'Reminder Settings',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<int>(
-              decoration: const InputDecoration(
-                labelText: 'Remind me before',
-                border: OutlineInputBorder(),
-              ),
-              // value: ,
-              items: const [
-                DropdownMenuItem(value: 10, child: Text('10 minutes')),
-                DropdownMenuItem(value: 30, child: Text('30 minutes')),
-                DropdownMenuItem(value: 60, child: Text('1 hour')),
-              ],
-              onChanged: (value) {
-                if (value != null) {}
-              },
-            ),
-            const SizedBox(height: 16),
-            SwitchListTile(
-              title: const Text('Daily Reminder'),
-              subtitle: const Text('Remind me every day at the start time'),
-              value: isDailyReminder ?? false,
-              onChanged: (value) => onChanged?.call(value),
-            ),
-          ],
+    bool? isDailyReminder,
+    Function(bool)? onChanged,
+  ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Reminder Settings',
         ),
-      ),
+        if (isDailyReminder ?? false) ...[
+          const SizedBox(height: 16),
+          DropdownButtonFormField<int>(
+            hint: const Text('Remind me before'),
+
+            // value: ,
+            items: const [
+              DropdownMenuItem(value: 10, child: Text('10 minutes')),
+              DropdownMenuItem(value: 30, child: Text('30 minutes')),
+              DropdownMenuItem(value: 60, child: Text('1 hour')),
+            ],
+            onChanged: (value) {
+              if (value != null) {}
+            },
+          ),
+        ],
+        const SizedBox(height: 16),
+        SwitchListTile(
+          title: const Text('Daily Reminder'),
+          subtitle: const Text('Remind me every day at the start time'),
+          value: isDailyReminder ?? false,
+          onChanged: (value) => onChanged?.call(value),
+        ),
+      ],
     );
   }
 

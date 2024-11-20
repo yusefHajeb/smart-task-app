@@ -4,7 +4,7 @@ import 'package:smart_task/features/task/domain/repositories/category_repository
 class AddCategoryUseCase {
   final CategoryRepository _repository;
   AddCategoryUseCase(this._repository);
-  Future<void> call(CategoryModel category) async {
-    _repository.addCategory(category);
+  Future<List<CategoryModel>> call(CategoryModel category) async {
+    return _repository.addCategory(category);
   }
 }

@@ -228,6 +228,12 @@ class SqfliteDatabase extends BaseDatabase {
     await _database?.delete(table, where: where, whereArgs: whereArgs);
   }
 
+  // get all categories
+  Future<List<Map<String, dynamic>>> getAllCategories() async {
+    final maps = await query('categories');
+    return maps;
+  }
+
   @override
   Future<void> close() async {
     await _database?.close();

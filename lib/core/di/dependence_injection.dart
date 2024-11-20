@@ -14,7 +14,9 @@ import 'package:smart_task/features/task/domain/usecases/task/update_task.dart';
 import 'package:smart_task/features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
 
+import '../../features/task/domain/usecases/category/get_categories.dart';
 import '../../features/task/domain/usecases/task/get_today_task.dart';
+import '../../features/task/presentation/bloc/category_task_bloc/category_task_bloc.dart';
 import '../../features/task/presentation/bloc/task_creation_cubit/task_creation_cubit.dart';
 
 var sl = GetIt.instance;
@@ -38,10 +40,15 @@ Future<void> setupGetIt() async {
       () => UpdateTaskUseCase(sl.call()));
 
   //==categoryUseCase
-  sl.registerLazySingleton<AddCategoryUseCase>(() => sl.call());
-  sl.registerLazySingleton<DeleteCategoryUseCase>(() => sl.call());
+  sl.registerLazySingleton<AddCategoryUseCase>(
+      () => AddCategoryUseCase(sl.call()));
+
+  sl.registerLazySingleton<DeleteCategoryUseCase>(
+      () => DeleteCategoryUseCase(sl.call()));
   sl.registerLazySingleton<GetCategoryUseCase>(
       () => GetCategoryUseCase(sl.call()));
+  sl.registerLazySingleton<GetCategoriesUseCase>(
+      () => GetCategoriesUseCase(sl.call()));
   // sl.registerFactory<AppThemeBloc>(() => AppThemeBloc());
   sl.registerFactory<BottomNavigationBloc>(() => BottomNavigationBloc());
   sl.registerFactory<TaskCubit>(() => TaskCubit(
@@ -50,4 +57,10 @@ Future<void> setupGetIt() async {
       fetchTask: sl(),
       delete: sl()));
   sl.registerFactory<TaskCreationCubit>(() => TaskCreationCubit(sl()));
+  sl.registerFactory<CategoryTaskBloc>(() => CategoryTaskBloc(
+        insertCategory: sl(),
+        getCategories: sl(),
+        deleteCategory: sl(),
+        getTasks: sl(),
+      ));
 }

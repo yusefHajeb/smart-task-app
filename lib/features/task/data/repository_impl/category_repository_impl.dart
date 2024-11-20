@@ -13,13 +13,18 @@ class CategoryRepositoryImpl extends CategoryRepository {
   static final ValueNotifier<String?> selectedCategoryNotifier =
       ValueNotifier<String?>(null);
   @override
-  Future<void> addCategory(CategoryModel category) {
+  Future<List<CategoryModel>> addCategory(CategoryModel category) async {
     database.insert('categories', category.toMap());
-    return Future.value();
+    final categories = await database.getAllCategories();
+
+    return Future.value(
+        categories.map((map) => CategoryModel.fromMap(map)).toList());
   }
 
   @override
-  Future<void> deleteCategory(int categoryId) {
+  Future<List<CategoryModel>> deleteCategory(int categoryId) {
+    database
+        .query('categories', where: 'categoryId = ?', whereArgs: [categoryId]);
     categoryNotifier.value = categoryNotifier.value.where((category) {
       return category.categoryId != categoryId;
     }).toList();
@@ -30,10 +35,10 @@ class CategoryRepositoryImpl extends CategoryRepository {
 
   @override
   Future<List<CategoryModel>> getCategories() async {
-    final maps = await database.query('categories');
-    categoryNotifier.value =
-        maps.map((map) => CategoryModel.fromMap(map)).toList();
-    return categoryNotifier.value;
+    final categories = await database.getAllCategories();
+
+    return Future.value(
+        categories.map((map) => CategoryModel.fromMap(map)).toList());
   }
 
   @override
@@ -42,19 +47,21 @@ class CategoryRepositoryImpl extends CategoryRepository {
   }
 
   @override
-  Future<void> insertCategoryTasks(Map<String, dynamic> data) {
+  Future<List<CategoryModel>> insertCategoryTasks(Map<String, dynamic> data) {
     database.insertCategoryTasks(data);
+
     return Future.value();
   }
 
   @override
-  Future<void> insertUserCategory(Map<String, dynamic> data) async {
+  Future<List<CategoryModel>> insertUserCategory(
+      Map<String, dynamic> data) async {
     await database.insertUserCategories(data);
     return Future.value();
   }
 
   @override
-  Future<void> updateCategory(CategoryModel category) async {
+  Future<List<CategoryModel>> updateCategory(CategoryModel category) async {
     database.update('categories', category.toMap());
     return Future.value();
   }
