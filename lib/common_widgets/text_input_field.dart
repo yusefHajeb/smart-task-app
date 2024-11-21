@@ -12,7 +12,6 @@ class TextInputField extends StatelessWidget {
     this.validator,
     this.onSaved,
     this.icon,
-    this.blurColor = Colors.grey,
     this.enabled = true,
     this.radius = 14.0,
     this.maxLines,
@@ -21,7 +20,6 @@ class TextInputField extends StatelessWidget {
     this.controller,
     this.contentPadding =
         const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-    this.focusColor = Colors.pink,
     this.isPassword = false,
   });
   final BorderRadius? borderRadius;
@@ -33,7 +31,7 @@ class TextInputField extends StatelessWidget {
   final FormFieldValidator<String>? validator;
   final FormFieldSetter<String>? onSaved;
   final IconData? icon;
-  final Color focusColor, blurColor;
+
   final bool isPassword, enabled, readOnly;
   final double radius;
   final int? maxLines;

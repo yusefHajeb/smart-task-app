@@ -122,7 +122,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                 Navigator.pushNamed(
                   context,
                   TaskCreationPage.routeName,
-                ).then((value) {});
+                );
                 // showModalBottomSheet(
                 //   context: context,
                 //   isScrollControlled: true,
@@ -132,7 +132,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
               child: Container(
                 height: 60,
                 width: 60,
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.pink,
                   boxShadow: [
@@ -140,7 +140,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                       color: Colors.grey,
                       spreadRadius: 2,
                       blurRadius: 5,
-                      offset: const Offset(0, 3), // changes position of shadow
+                      offset: Offset(0, 3), // changes position of shadow
                     ),
                   ],
                 ),

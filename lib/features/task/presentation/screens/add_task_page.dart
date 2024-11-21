@@ -4,11 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:smart_task/common_widgets/responsive_widgets_scrollable.dart';
 import 'package:smart_task/common_widgets/text_input_field.dart';
 import 'package:smart_task/core/constant/size.dart';
-import 'package:smart_task/core/di/dependence_injection.dart';
-import 'package:smart_task/features/task/data/models/category.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_creation_cubit/task_creation_cubit.dart';
 
-import '../../data/datasources/base_database.dart';
 import '../bloc/task_cubit/task_cubit.dart';
 
 class TaskCreationPage extends StatelessWidget {
@@ -41,7 +38,7 @@ class TaskCreationPage extends StatelessWidget {
                     const Text('Task Name'),
                     const SizedBox(height: 8),
                     TextInputField(
-                      initialValue: state.taskName,
+                      initialValue: state.task?.title,
                       onChange: readTaskCubit.taskNameChanged,
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -54,47 +51,30 @@ class TaskCreationPage extends StatelessWidget {
                     const SizedBox(height: 16),
                     const Text('Category'),
                     const SizedBox(height: 8),
-                    FutureBuilder(
-                        future: sl<SqfliteDatabase>()
-                            .getAllCategories()
-                            .then((value) {
-                          return value.map((categoryMap) =>
-                              CategoryModel.fromMap(categoryMap));
-                        }),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return SingleChildScrollView(
-                              scrollDirection: Axis.horizontal,
-                              child: Row(
-                                children: [
-                                  for (final category in snapshot.data!)
-                                    TextButton(
-                                      onPressed: () {},
-                                      child: GestureDetector(
-                                        onTap: () {
-                                          readTaskCubit
-                                              .categoryChanged(category.name);
-                                        },
-                                        child: CategoryChip(
-                                          color: state.categoryName ==
-                                                  category.name
-                                              ? Theme.of(context)
-                                                  .colorScheme
-                                                  .primary
-                                              : null,
-                                          isSelected: state.categoryName ==
-                                              category.name,
-                                          category: category.name.toString(),
-                                        ),
-                                      ),
-                                    ),
-                                ],
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          for (final category in state.categories)
+                            TextButton(
+                              onPressed: () {},
+                              child: GestureDetector(
+                                onTap: () {
+                                  readTaskCubit.categoryChanged(category.name);
+                                },
+                                child: CategoryChip(
+                                  color: state.task?.category == category.name
+                                      ? Theme.of(context).colorScheme.primary
+                                      : null,
+                                  isSelected:
+                                      state.task?.category == category.name,
+                                  category: category.name.toString(),
+                                ),
                               ),
-                            );
-                          }
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }),
+                            ),
+                        ],
+                      ),
+                    ),
                     const SizedBox(height: 16),
                     const Text('Due Date'),
                     const SizedBox(height: 8),
@@ -132,15 +112,15 @@ class TaskCreationPage extends StatelessWidget {
                       },
                       readOnly: true,
                       icon: Icons.calendar_today_outlined,
-                      hint: state.dueDate == null
+                      hint: state.task?.dueDate == null
                           ? 'Enter Due Date'
                           : DateFormat('MMM d, y')
-                              .format(state.dueDate ?? DateTime.now()),
+                              .format(state.task?.dueDate ?? DateTime.now()),
                     ),
                     const SizedBox(height: 16),
-                    if (state.dueDate != null &&
-                        state.startTime != null &&
-                        state.endTime != null)
+                    if (state.task?.dueDate != null &&
+                        state.task?.startTime != null &&
+                        state.task?.endTime != null)
                       Flex(
                         direction: Axis.horizontal,
                         children: [
@@ -154,7 +134,7 @@ class TaskCreationPage extends StatelessWidget {
                                 _buildTimeSelector(
                                   label: 'Start Time',
                                   value: TimeOfDay.fromDateTime(
-                                      state.startTime ?? DateTime.now()),
+                                      state.task?.startTime ?? DateTime.now()),
                                   onSelect: (TimeOfDay time) {
                                     readTaskCubit.startTimeChanged(time);
                                   },
@@ -176,7 +156,7 @@ class TaskCreationPage extends StatelessWidget {
                                 _buildTimeSelector(
                                   label: 'End Time ',
                                   value: TimeOfDay.fromDateTime(
-                                      state.endTime ?? DateTime.now()),
+                                      state.task?.endTime ?? DateTime.now()),
                                   onSelect: (TimeOfDay time) {
                                     readTaskCubit.endTimeChanged(time);
                                   },
@@ -199,7 +179,7 @@ class TaskCreationPage extends StatelessWidget {
                               },
                               child: CategoryChip(
                                   category: priority,
-                                  color: state.priority == priority
+                                  color: state.task?.priority == priority
                                       ? Theme.of(context).colorScheme.primary
                                       : null)),
                       ],
@@ -208,6 +188,7 @@ class TaskCreationPage extends StatelessWidget {
                     const Text('Description'),
                     const SizedBox(height: 8),
                     TextInputField(
+                      initialValue: state.task?.description,
                       keyBoardType: TextInputType.multiline,
                       onChange: readTaskCubit.descriptionChanged,
                       validator: (value) {
@@ -219,16 +200,25 @@ class TaskCreationPage extends StatelessWidget {
                       hint: 'Enter Description',
                     ),
                     const SizedBox(height: 16),
-                    _buildReminderSettings(state.isDailyReminder, (value) {
+                    _buildReminderSettings(state.task?.isDailyReminder,
+                        (value) {
+                      readTaskCubit.reminderMinutes(value);
+                    }, (value) {
                       readTaskCubit.isDailyReminderChanged(value);
                     }),
                     AppSize.h16(),
                     ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         if (formKey.currentState?.validate() ?? false) {
                           context.read<TaskCreationCubit>().submit();
-                          context.read<TaskCubit>().fetchTasks();
-                          Navigator.pop(context);
+                          await context
+                              .read<TaskCubit>()
+                              .fetchTasks()
+                              .whenComplete(() {
+                            if (context.mounted) {
+                              Navigator.pop(context);
+                            }
+                          });
                         }
                       },
                       child: Text(
@@ -249,6 +239,7 @@ class TaskCreationPage extends StatelessWidget {
 
   Widget _buildReminderSettings(
     bool? isDailyReminder,
+    Function(int)? reminderMinutes,
     Function(bool)? onChanged,
   ) {
     return Column(
@@ -261,15 +252,15 @@ class TaskCreationPage extends StatelessWidget {
           const SizedBox(height: 16),
           DropdownButtonFormField<int>(
             hint: const Text('Remind me before'),
-
-            // value: ,
             items: const [
               DropdownMenuItem(value: 10, child: Text('10 minutes')),
               DropdownMenuItem(value: 30, child: Text('30 minutes')),
               DropdownMenuItem(value: 60, child: Text('1 hour')),
             ],
             onChanged: (value) {
-              if (value != null) {}
+              if (value != null) {
+                reminderMinutes?.call(value);
+              }
             },
           ),
         ],

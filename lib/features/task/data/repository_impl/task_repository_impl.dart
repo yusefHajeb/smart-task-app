@@ -31,9 +31,7 @@ class TaskRepositoryImpl implements TaskRepository {
 
   @override
   Future<Task> updateTask(Task task) async {
-    await database.update(
-        'tasks', task.copyWith(completed: !task.completed).toMap(),
-        where: 'id = ${task.id}');
+    await database.update('tasks', task.toMap(), where: 'id = ${task.id}');
 
     return Future.value(task);
   }
@@ -61,7 +59,14 @@ class TaskRepositoryImpl implements TaskRepository {
 
   @override
   Future<Task> changeTaskStatus(Task task) async {
-    database.update('tasks', task.copyWith(completed: !task.completed).toMap(),
+    database.update(
+        'tasks',
+        task
+            .copyWith(
+                completed: !task.completed,
+                completedAt:
+                    !task.completed ? DateTime.now() : task.completedAt)
+            .toMap(),
         where: 'id = ${task.id}');
     return Future.value(task);
   }

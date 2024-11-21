@@ -12,7 +12,7 @@ import 'package:smart_task/features/task/presentation/screens/category_page.dart
 import 'package:smart_task/features/task/presentation/screens/home_page.dart';
 import '../../features/task/data/models/task.dart';
 import '../../features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
-import '../../features/task/presentation/bloc/task_cubit/task_creation_state.dart';
+import '../../features/task/presentation/bloc/task_cubit/task_state.dart';
 import '../../features/task/presentation/screens/add_task_page.dart';
 
 class AppRoutes {
@@ -68,27 +68,20 @@ class AppRoutes {
           ),
         );
       case Routes.addTaskPage:
-        {
-          final Task? task = settings.arguments != null
-              ? settings.arguments as Task
-              : null; // استقبل المهمة
-
-          return SlideRoute(
-            fullscreenDialog: true,
-            builder: (context) => BlocProvider(
-              create: (context) {
-                return sl<TaskCreationCubit>()..initialize(task);
-              },
-              child: const TaskCreationPage(),
-            ),
-          );
-        }
+        final task = settings.arguments as Task?;
+        return SlideRoute(
+          fullscreenDialog: true,
+          builder: (context) => BlocProvider(
+            create: (context) => sl<TaskCreationCubit>()..initialize(task),
+            child: const TaskCreationPage(),
+          ),
+        );
       case Routes.categoryPage:
         return MaterialPageRoute(
           fullscreenDialog: true,
           builder: (context) => BlocProvider(
             create: (context) =>
-                sl<CategoryTaskBloc>()..add(CategoryTaskEvent.started()),
+                sl<CategoryTaskBloc>()..add(const CategoryTaskEvent.started()),
             child: const CategoryTaskPage(),
           ),
         );

@@ -3,24 +3,25 @@
 class Task {
   final int id;
   final int userId;
-  final String title;
-  final String description;
-  final String category;
-  final DateTime dueDate;
-  final String priority;
+  String? title;
+  String? description;
+  String? category;
+  DateTime dueDate;
+  String? priority;
   bool completed;
   DateTime? completedAt;
   DateTime? updatedAt;
   DateTime? createdAt;
-  final DateTime? startTime;
-  final DateTime? endTime;
+  DateTime? startTime;
+  DateTime? endTime;
   bool? isDailyReminder;
+  int? reminderMinutes;
 
   Task({
     required this.userId,
     required this.id,
-    required this.title,
-    required this.description,
+    this.title,
+    this.description,
     required this.category,
     required this.dueDate,
     required this.priority,
@@ -31,11 +32,12 @@ class Task {
     this.startTime,
     this.endTime,
     this.isDailyReminder,
+    this.reminderMinutes,
   });
 
   Map<String, dynamic> toMap() => {
         'id': id,
-        'user_id': userId,
+        'user_id': 1, // temporarily hardcoded
         'title': title,
         'description': description,
         'category': category,
@@ -43,14 +45,13 @@ class Task {
         'priority': priority,
         'completed': completed == true ? 1 : 0,
         'completed_at': completedAt?.toIso8601String(),
-        'created_at': updatedAt?.toIso8601String(),
-        'updated_at': createdAt?.toIso8601String(),
+        'created_at': createdAt?.toIso8601String(),
+        'updated_at': updatedAt?.toIso8601String(),
         'start_time': startTime?.toIso8601String(),
         'end_time': endTime?.toIso8601String(),
 
-        'is_daily_reminder': isDailyReminder == true
-            ? 1
-            : 0, // ignore: unnecessary_null_awareness
+        'is_daily_reminder': isDailyReminder == true ? 1 : 0,
+        'reminder_minutes': reminderMinutes ?? 0,
       };
 
   factory Task.fromMap(Map<String, dynamic> json) => Task(
@@ -65,11 +66,14 @@ class Task {
         completedAt: json['completed_at'] != null
             ? DateTime.parse(json['completed_at'])
             : null,
-        updatedAt: DateTime.parse(json['updated_at']),
+        updatedAt: json['updated_at'] != null
+            ? DateTime.parse(json['updated_at'])
+            : null,
         createdAt: DateTime.parse(json['created_at']),
         startTime: DateTime.now(),
         endTime: DateTime.now(),
-        isDailyReminder: false,
+        isDailyReminder: json['is_daily_reminder'] == 1 ? true : false,
+        reminderMinutes: json['reminder_minutes'],
       );
 
   Task copyWith({
@@ -87,6 +91,7 @@ class Task {
     DateTime? startTime,
     DateTime? endTime,
     bool? isDailyReminder,
+    int? reminderMinutes,
   }) {
     return Task(
       id: id ?? this.id,
@@ -103,6 +108,27 @@ class Task {
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       isDailyReminder: isDailyReminder ?? this.isDailyReminder,
+      reminderMinutes: reminderMinutes ?? this.reminderMinutes,
+    );
+  }
+
+  factory Task.toEmpty() {
+    return Task(
+      id: 0,
+      userId: 1,
+      title: null,
+      description: '',
+      category: '',
+      dueDate: DateTime.now(),
+      priority: null,
+      completed: false,
+      completedAt: null,
+      updatedAt: null,
+      createdAt: null,
+      startTime: null,
+      endTime: null,
+      isDailyReminder: false,
+      reminderMinutes: 0,
     );
   }
 }

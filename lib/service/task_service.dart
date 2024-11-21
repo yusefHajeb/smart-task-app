@@ -19,7 +19,7 @@ class TaskService {
       .length;
 
   static Set<String> get categories =>
-      tasks.map((task) => task.category).toSet();
+      tasks.map((task) => task.category!).toSet();
 
   static void addTask(Task task) {
     //please add task to database

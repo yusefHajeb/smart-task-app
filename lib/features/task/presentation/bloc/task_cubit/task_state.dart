@@ -1,7 +1,7 @@
 import '../../../data/models/task.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'task_creation_state.freezed.dart';
+part 'task_state.freezed.dart';
 
 @freezed
 class TaskState with _$TaskState {

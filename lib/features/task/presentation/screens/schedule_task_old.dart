@@ -203,14 +203,14 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            task.title,
+                            task.title ?? '',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Text(
-                            task.description,
+                            task.description!,
                             style: TextStyle(
                               color: Colors.grey[700],
                               fontSize: 12,

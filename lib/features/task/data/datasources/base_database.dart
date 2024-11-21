@@ -43,7 +43,34 @@ class SqfliteDatabase extends BaseDatabase {
     String path = join(databasesPath, 'smart_task.db');
     _database = await openDatabase(
       path,
-      version: 1,
+      version: 3,
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion == 2) {
+          await db.execute('CREATE TABLE IF NOT EXISTS new_tasks ('
+              'id INTEGER PRIMARY KEY AUTOINCREMENT,'
+              'user_id INTEGER NOT NULL,'
+              'title TEXT NOT NULL,'
+              'description TEXT NOT NULL,'
+              'category TEXT NOT NULL,'
+              'due_date INTEGER NOT NULL,'
+              'priority TEXT NOT NULL,'
+              'completed INTEGER NOT NULL,'
+              'completed_at INTEGER NULL,'
+              'created_at INTEGER NOT NULL,'
+              'updated_at INTEGER NULL,'
+              'start_time INTEGER NOT NULL,'
+              'end_time INTEGER NOT NULL,'
+              'reminder_minutes INTEGER NOT NULL,'
+              'is_daily_reminder INTEGER NOT NULL'
+              ')');
+          await db.execute(
+              'INSERT INTO new_tasks (user_id, title, description, category, due_date, priority, completed, completed_at, created_at, updated_at, start_time, end_time, reminder_minutes, is_daily_reminder) SELECT user_id, title, description, category, due_date, priority, completed, completed_at, created_at, updated_at, start_time, end_time, reminder_minutes, is_daily_reminder FROM tasks');
+          //Drop the old table
+          await db.execute('DROP TABLE tasks');
+          //Rename the new table to the old table name
+          await db.execute('ALTER TABLE new_tasks RENAME TO tasks');
+        }
+      },
       onCreate: (db, version) async {
         //create tables here
         await db.execute('CREATE TABLE IF NOT EXISTS users ('
@@ -72,11 +99,12 @@ class SqfliteDatabase extends BaseDatabase {
             'due_date INTEGER NOT NULL,'
             'priority TEXT NOT NULL,'
             'completed INTEGER NOT NULL,'
-            'completed_at INTEGER,'
+            'completed_at INTEGER NULL,'
             'created_at INTEGER NOT NULL,'
-            'updated_at INTEGER NOT NULL,'
+            'updated_at INTEGER NULL,'
             'start_time INTEGER NOT NULL,'
             'end_time INTEGER NOT NULL,'
+            'reminder_minutes INTEGER NOT NULL,'
             'is_daily_reminder INTEGER NOT NULL'
             ')');
         //daily stats

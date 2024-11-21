@@ -299,7 +299,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                   shrinkWrap: true,
                   children: [
                     Text(
-                      task.title,
+                      task.title ?? '',
                       style: const TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.bold,

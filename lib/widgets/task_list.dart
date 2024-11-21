@@ -7,7 +7,7 @@ import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit
 import 'package:smart_task/features/task/presentation/screens/add_task_page.dart';
 import 'package:smart_task/features/task/presentation/screens/schedule_task_page.dart';
 
-import '../features/task/presentation/bloc/task_cubit/task_creation_state.dart';
+import '../features/task/presentation/bloc/task_cubit/task_state.dart';
 
 class TaskList extends StatelessWidget {
   const TaskList({super.key});
@@ -19,6 +19,7 @@ class TaskList extends StatelessWidget {
           current is TaskLoading || current is TaskSuccess,
       builder: (context, state) {
         return state.maybeWhen(
+          initial: () => const Center(child: CircularProgressIndicator()),
           orElse: () => const Center(child: Text('Error')),
           error: (message) {
             return Center(child: Text(message));
@@ -108,7 +109,7 @@ class _CategoryFilter extends StatelessWidget {
           ...tasks.map((task) => Padding(
               padding: const EdgeInsets.only(left: 8),
               child: _FilterChip(
-                label: task.category,
+                label: task.category!,
                 selected: task.category == selectedCategory,
                 onSelected: (_) => context
                     .read<TaskCubit>()
@@ -156,7 +157,7 @@ class _TaskItem extends StatelessWidget {
             await context.read<TaskCubit>().updateTask(task),
       ),
       title: Text(
-        task.title,
+        task.title ?? '',
         style: TextStyle(
           decoration: task.completed ? TextDecoration.lineThrough : null,
           color: task.completed ? Colors.grey : null,
@@ -166,7 +167,7 @@ class _TaskItem extends StatelessWidget {
         children: [
           Icon(Icons.label_outline, size: 16, color: Colors.grey[600]),
           const SizedBox(width: 4),
-          Text(task.category),
+          Text(task.category!),
           const SizedBox(width: 16),
           Icon(Icons.calendar_today, size: 16, color: Colors.grey[600]),
           const SizedBox(width: 4),
@@ -211,7 +212,7 @@ class TaskItem extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      task.title,
+                      task.title ?? '',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -227,7 +228,7 @@ class TaskItem extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                task.description,
+                task.description!,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               const SizedBox(height: 16),
@@ -243,7 +244,7 @@ class TaskItem extends StatelessWidget {
                     value: task.completed,
                   ),
                   const SizedBox(width: 12),
-                  PriorityIconWidget(priority: task.priority),
+                  PriorityIconWidget(priority: task.priority!),
                   const SizedBox(width: 12),
                   Icon(Icons.calendar_today, size: 16, color: Colors.grey[600]),
                   const SizedBox(width: 4),
