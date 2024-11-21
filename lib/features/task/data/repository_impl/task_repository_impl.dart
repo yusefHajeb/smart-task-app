@@ -58,4 +58,11 @@ class TaskRepositoryImpl implements TaskRepository {
       return onValue.where((task) => task.dueDate == date).toList();
     });
   }
+
+  @override
+  Future<Task> changeTaskStatus(Task task) async {
+    database.update('tasks', task.copyWith(completed: !task.completed).toMap(),
+        where: 'id = ${task.id}');
+    return Future.value(task);
+  }
 }

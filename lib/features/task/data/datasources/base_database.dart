@@ -74,7 +74,7 @@ class SqfliteDatabase extends BaseDatabase {
             'completed INTEGER NOT NULL,'
             'completed_at INTEGER,'
             'created_at INTEGER NOT NULL,'
-            'updated_at INTEGER NOT NULL'
+            'updated_at INTEGER NOT NULL,'
             'start_time INTEGER NOT NULL,'
             'end_time INTEGER NOT NULL,'
             'is_daily_reminder INTEGER NOT NULL'
@@ -109,6 +109,13 @@ class SqfliteDatabase extends BaseDatabase {
           'password': 'password123',
           'phone': '1234567890',
           'address': '123 Main St',
+          'created_at': DateTime.now().millisecondsSinceEpoch,
+          'updated_at': DateTime.now().millisecondsSinceEpoch,
+        });
+        await db.insert('categories', <String, dynamic>{
+          'category_id': 1,
+          'user_id': 1,
+          'name': 'Personal',
           'created_at': DateTime.now().millisecondsSinceEpoch,
           'updated_at': DateTime.now().millisecondsSinceEpoch,
         });

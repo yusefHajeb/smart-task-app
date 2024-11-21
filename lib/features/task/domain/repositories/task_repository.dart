@@ -7,6 +7,7 @@ abstract class TaskRepository {
   Future<void> insertTask(Task task);
   Future<Task> updateTask(Task data);
   Future<List<Task>> getTasksByCategory(String category);
+  Future<Task> changeTaskStatus(Task task);
 }
 
 // Future<void> insertTask(Map<String, dynamic> data);

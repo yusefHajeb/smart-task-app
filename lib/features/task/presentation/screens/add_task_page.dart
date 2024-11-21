@@ -4,8 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:smart_task/common_widgets/responsive_widgets_scrollable.dart';
 import 'package:smart_task/common_widgets/text_input_field.dart';
 import 'package:smart_task/core/constant/size.dart';
+import 'package:smart_task/core/di/dependence_injection.dart';
+import 'package:smart_task/features/task/data/models/category.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_creation_cubit/task_creation_cubit.dart';
 
+import '../../data/datasources/base_database.dart';
 import '../bloc/task_cubit/task_cubit.dart';
 
 class TaskCreationPage extends StatelessWidget {
@@ -51,32 +54,47 @@ class TaskCreationPage extends StatelessWidget {
                     const SizedBox(height: 16),
                     const Text('Category'),
                     const SizedBox(height: 8),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          for (final category in [
-                            'Work',
-                            'Personal',
-                            'Shopping',
-                            'Health',
-                            'Study'
-                          ])
-                            GestureDetector(
-                              onTap: () {
-                                readTaskCubit.categoryChanged(category);
-                              },
-                              child: CategoryChip(
-                                color: state.categoryName == category
-                                    ? Theme.of(context).colorScheme.primary
-                                    : null,
-                                isSelected: state.categoryName == category,
-                                category: category.toString(),
+                    FutureBuilder(
+                        future: sl<SqfliteDatabase>()
+                            .getAllCategories()
+                            .then((value) {
+                          return value.map((categoryMap) =>
+                              CategoryModel.fromMap(categoryMap));
+                        }),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                children: [
+                                  for (final category in snapshot.data!)
+                                    TextButton(
+                                      onPressed: () {},
+                                      child: GestureDetector(
+                                        onTap: () {
+                                          readTaskCubit
+                                              .categoryChanged(category.name);
+                                        },
+                                        child: CategoryChip(
+                                          color: state.categoryName ==
+                                                  category.name
+                                              ? Theme.of(context)
+                                                  .colorScheme
+                                                  .primary
+                                              : null,
+                                          isSelected: state.categoryName ==
+                                              category.name,
+                                          category: category.name.toString(),
+                                        ),
+                                      ),
+                                    ),
+                                ],
                               ),
-                            ),
-                        ],
-                      ),
-                    ),
+                            );
+                          }
+                          return const Center(
+                              child: CircularProgressIndicator());
+                        }),
                     const SizedBox(height: 16),
                     const Text('Due Date'),
                     const SizedBox(height: 8),
@@ -135,7 +153,8 @@ class TaskCreationPage extends StatelessWidget {
                                 const SizedBox(height: 8),
                                 _buildTimeSelector(
                                   label: 'Start Time',
-                                  value: state.startTime,
+                                  value: TimeOfDay.fromDateTime(
+                                      state.startTime ?? DateTime.now()),
                                   onSelect: (TimeOfDay time) {
                                     readTaskCubit.startTimeChanged(time);
                                   },
@@ -156,7 +175,8 @@ class TaskCreationPage extends StatelessWidget {
                                 const SizedBox(height: 8),
                                 _buildTimeSelector(
                                   label: 'End Time ',
-                                  value: state.endTime,
+                                  value: TimeOfDay.fromDateTime(
+                                      state.endTime ?? DateTime.now()),
                                   onSelect: (TimeOfDay time) {
                                     readTaskCubit.endTimeChanged(time);
                                   },

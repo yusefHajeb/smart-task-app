@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_task/core/di/dependence_injection.dart';
 import 'package:smart_task/core/routes/app_routes.dart';
 import 'package:smart_task/core/routes/routes.dart';
+import 'package:smart_task/core/services/permission_service.dart';
 import 'package:smart_task/core/theme/app_theme_data.dart';
 
 import 'package:smart_task/features/task/data/datasources/base_database.dart';
@@ -15,12 +16,14 @@ import 'core/services/notifications.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await ScreenUtil.ensureScreenSize();
-  await NotificationService().initialize();
-  final db = SqfliteDatabase();
+  setupGetIt();
+  final db = sl<SqfliteDatabase>();
 
   await db.init();
   await GlobalThemData.initialize();
-  setupGetIt();
+  PermissionService.requestExactAlarmPermission();
+  final notificationService = sl<NotificationService>();
+  await notificationService.initialize();
   runApp(MultiBlocProvider(
     providers: [
       BlocProvider<AppThemeBloc>(

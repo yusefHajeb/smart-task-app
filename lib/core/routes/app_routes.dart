@@ -10,6 +10,7 @@ import 'package:smart_task/features/task/presentation/bloc/task_creation_cubit/t
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
 import 'package:smart_task/features/task/presentation/screens/category_page.dart';
 import 'package:smart_task/features/task/presentation/screens/home_page.dart';
+import '../../features/task/data/models/task.dart';
 import '../../features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import '../../features/task/presentation/bloc/task_cubit/task_creation_state.dart';
 import '../../features/task/presentation/screens/add_task_page.dart';
@@ -67,13 +68,21 @@ class AppRoutes {
           ),
         );
       case Routes.addTaskPage:
-        return SlideRoute(
-          fullscreenDialog: true,
-          builder: (context) => BlocProvider(
-            create: (context) => sl<TaskCreationCubit>(),
-            child: const TaskCreationPage(),
-          ),
-        );
+        {
+          final Task? task = settings.arguments != null
+              ? settings.arguments as Task
+              : null; // استقبل المهمة
+
+          return SlideRoute(
+            fullscreenDialog: true,
+            builder: (context) => BlocProvider(
+              create: (context) {
+                return sl<TaskCreationCubit>()..initialize(task);
+              },
+              child: const TaskCreationPage(),
+            ),
+          );
+        }
       case Routes.categoryPage:
         return MaterialPageRoute(
           fullscreenDialog: true,

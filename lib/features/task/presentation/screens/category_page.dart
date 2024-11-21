@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_task/core/constant/size.dart';
+import 'package:smart_task/features/task/data/models/category.dart';
 import 'package:smart_task/features/task/presentation/bloc/category_task_bloc/category_task_bloc.dart';
 import 'package:smart_task/widgets/task_list.dart';
 
@@ -92,7 +93,7 @@ class CategoryTaskPage extends StatelessWidget {
                                               final categoryName =
                                                   await showDialog<String>(
                                                 context: context,
-                                                builder: (context) {
+                                                builder: (_) {
                                                   return AlertDialog(
                                                     title: const Column(
                                                       children: [
@@ -181,17 +182,17 @@ class CategoryTaskPage extends StatelessWidget {
                             if (categoryName != null &&
                                 categoryName.isNotEmpty &&
                                 context.mounted) {
-                              // context.read<CategoryTaskBloc>().add(
-                              //       CategoryTaskEvent.addCategory(
-                              //         CategoryModel(
-                              //             name: categoryName,
-                              //             userId: 1,
-                              //             createdAt: DateTime.now(),
-                              //             updatedAt: DateTime.now(),
-                              //             categoryId: DateTime.now()
-                              //                 .millisecondsSinceEpoch),
-                              //       ),
-                              //     );
+                              context.read<CategoryTaskBloc>().add(
+                                    CategoryTaskEvent.addCategory(
+                                      CategoryModel(
+                                          name: categoryName,
+                                          userId: 1,
+                                          createdAt: DateTime.now(),
+                                          updatedAt: DateTime.now(),
+                                          categoryId: DateTime.now()
+                                              .millisecondsSinceEpoch),
+                                    ),
+                                  );
                             }
                           },
                           icon: const Icon(Icons.add),

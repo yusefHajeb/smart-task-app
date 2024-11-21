@@ -8,6 +8,7 @@ import 'package:smart_task/features/task/domain/usecases/category/add_category.d
 import 'package:smart_task/features/task/domain/usecases/category/delete_category.dart';
 import 'package:smart_task/features/task/domain/usecases/category/get_category.dart';
 import 'package:smart_task/features/task/domain/usecases/task/add_task.dart';
+import 'package:smart_task/features/task/domain/usecases/task/change_task_status.dart';
 import 'package:smart_task/features/task/domain/usecases/task/delete_task.dart';
 import 'package:smart_task/features/task/domain/usecases/task/get_task.dart';
 import 'package:smart_task/features/task/domain/usecases/task/update_task.dart';
@@ -18,6 +19,7 @@ import '../../features/task/domain/usecases/category/get_categories.dart';
 import '../../features/task/domain/usecases/task/get_today_task.dart';
 import '../../features/task/presentation/bloc/category_task_bloc/category_task_bloc.dart';
 import '../../features/task/presentation/bloc/task_creation_cubit/task_creation_cubit.dart';
+import '../services/notifications.dart';
 
 var sl = GetIt.instance;
 
@@ -25,6 +27,7 @@ Future<void> setupGetIt() async {
   sl.registerLazySingleton<SqfliteDatabase>(() => SqfliteDatabase());
   sl.registerLazySingleton<CategoryRepository>(
       () => CategoryRepositoryImpl(sl()));
+  sl.registerLazySingleton<NotificationService>(() => NotificationService());
 
   sl.registerLazySingleton<TaskRepository>(() => TaskRepositoryImpl(
         sl.call(),
@@ -38,6 +41,10 @@ Future<void> setupGetIt() async {
       () => DeleteTaskUseCase(sl.call()));
   sl.registerLazySingleton<UpdateTaskUseCase>(
       () => UpdateTaskUseCase(sl.call()));
+
+  sl.registerLazySingleton<ChangeTaskStatusUseCase>(
+    () => ChangeTaskStatusUseCase(sl()),
+  );
 
   //==categoryUseCase
   sl.registerLazySingleton<AddCategoryUseCase>(
@@ -56,7 +63,8 @@ Future<void> setupGetIt() async {
       updateTaskUseCase: sl(),
       fetchTask: sl(),
       delete: sl()));
-  sl.registerFactory<TaskCreationCubit>(() => TaskCreationCubit(sl()));
+  sl.registerFactory<TaskCreationCubit>(() => TaskCreationCubit(
+      insertTask: sl(), notificationService: sl(), update: sl()));
   sl.registerFactory<CategoryTaskBloc>(() => CategoryTaskBloc(
         insertCategory: sl(),
         getCategories: sl(),

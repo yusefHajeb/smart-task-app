@@ -24,33 +24,32 @@ class CategoryTaskBloc extends Bloc<CategoryTaskEvent, CategoryTaskState> {
     required this.getCategories,
     required this.deleteCategory,
     required this.getTasks,
-  }) : super(CategoryTaskState.initial()) {
+  }) : super(const CategoryTaskState.initial()) {
     on<_Started>(_started);
     on<_CategorySelected>(_categorySelected);
     on<InsertNewCategory>(_insertCategory);
+    on<_DeleteCategory>(_deleteCategory);
     // on<_EditCategory>(_editCategory);
     // on<InsertNewCategory>(_addCategory);
   }
   Future<void> _insertCategory(
       InsertNewCategory event, Emitter<CategoryTaskState> emit) async {
     if (state is Loaded) {
-      final categoryValues = state.selectedCategory;
+      final oldState = state as Loaded;
       emit(const CategoryTaskState.loading());
       try {
-        try {
-          final category = event.category;
-          final result = await insertCategory.call(category);
-          // final categories = await insertCategory(event.category);
-          final tasks = await getTasks.call(1);
-
-          emit(CategoryTaskState.loaded(
-            tasks: tasks,
-            categories: result,
-            categoryTasks:
-                tasks.where((task) => task.category == category.name).toList(),
-            selectedCategory: category,
-          ));
-        } catch (e) {}
+        final category = event.category;
+        final result = await insertCategory.call(category);
+        final tasks = await getTasks.call(1);
+        emit(oldState);
+        emit(CategoryTaskState.loaded(
+          tasks: tasks,
+          categories: result,
+          categoryTasks:
+              tasks.where((task) => task.category == category.name).toList(),
+          selectedCategory: category,
+        ));
+        // ignore: empty_catches
       } catch (e) {}
     }
   }
@@ -118,26 +117,38 @@ class CategoryTaskBloc extends Bloc<CategoryTaskEvent, CategoryTaskState> {
 
   Future<void> _getCategories(
       CategoryTaskEvent event, Emitter<CategoryTaskState> emit) async {
-    print('get categories');
     emit(const CategoryTaskState.loading());
     try {
       final categoryValues = await getCategories();
       final tasks = await getTasks.call(1);
-      print('get categories');
-      print(tasks);
-      emit(CategoryTaskState.loaded(
-        tasks: tasks,
-        categories: categoryValues,
-        categoryTasks: tasks
-            .where((task) => task.category == categoryValues[0].name)
-            .toList(),
-        selectedCategory: categoryValues[0],
-      ));
+      emit(
+        CategoryTaskState.loaded(
+          tasks: tasks,
+          categories: categoryValues,
+          categoryTasks: tasks
+              .where((task) => task.category == categoryValues[0].name)
+              .toList(),
+          selectedCategory: categoryValues[0],
+        ),
+      );
     } catch (e) {
-      print('error catch 66');
-      print(e.toString());
-      // Handle error if necessary
       emit(const CategoryTaskState.loading());
+    }
+  }
+
+  Future<void> _deleteCategory(
+      _DeleteCategory event, Emitter<CategoryTaskState> emit) async {
+    if (state is Loaded) {
+      emit(const CategoryTaskState.loading());
+      try {
+        final category = event.category;
+        await deleteCategory.call(category.categoryId);
+
+        await _getCategories(event, emit);
+      } catch (e) {
+        // Handle error if necessary
+        emit(const CategoryTaskState.loading());
+      }
     }
   }
 }

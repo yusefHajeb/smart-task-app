@@ -22,15 +22,12 @@ class CategoryRepositoryImpl extends CategoryRepository {
   }
 
   @override
-  Future<List<CategoryModel>> deleteCategory(int categoryId) {
-    database
-        .query('categories', where: 'categoryId = ?', whereArgs: [categoryId]);
-    categoryNotifier.value = categoryNotifier.value.where((category) {
-      return category.categoryId != categoryId;
-    }).toList();
-    database
-        .delete('categories', where: 'categoryId = ?', whereArgs: [categoryId]);
-    return Future.value();
+  Future<List<CategoryModel>> deleteCategory(int categoryId) async {
+    await database.delete('categories',
+        where: 'category_id = ?', whereArgs: [categoryId]);
+    final categories = await database.getAllCategories();
+    return Future.value(
+        categories.map((category) => CategoryModel.fromMap(category)).toList());
   }
 
   @override

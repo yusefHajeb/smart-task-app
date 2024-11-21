@@ -152,7 +152,8 @@ class _TaskItem extends StatelessWidget {
     return ListTile(
       leading: Checkbox(
         value: task.completed,
-        onChanged: (_) => context.read<TaskCubit>().updateTask(task),
+        onChanged: (_) async =>
+            await context.read<TaskCubit>().updateTask(task),
       ),
       title: Text(
         task.title,
@@ -190,8 +191,10 @@ class TaskItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        context.read<TaskCubit>().updateTask(task);
-        Navigator.pushNamed(context, TaskCreationPage.routeName);
+        Navigator.pushNamed(
+          context, TaskCreationPage.routeName,
+          arguments: task, // تمرير المهمة
+        );
       },
       child: Card(
         surfaceTintColor: (task.dueDate

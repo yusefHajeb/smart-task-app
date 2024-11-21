@@ -38,7 +38,6 @@ class TaskCubit extends Cubit<TaskState> {
     }
   }
 
-  //update task
   Future<void> updateTask(Task task) async {
     emit(const TaskState.loading());
     try {

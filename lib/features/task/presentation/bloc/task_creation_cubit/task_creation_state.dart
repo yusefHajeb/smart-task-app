@@ -7,9 +7,11 @@ class TaskCreationState {
   String? categoryName;
   String? priority;
   DateTime? dueDate;
-  TimeOfDay? startTime;
-  TimeOfDay? endTime;
+  DateTime? startTime;
+  DateTime? endTime;
   bool? isDailyReminder;
+  List<CategoryModel> categories;
+  bool? isUpdateState;
 
   TaskCreationState({
     this.taskName,
@@ -20,6 +22,8 @@ class TaskCreationState {
     this.startTime,
     this.endTime,
     this.isDailyReminder,
+    this.isUpdateState,
+    this.categories = const [],
   });
 
   TaskCreationState copyWith({
@@ -28,9 +32,11 @@ class TaskCreationState {
     String? categoryName,
     String? priority,
     DateTime? dueDate,
-    TimeOfDay? startTime,
-    TimeOfDay? endTime,
+    DateTime? startTime,
+    DateTime? endTime,
     bool? isDailyReminder,
+    List<CategoryModel>? categories,
+    bool? isUpdateState,
   }) {
     return TaskCreationState(
       taskName: taskName ?? this.taskName,
@@ -41,6 +47,8 @@ class TaskCreationState {
       startTime: startTime ?? this.startTime,
       endTime: endTime ?? this.endTime,
       isDailyReminder: isDailyReminder ?? this.isDailyReminder,
+      categories: categories ?? this.categories,
+      isUpdateState: isUpdateState ?? this.isUpdateState,
     );
   }
 }
