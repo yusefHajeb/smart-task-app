@@ -18,7 +18,6 @@ void main() async {
   await ScreenUtil.ensureScreenSize();
   setupGetIt();
   final db = sl<SqfliteDatabase>();
-
   await db.init();
   await GlobalThemData.initialize();
   PermissionService.requestExactAlarmPermission();
@@ -56,7 +55,7 @@ class TaskTrackerApp extends StatelessWidget {
             previous.themeMode != current.themeMode,
         builder: (context, state) {
           return MaterialApp(
-            initialRoute: Routes.homePage,
+            initialRoute: Routes.onboardingPage,
             title: 'TaskMaster',
             onGenerateRoute: appRoutes.generateRoute,
             debugShowCheckedModeBanner: false,

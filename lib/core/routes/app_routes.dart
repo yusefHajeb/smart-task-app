@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_task/core/di/dependence_injection.dart';
 import 'package:smart_task/core/routes/animation_navigation.dart';
 import 'package:smart_task/core/routes/routes.dart';
@@ -14,59 +15,14 @@ import '../../features/task/data/models/task.dart';
 import '../../features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import '../../features/task/presentation/bloc/task_cubit/task_state.dart';
 import '../../features/task/presentation/screens/add_task_page.dart';
+import '../../features/task/presentation/screens/on_boarding.dart/on_barding_bloc.dart';
+import '../../features/task/presentation/screens/on_boarding.dart/onboarding_screen.dart';
 
 class AppRoutes {
   Route generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case Routes.homePage:
-        return SlideRoute(
-          builder: (_) => MultiBlocProvider(
-            providers: [
-              BlocProvider<BottomNavigationBloc>(
-                create: (context) => sl<BottomNavigationBloc>(),
-              ),
-              BlocProvider<CategoryTaskBloc>(
-                create: (context) => sl<CategoryTaskBloc>()
-                  ..add(const CategoryTaskEvent.started()),
-              ),
-            ],
-            child: MultiBlocListener(
-              listeners: [
-                BlocListener<TaskCubit, TaskState>(
-                  listener: (context, state) {
-                    context.read<TaskCubit>().fetchTasks();
-                  },
-                  listenWhen: (previous, current) =>
-                      previous is TaskSuccess && current is TaskSuccess,
-                ),
-                BlocListener<AppThemeBloc, AppThemeState>(
-                  listener: (context, state) {
-                    if (state.themeMode == ThemeMode.dark) {
-                      SystemChrome.setSystemUIOverlayStyle(
-                        const SystemUiOverlayStyle(
-                          statusBarColor: Colors.transparent,
-                          statusBarIconBrightness: Brightness.light,
-                          statusBarBrightness: Brightness.dark,
-                        ),
-                      );
-                    } else {
-                      SystemChrome.setSystemUIOverlayStyle(
-                        const SystemUiOverlayStyle(
-                          statusBarColor: Colors.transparent,
-                          statusBarIconBrightness: Brightness.dark,
-                          statusBarBrightness: Brightness.light,
-                        ),
-                      );
-                    }
-                  },
-                  listenWhen: (previous, current) =>
-                      previous.themeMode != current.themeMode,
-                ),
-              ],
-              child: HomePage(), // صفحة الرئيسية
-            ),
-          ),
-        );
+        return homePageSlidRoute();
       case Routes.addTaskPage:
         final task = settings.arguments as Task?;
         return SlideRoute(
@@ -85,15 +41,16 @@ class AppRoutes {
             child: const CategoryTaskPage(),
           ),
         );
-      // case Routes.schedulePage:
-      //   return SlideRoute(
-      //     fullscreenDialog: true,
-      //     builder: (context) => ScheduleScreen(
-      //       tasksByDate: {
-      //         DateTime.now():
-      //       },
-      //     ),
-      //   );
+      case Routes.onboardingPage:
+        return sl<SharedPreferences>().getBool('hasCompletedOnboarding') ==
+                false
+            ? MaterialPageRoute(
+                fullscreenDialog: true,
+                builder: (context) => BlocProvider(
+                      create: (context) => sl<OnboardingBloc>(),
+                      child: const OnboardingScreen(),
+                    ))
+            : homePageSlidRoute();
 
       default:
         return MaterialPageRoute(
@@ -103,5 +60,56 @@ class AppRoutes {
           ),
         );
     }
+  }
+
+  SlideRoute homePageSlidRoute() {
+    return SlideRoute(
+      builder: (_) => MultiBlocProvider(
+        providers: [
+          BlocProvider<BottomNavigationBloc>(
+            create: (context) => sl<BottomNavigationBloc>(),
+          ),
+          BlocProvider<CategoryTaskBloc>(
+            create: (context) =>
+                sl<CategoryTaskBloc>()..add(const CategoryTaskEvent.started()),
+          ),
+        ],
+        child: MultiBlocListener(
+          listeners: [
+            BlocListener<TaskCubit, TaskState>(
+              listener: (context, state) {
+                context.read<TaskCubit>().fetchTasks();
+              },
+              listenWhen: (previous, current) =>
+                  previous is TaskSuccess && current is TaskSuccess,
+            ),
+            BlocListener<AppThemeBloc, AppThemeState>(
+              listener: (context, state) {
+                if (state.themeMode == ThemeMode.dark) {
+                  SystemChrome.setSystemUIOverlayStyle(
+                    const SystemUiOverlayStyle(
+                      statusBarColor: Colors.transparent,
+                      statusBarIconBrightness: Brightness.light,
+                      statusBarBrightness: Brightness.dark,
+                    ),
+                  );
+                } else {
+                  SystemChrome.setSystemUIOverlayStyle(
+                    const SystemUiOverlayStyle(
+                      statusBarColor: Colors.transparent,
+                      statusBarIconBrightness: Brightness.dark,
+                      statusBarBrightness: Brightness.light,
+                    ),
+                  );
+                }
+              },
+              listenWhen: (previous, current) =>
+                  previous.themeMode != current.themeMode,
+            ),
+          ],
+          child: HomePage(), // صفحة الرئيسية
+        ),
+      ),
+    );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_task/features/task/data/datasources/base_database.dart';
 import 'package:smart_task/features/task/data/repository_impl/category_repository_impl.dart';
 import 'package:smart_task/features/task/data/repository_impl/task_repository_impl.dart';
@@ -19,12 +20,16 @@ import '../../features/task/domain/usecases/category/get_categories.dart';
 import '../../features/task/domain/usecases/task/get_today_task.dart';
 import '../../features/task/presentation/bloc/category_task_bloc/category_task_bloc.dart';
 import '../../features/task/presentation/bloc/task_creation_cubit/task_creation_cubit.dart';
+import '../../features/task/presentation/screens/on_boarding.dart/on_barding_bloc.dart';
 import '../services/notifications.dart';
 
 var sl = GetIt.instance;
 
 Future<void> setupGetIt() async {
   sl.registerLazySingleton<SqfliteDatabase>(() => SqfliteDatabase());
+  final sharedPreferences = await SharedPreferences.getInstance();
+  sl.registerLazySingleton<SharedPreferences>(() => sharedPreferences);
+
   sl.registerLazySingleton<CategoryRepository>(
       () => CategoryRepositoryImpl(sl()));
   sl.registerLazySingleton<NotificationService>(() => NotificationService());
@@ -72,4 +77,5 @@ Future<void> setupGetIt() async {
         deleteCategory: sl(),
         getTasks: sl(),
       ));
+  sl.registerFactory<OnboardingBloc>(() => OnboardingBloc());
 }

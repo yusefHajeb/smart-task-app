@@ -18,7 +18,7 @@ class HomePage extends StatelessWidget {
     const HomePageBody(),
     const Text('search'),
     const CategoryTaskPage(),
-    const Text('Matrix'),
+    const Text(''),
   ];
   static const String routeName = '/home-page';
   @override
