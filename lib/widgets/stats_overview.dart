@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_task/core/services/localizations_service.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_state.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
 
@@ -19,7 +20,7 @@ class StatsOverview extends StatelessWidget {
           children: [
             Expanded(
               child: _StatCard(
-                title: 'Total Tasks',
+                title: 'Total Tasks'.tr(context),
                 value: state.tasks
                     .where((task) =>
                         !task.completed &&
@@ -33,7 +34,7 @@ class StatsOverview extends StatelessWidget {
             const SizedBox(width: 16),
             Expanded(
               child: _StatCard(
-                title: 'Completed',
+                title: 'Completed'.tr(context),
                 value: state.tasks
                     .where((context) => context.completed)
                     .length
@@ -45,7 +46,7 @@ class StatsOverview extends StatelessWidget {
             const SizedBox(width: 16),
             Expanded(
               child: _StatCard(
-                title: 'Overdue',
+                title: 'Overdue'.tr(context),
                 value: state.tasks
                     .where((task) =>
                         !task.completed &&

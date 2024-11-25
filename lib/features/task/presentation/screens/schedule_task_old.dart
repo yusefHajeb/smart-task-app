@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_task/core/services/localizations_service.dart';
 
 import '../../data/models/task.dart';
 
@@ -251,10 +252,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     if (_isSameDay(date, now)) {
-      return 'Today';
+      return 'Today'.tr(context);
     }
     if (_isSameDay(date, now.add(const Duration(days: 1)))) {
-      return 'Tomorrow';
+      return 'Tomorrow'.tr(context);
     }
     return DateFormat('MMMM d, yyyy').format(date);
   }

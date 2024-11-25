@@ -6,3 +6,5 @@ class AppThemeChanged extends AppThemeEvent {
   final ThemeMode themeMode;
   AppThemeChanged({required this.themeMode});
 }
+
+class GetSaveTheme extends AppThemeEvent {}

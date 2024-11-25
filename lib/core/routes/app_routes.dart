@@ -42,15 +42,15 @@ class AppRoutes {
           ),
         );
       case Routes.onboardingPage:
-        return sl<SharedPreferences>().getBool('hasCompletedOnboarding') ==
+        return sl<SharedPreferences>().getBool('hasCompletedOnboarding') ??
                 false
-            ? MaterialPageRoute(
+            ? homePageSlidRoute()
+            : MaterialPageRoute(
                 fullscreenDialog: true,
                 builder: (context) => BlocProvider(
                       create: (context) => sl<OnboardingBloc>(),
                       child: const OnboardingScreen(),
-                    ))
-            : homePageSlidRoute();
+                    ));
 
       default:
         return MaterialPageRoute(

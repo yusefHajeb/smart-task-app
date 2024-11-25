@@ -15,6 +15,22 @@ class CategoryTaskState with _$CategoryTaskState {
   }) = Error;
 }
 
+extension LoadedCopyWith on Loaded {
+  Loaded copyWith({
+    List<Task>? tasks,
+    List<CategoryModel>? categories,
+    List<Task>? categoryTasks,
+    CategoryModel? selectedCategory,
+  }) {
+    return Loaded(
+      tasks: tasks ?? this.tasks,
+      categories: categories ?? this.categories,
+      categoryTasks: categoryTasks ?? this.categoryTasks,
+      selectedCategory: selectedCategory ?? this.selectedCategory,
+    );
+  }
+}
+
 extension CategoryTaskStateX on CategoryTaskState {
   bool get isLoading => this is Loading;
 

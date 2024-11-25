@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_task/core/constant/size.dart';
+import 'package:smart_task/core/services/localizations_service.dart';
 
 import 'package:smart_task/features/task/presentation/bloc/app_theme/app_theme_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:smart_task/features/task/presentation/screens/category_page.dart
 import 'package:smart_task/widgets/activity_grid.dart';
 import 'package:smart_task/widgets/stats_overview.dart';
 import 'package:smart_task/widgets/task_list.dart';
+import '../bloc/localizations_cubit/localizations_cubit.dart';
 import '../widgets/bottom_navigation_bar.dart';
 
 // ignore: must_be_immutable
@@ -29,7 +31,7 @@ class HomePage extends StatelessWidget {
             children: [
               Icon(Icons.check_box_outlined, size: 32),
               SizedBox(width: 12),
-              Text('TaskMaster'),
+              Text('TaskSmart'),
             ],
           ),
           leading: IconButton(
@@ -66,25 +68,46 @@ class HomePageBody extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            BlocBuilder<AppThemeBloc, AppThemeState>(
-              builder: (context, state) {
-                return IconButton(
-                  onPressed: () {
-                    context.read<AppThemeBloc>().add(AppThemeChanged(
-                          themeMode: state.themeMode == ThemeMode.dark
-                              ? ThemeMode.light
-                              : ThemeMode.dark,
-                        ));
+            Row(
+              children: [
+                BlocBuilder<AppThemeBloc, AppThemeState>(
+                  builder: (context, state) {
+                    return IconButton(
+                      onPressed: () {
+                        context.read<AppThemeBloc>().add(AppThemeChanged(
+                              themeMode: state.themeMode == ThemeMode.dark
+                                  ? ThemeMode.light
+                                  : ThemeMode.dark,
+                            ));
+                      },
+                      icon: Icon(
+                        state.themeMode == ThemeMode.dark
+                            ? Icons.light_mode_outlined
+                            : Icons.dark_mode_outlined,
+                      ),
+                    );
                   },
-                  icon: Icon(
-                    state.themeMode == ThemeMode.dark
-                        ? Icons.light_mode_outlined
-                        : Icons.dark_mode_outlined,
-                  ),
-                );
-              },
+                ),
+                DropdownButton<String>(
+                  value: Localizations.localeOf(context).languageCode,
+                  icon: const Icon(Icons.language),
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      context
+                          .read<LocalizationsCubit>()
+                          .changeLanguage(newValue);
+                    }
+                  },
+                  items: <String>['en', 'ar']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value.toUpperCase()),
+                    );
+                  }).toList(),
+                ),
+              ],
             ),
-            const _Header(),
             AppSize.h16(),
             const ActivityGrid(),
             AppSize.h24(),
@@ -113,8 +136,8 @@ class _Header extends StatelessWidget {
               ),
         ),
         const SizedBox(height: 4),
-        const Text(
-          'Track and manage your daily tasks efficiently',
+        Text(
+          'Track and manage your daily tasks efficiently'.tr(context),
         ),
       ],
     );

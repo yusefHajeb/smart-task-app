@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_task/core/services/localizations_service.dart';
 
 import '../../data/models/task.dart';
 
@@ -116,13 +117,13 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     }
 
     final List<String> weekDaysEn = [
-      'Mon',
-      'Tue',
-      'Wed',
-      'Thu',
-      'Fri',
-      'Sat',
-      'Sun',
+      'Mon'.tr(context),
+      'Tue'.tr(context),
+      'Wed'.tr(context),
+      'Thu'.tr(context),
+      'Fri'.tr(context),
+      'Sat'.tr(context),
+      'Sun'.tr(context),
     ];
 
     String getDay(int dayIndex) {
@@ -155,11 +156,11 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             label: Container(
               padding: const EdgeInsets.all(5.0),
               decoration: BoxDecoration(
-                color: DateTime.now().day == i
+                color: DateTime.now().day == i + 1
                     ? Theme.of(context).colorScheme.primary
                     : Colors.transparent,
                 border: Border.all(
-                  color: DateTime.now().day == i
+                  color: DateTime.now().day == i + 1
                       ? Theme.of(context).colorScheme.primaryFixed
                       : Colors.transparent,
                   width: 1,
@@ -323,10 +324,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     if (_isSameDay(date, now)) {
-      return 'Today';
+      return 'Today'.tr(context);
     }
     if (_isSameDay(date, now.add(const Duration(days: 1)))) {
-      return 'Tomorrow';
+      return 'Tomorrow'.tr(context);
     }
     return DateFormat('MMMM d, yyyy').format(date);
   }

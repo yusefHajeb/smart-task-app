@@ -23,38 +23,67 @@ class TaskCubit extends Cubit<TaskState> {
   }) : super(const TaskState.initial());
 
   Future<void> fetchTasks({String? selectCategory}) async {
-    emit(const TaskState.loading());
-    try {
-      await Future.delayed(const Duration(milliseconds: 10))
-          .whenComplete(() async {
+    if (state is TaskSuccess) {
+      try {
         final tasks = await fetchTask(1);
-        emit(TaskState.success(tasks, selectCategory));
-      });
-    } catch (e) {
-      emit(TaskState.error(e.toString()));
+        emit((state as TaskSuccess).copyWith(tasks: tasks));
+      } catch (e) {
+        emit(TaskState.error(e.toString()));
+      }
+    } else {
+      emit(const TaskState.loading());
+      try {
+        await Future.delayed(const Duration(milliseconds: 10))
+            .whenComplete(() async {
+          final tasks = await fetchTask(1);
+          emit(TaskState.success(tasks, selectCategory));
+        });
+      } catch (e) {
+        emit(TaskState.error(e.toString()));
+      }
     }
   }
 
   Future<void> updateTask(Task task) async {
-    emit(const TaskState.loading());
-    try {
+    if (state is TaskSuccess) {
       await changeTaskStatus(task);
-      await Future.delayed(const Duration(milliseconds: 10))
-          .whenComplete(() async {
-        await fetchTasks();
-      });
-    } catch (e) {
-      emit(TaskState.error(e.toString()));
+      try {
+        final tasks = await fetchTask(1);
+        emit((state as TaskSuccess).copyWith(tasks: tasks));
+      } catch (e) {
+        emit(TaskState.error(e.toString()));
+      }
+    }
+  }
+
+  Future<void> changeTaskStatuss(Task task) async {
+    if (state is TaskSuccess) {
+      await changeTaskStatus(task);
+      try {
+        final tasks = await fetchTask(1);
+        emit((state as TaskSuccess).copyWith(tasks: tasks));
+      } catch (e) {
+        emit(TaskState.error(e.toString()));
+      }
     }
   }
 
   Future<void> deleteTask(int taskId) async {
-    emit(const TaskState.loading());
-    try {
-      await delete(taskId);
-      await fetchTasks();
-    } catch (e) {
-      emit(TaskState.error(e.toString()));
+    if (state is TaskSuccess) {
+      try {
+        await delete(taskId);
+        final tasks = await fetchTask(1);
+        emit((state as TaskSuccess).copyWith(tasks: tasks));
+      } catch (e) {
+        emit(TaskState.error(e.toString()));
+      }
+    } else {
+      try {
+        await delete(taskId);
+        await fetchTasks();
+      } catch (e) {
+        emit(TaskState.error(e.toString()));
+      }
     }
   }
 

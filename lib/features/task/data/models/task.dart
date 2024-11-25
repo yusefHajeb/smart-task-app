@@ -70,8 +70,8 @@ class Task {
             ? DateTime.parse(json['updated_at'])
             : null,
         createdAt: DateTime.parse(json['created_at']),
-        startTime: DateTime.now(),
-        endTime: DateTime.now(),
+        startTime: DateTime.parse(json['start_time']),
+        endTime: DateTime.parse(json['end_time']),
         isDailyReminder: json['is_daily_reminder'] == 1 ? true : false,
         reminderMinutes: json['reminder_minutes'],
       );

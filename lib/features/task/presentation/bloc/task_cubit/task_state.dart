@@ -15,3 +15,11 @@ class TaskState with _$TaskState {
   const factory TaskState.error(String message) = TaskError;
   const TaskState._(); // Private constructor for additional methods
 }
+
+extension TaskSuccessCopyWith on TaskSuccess {
+  TaskSuccess copyWith({
+    List<Task>? tasks,
+  }) {
+    return TaskSuccess(tasks ?? this.tasks, null);
+  }
+}

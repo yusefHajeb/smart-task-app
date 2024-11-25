@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_task/core/services/localizations_service.dart';
 import 'package:smart_task/widgets/activity_grid.dart';
 import 'package:smart_task/widgets/stats_overview.dart';
 import 'package:smart_task/widgets/task_list.dart';
@@ -55,15 +56,15 @@ class _Header extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Task Dashboard',
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
+        // Text(
+        //   'Task Dashboard',
+        //   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+        //         fontWeight: FontWeight.bold,
+        //       ),
+        // ),
         const SizedBox(height: 4),
         Text(
-          'Track and manage your daily tasks efficiently',
+          'Track and manage your daily tasks efficiently'.tr(context),
           style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                 color: Colors.grey[600],
               ),

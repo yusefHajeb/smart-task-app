@@ -106,6 +106,20 @@ class GlobalThemData {
             borderRadius: BorderRadius.circular(30.0),
           ),
         ),
+        snackBarTheme: SnackBarThemeData(
+            showCloseIcon: true,
+            backgroundColor: colorScheme.surface,
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+            elevation: 3,
+            dismissDirection: DismissDirection.horizontal,
+            insetPadding:
+                const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            actionTextColor: colorScheme.onPrimary,
+            contentTextStyle:
+                AppTextStyles.bodyText.copyWith(color: colorScheme.primary)),
         floatingActionButtonTheme: FloatingActionButtonThemeData(
           backgroundColor: colorScheme.secondary,
           foregroundColor: colorScheme.onSecondary,

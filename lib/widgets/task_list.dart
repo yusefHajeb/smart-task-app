@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_task/core/constant/proiority_icons.dart';
+import 'package:smart_task/core/services/localizations_service.dart';
 import 'package:smart_task/features/task/data/models/task.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
 import 'package:smart_task/features/task/presentation/screens/add_task_page.dart';
@@ -14,9 +15,8 @@ class TaskList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TaskCubit, TaskState>(
-      buildWhen: (previous, current) =>
-          current is TaskLoading || current is TaskSuccess,
+    return BlocConsumer<TaskCubit, TaskState>(
+      listener: (context, state) {},
       builder: (context, state) {
         return state.maybeWhen(
           initial: () => const Center(child: CircularProgressIndicator()),
@@ -38,7 +38,7 @@ class TaskList extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(16),
                       child: Text(
-                        'Tasks',
+                        'Tasks'.tr(context),
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                     ),
@@ -54,7 +54,7 @@ class TaskList extends StatelessWidget {
                         );
                       },
                       child: Text(
-                        'see all..',
+                        'see all..'.tr(context),
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                               color: Colors.blue,
                             ),
@@ -195,7 +195,11 @@ class TaskItem extends StatelessWidget {
         Navigator.pushNamed(
           context, TaskCreationPage.routeName,
           arguments: task, // تمرير المهمة
-        );
+        ).then((value) {
+          if (context.mounted) {
+            context.read<TaskCubit>().fetchTasks();
+          }
+        });
       },
       child: Card(
         surfaceTintColor: (task.dueDate
@@ -303,7 +307,7 @@ class _AddNewCategory extends StatelessWidget {
         color: Theme.of(context).colorScheme.primary,
         iconSize: 30.0,
         splashRadius: 25.0,
-        tooltip: 'Add New Category',
+        tooltip: 'Add New Category'.tr(context),
       ),
     );
   }

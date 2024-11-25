@@ -104,8 +104,8 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                   },
                   icon: Icon(
                     _selectedIndex == 3
-                        ? Icons.category
-                        : Icons.category_outlined,
+                        ? Icons.person
+                        : Icons.person_2_outlined,
                     color: _selectedIndex == 3 ? Colors.pink : Colors.grey,
                     size: 30,
                   ),
