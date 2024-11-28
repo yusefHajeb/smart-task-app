@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_task/core/constant/size.dart';
-import 'package:smart_task/core/services/localizations_service.dart';
-
 import 'package:smart_task/features/task/presentation/bloc/app_theme/app_theme_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import 'package:smart_task/common_widgets/responsive_widgets_scrollable.dart';
@@ -117,29 +115,6 @@ class HomePageBody extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _Header extends StatelessWidget {
-  const _Header();
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Task Dashboard',
-          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Track and manage your daily tasks efficiently'.tr(context),
-        ),
-      ],
     );
   }
 }

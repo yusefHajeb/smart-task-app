@@ -29,6 +29,15 @@ class TaskList extends StatelessWidget {
                 height: 200, child: Center(child: CircularProgressIndicator()));
           },
           success: (tasks, selectedCategory) {
+            final sortedTasks = List<Task>.from(tasks)
+              ..sort((a, b) {
+                if (a.completed != b.completed) {
+                  return a.completed ? 1 : -1;
+                }
+                return TaskPriority.fromName(b.priority!)
+                    .index
+                    .compareTo(TaskPriority.fromName(a.priority!).index);
+              });
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -48,7 +57,7 @@ class TaskList extends StatelessWidget {
                           context,
                           MaterialPageRoute(
                             builder: (context) => ScheduleScreen(
-                              tasksByDate: tasks,
+                              tasksByDate: sortedTasks,
                             ),
                           ),
                         );
@@ -64,7 +73,7 @@ class TaskList extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Column(
-                  children: tasks
+                  children: sortedTasks
                       .map((task) =>
                           DateFormat('MMM d, y').format(task.dueDate) ==
                                       DateFormat('MMM d, y')
@@ -279,9 +288,9 @@ class PriorityIconWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(top: 4),
       child: Icon(
-        PriorityType.fromName(priority).icon,
+        TaskPriority.fromName(priority).icon,
         size: 32,
-        color: PriorityType.fromName(priority).color,
+        color: TaskPriority.fromName(priority).color,
       ),
     );
   }

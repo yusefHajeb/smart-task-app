@@ -1,32 +1,32 @@
 import 'package:flutter/material.dart';
 
-enum PriorityType {
+enum TaskPriority {
   low,
   medium,
   high;
 
-  static PriorityType fromName(String name) {
+  static TaskPriority fromName(String name) {
     switch (name) {
       case 'Low':
-        return PriorityType.low;
+        return TaskPriority.low;
       case 'Medium':
-        return PriorityType.medium;
+        return TaskPriority.medium;
       case 'High':
-        return PriorityType.high;
+        return TaskPriority.high;
       default:
-        return PriorityType.high;
+        return TaskPriority.high;
     }
   }
 }
 
-extension PriorityIcons on PriorityType {
+extension PriorityIcons on TaskPriority {
   IconData get icon {
     switch (this) {
-      case PriorityType.low:
+      case TaskPriority.low:
         return Icons.flag_rounded;
-      case PriorityType.medium:
+      case TaskPriority.medium:
         return Icons.flag_outlined;
-      case PriorityType.high:
+      case TaskPriority.high:
         return Icons.flag_outlined;
       default:
         return Icons.error;
@@ -35,14 +35,40 @@ extension PriorityIcons on PriorityType {
 
   Color get color {
     switch (this) {
-      case PriorityType.low:
+      case TaskPriority.low:
         return Colors.green;
-      case PriorityType.medium:
+      case TaskPriority.medium:
         return Colors.orange;
-      case PriorityType.high:
+      case TaskPriority.high:
         return Colors.red;
       default:
         return Colors.grey;
+    }
+  }
+
+  int get index {
+    switch (this) {
+      case TaskPriority.low:
+        return 0;
+      case TaskPriority.medium:
+        return 1;
+      case TaskPriority.high:
+        return 2;
+      default:
+        return 2;
+    }
+  }
+
+  String get txt {
+    switch (this) {
+      case TaskPriority.low:
+        return 'Low';
+      case TaskPriority.medium:
+        return 'Medium';
+      case TaskPriority.high:
+        return 'High';
+      default:
+        return 'High';
     }
   }
 }

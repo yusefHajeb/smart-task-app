@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_task/common_widgets/responsive_widgets_scrollable.dart';
 import 'package:smart_task/common_widgets/text_input_field.dart';
+import 'package:smart_task/core/constant/proiority_icons.dart';
 import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/core/services/localizations_service.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_creation_cubit/task_creation_cubit.dart';
@@ -172,6 +173,10 @@ class TaskCreationPage extends StatelessWidget {
                     const SizedBox(height: 16),
                     Text('Priority'.tr(context)),
                     const SizedBox(height: 8),
+                    _buildPrioritySelector(
+                      context,
+                      TaskPriority.fromName(state.task?.priority ?? 'Medium'),
+                    ),
                     Row(
                       children: [
                         for (final priority in [
@@ -236,6 +241,57 @@ class TaskCreationPage extends StatelessWidget {
             },
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildPrioritySelector(BuildContext context, TaskPriority priority) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Priority'.tr(context),
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 16),
+          SegmentedButton<TaskPriority>(
+            style: SegmentedButton.styleFrom(
+              foregroundColor: Colors.black,
+              selectedForegroundColor: Colors.white,
+              backgroundColor:
+                  Theme.of(context).colorScheme.primary.withOpacity(0.2),
+              selectedBackgroundColor: Theme.of(context).colorScheme.primary,
+            ),
+            segments: [
+              ButtonSegment(
+                value: TaskPriority.high,
+                label: Text('High'.tr(context)),
+                icon: const Icon(Icons.priority_high),
+              ),
+              ButtonSegment(
+                value: TaskPriority.medium,
+                label: Text('Medium'.tr(context)),
+                icon: const Icon(Icons.remove),
+              ),
+              ButtonSegment(
+                value: TaskPriority.low,
+                label: Text('Low'.tr(context)),
+                icon: const Icon(Icons.arrow_downward),
+              ),
+            ],
+            selected: {priority},
+            onSelectionChanged: (Set<TaskPriority> newSelection) {
+              context
+                  .read<TaskCreationCubit>()
+                  .priorityChanged(newSelection.first.txt);
+            },
+          ),
+        ],
       ),
     );
   }
