@@ -62,7 +62,11 @@ class TaskTrackerApp extends StatelessWidget {
             builder: (context, state) {
               return MaterialApp(
                 locale: localState.locale,
-                supportedLocales: const [Locale('en'), Locale('ar')],
+                supportedLocales: const [
+                  Locale('en'),
+                  Locale('ar'),
+                  Locale('ru')
+                ],
                 localizationsDelegates: const [
                   AppLocalizations.delegate,
                   GlobalMaterialLocalizations.delegate,

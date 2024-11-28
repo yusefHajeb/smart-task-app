@@ -89,20 +89,27 @@ class HomePageBody extends StatelessWidget {
                 DropdownButton<String>(
                   value: Localizations.localeOf(context).languageCode,
                   icon: const Icon(Icons.language),
-                  onChanged: (String? newValue) {
+                  onChanged: (String? newValue) async {
                     if (newValue != null) {
                       context
                           .read<LocalizationsCubit>()
                           .changeLanguage(newValue);
                     }
                   },
-                  items: <String>['en', 'ar']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value.toUpperCase()),
-                    );
-                  }).toList(),
+                  items: const [
+                    DropdownMenuItem<String>(
+                      value: 'en',
+                      child: Text('ENGLISH'),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'ar',
+                      child: Text('العربية'),
+                    ),
+                    DropdownMenuItem<String>(
+                      value: 'ru',
+                      child: Text('Russia'),
+                    ),
+                  ],
                 ),
               ],
             ),
