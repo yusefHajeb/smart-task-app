@@ -40,7 +40,7 @@ class ActivityGrid extends StatelessWidget {
                         ),
                         const SizedBox(height: 16),
                         SizedBox(
-                          height: 120.h,
+                          height: 160.h,
                           child: GridView.builder(
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(

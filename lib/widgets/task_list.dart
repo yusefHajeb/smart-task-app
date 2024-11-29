@@ -63,7 +63,7 @@ class TaskList extends StatelessWidget {
                         );
                       },
                       child: Text(
-                        'see all..'.tr(context),
+                        'See all..'.tr(context),
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                               color: Colors.blue,
                             ),
@@ -227,12 +227,14 @@ class TaskItem extends StatelessWidget {
                     child: Text(
                       task.title ?? '',
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          fontWeight: FontWeight.bold,
+                          decoration: task.completed
+                              ? TextDecoration.lineThrough
+                              : null),
                     ),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.delete_outline, color: Colors.red),
+                    icon: const Icon(Icons.cancel_outlined, color: Colors.red),
                     onPressed: () {
                       context.read<TaskCubit>().deleteTask(task.id);
                     },
@@ -289,7 +291,7 @@ class PriorityIconWidget extends StatelessWidget {
       padding: const EdgeInsets.only(top: 4),
       child: Icon(
         TaskPriority.fromName(priority).icon,
-        size: 32,
+        size: 24,
         color: TaskPriority.fromName(priority).color,
       ),
     );

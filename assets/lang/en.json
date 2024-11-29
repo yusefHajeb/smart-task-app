@@ -1,6 +1,6 @@
 {
-    "Welcome to Smart Task": "Welcome to Smart Task!",
-    "Enjoy organizing your tasks easily and effectively.": "",
+    "Welcome to Smart Task!": "Welcome to Smart Task!",
+    "Enjoy organizing your tasks easily and effectively.": "Enjoy organizing your tasks easily and effectively.",
     "Easily Manage Tasks": "Easily Manage Tasks",
     "Create new tasks, set deadlines, and receive reminders.": "Create new tasks, set deadlines, and receive reminders.",
     "Track Your Progress": "Track Your Progress",
@@ -39,7 +39,7 @@
     "End": "End",
     "Tasks": "Tasks",
     "Task Name": "Task Name",
-    "see all..": "see all..",
+    "See all..": "See all..",
     "Add New Category": "Add New Category",
     "All": "All",
     "Create Task": "Create Task",
@@ -65,5 +65,7 @@
     "Fri": "Fri",
     "Sat": "Sat",
     "Sun": "Sun",
-    "deleted successfully.": "deleted successfully."
+    "deleted successfully.": "deleted successfully.",
+    "Start:": "Start:",
+    "End:": "End:"
 }

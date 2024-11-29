@@ -1,5 +1,5 @@
 {
-    "Welcome to Smart Task": "Добро пожаловать в Smart Task!",
+    "Welcome to Smart Task!": "Добро пожаловать в Smart Task!",
     "Enjoy organizing your tasks easily and effectively.": "Наслаждайтесь легкой и эффективной организацией ваших задач.",
     "Easily Manage Tasks": "Легко управлять задачами",
     "Create new tasks, set deadlines, and receive reminders.": "Создавайте новые задачи, устанавливайте сроки и получайте напоминания.",
@@ -39,7 +39,7 @@
     "End": "Конец",
     "Tasks": "Задачи",
     "Task Name": "Название задачи",
-    "see all..": "посмотреть все..",
+    "See all..": "посмотреть все..",
     "Add New Category": "Добавить новую категорию",
     "All": "Все",
     "Create Task": "Создать задачу",
@@ -64,5 +64,7 @@
     "Fri": "Пт",
     "Sat": "Сб",
     "Sun": "Вс",
-    "deleted successfully.": "успешно удалено."
+    "deleted successfully.": "успешно удалено.",
+    "Start:": "Начать:",
+    "End:": "Конец:"
 }

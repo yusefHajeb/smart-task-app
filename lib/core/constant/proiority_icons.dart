@@ -25,9 +25,9 @@ extension PriorityIcons on TaskPriority {
       case TaskPriority.low:
         return Icons.flag_rounded;
       case TaskPriority.medium:
-        return Icons.flag_outlined;
+        return Icons.outlined_flag_rounded;
       case TaskPriority.high:
-        return Icons.flag_outlined;
+        return Icons.outlined_flag_rounded;
       default:
         return Icons.error;
     }

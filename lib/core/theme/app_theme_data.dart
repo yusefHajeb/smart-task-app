@@ -144,7 +144,9 @@ class GlobalThemData {
           labelMedium: AppTextStyles.mediumHeadline
               .copyWith(color: colorScheme.onPrimary),
           labelSmall: AppTextStyles.bodyText.copyWith(
-              color: colorScheme.onPrimary, fontSize: 12.0, letterSpacing: 1.5),
+              color: colorScheme.onPrimary,
+              fontSize: 12.0.sp,
+              letterSpacing: 1.5),
           bodyLarge: AppTextStyles.mediumHeadline.copyWith(
               color: colorScheme.onPrimary,
               letterSpacing: 0.5,
@@ -152,7 +154,9 @@ class GlobalThemData {
           bodyMedium: AppTextStyles.mediumHeadline
               .copyWith(color: colorScheme.onPrimary, letterSpacing: 0.25),
           bodySmall: AppTextStyles.smallBodyText.copyWith(
-              color: colorScheme.onPrimary, fontSize: 12.0, letterSpacing: 0.4),
+              color: colorScheme.onPrimary,
+              fontSize: 11.0.sp,
+              letterSpacing: 0.4),
           headlineLarge: AppTextStyles.largeHeadline.copyWith(
             color: colorScheme.onPrimary,
             letterSpacing: 0.25,
@@ -160,7 +164,7 @@ class GlobalThemData {
           ),
           headlineMedium: AppTextStyles.mediumHeadline.copyWith(
               color: colorScheme.onPrimary,
-              fontSize: 20.0,
+              fontSize: 20.0.sp,
               fontWeight: FontWeight.w400),
           headlineSmall: AppTextStyles.smallHeadline.copyWith(
               color: colorScheme.onPrimary,
@@ -176,7 +180,7 @@ class GlobalThemData {
               letterSpacing: 0.15),
           titleSmall: AppTextStyles.bodyText.copyWith(
               color: colorScheme.onPrimary,
-              fontSize: 14.0,
+              fontSize: 13.0.sp,
               fontWeight: FontWeight.w500,
               letterSpacing: 0.1),
         ),

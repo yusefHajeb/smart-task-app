@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+/// The style for all text elements.
 class AppTextStyles {
+  /// The font family for all text elements.
   static const String defaultFontFamily = "Almarai";
+
+  /// The base style for all text elements.
+  static TextStyle get _baseStyle => TextStyle(
+        fontSize: 12.sp,
+        fontWeight: FontWeight.w500,
+        fontFamily: defaultFontFamily,
+      );
 
   /// The style for the body text.
   static TextStyle get bodyText => _baseStyle.copyWith(
@@ -22,20 +31,26 @@ class AppTextStyles {
         fontWeight: FontWeight.w400,
       );
 
-  /// The style for the heading 1.
-  static TextStyle get heading1 => _baseStyle.copyWith(
+  /// The style for the large headline.
+  static TextStyle get largeHeadline => _baseStyle.copyWith(
+        fontSize: 20.sp,
+        fontWeight: FontWeight.w700,
+      );
+
+  /// The style for the headline 1.
+  static TextStyle get headline1 => _baseStyle.copyWith(
         fontSize: 24.sp,
         fontWeight: FontWeight.w300,
       );
 
-  /// The style for the heading 2.
-  static TextStyle get heading2 => _baseStyle.copyWith(
+  /// The style for the headline 2.
+  static TextStyle get headline2 => _baseStyle.copyWith(
         fontSize: 20.sp,
         fontWeight: FontWeight.w400,
       );
 
-  /// The style for the heading 3.
-  static TextStyle get heading3 => _baseStyle.copyWith(
+  /// The style for the headline 3.
+  static TextStyle get headline3 => _baseStyle.copyWith(
         fontSize: 20.sp,
         fontWeight: FontWeight.w300,
       );
@@ -58,12 +73,6 @@ class AppTextStyles {
         fontWeight: FontWeight.w500,
       );
 
-  /// The style for the large headline.
-  static TextStyle get largeHeadline => _baseStyle.copyWith(
-        fontSize: 20.sp,
-        fontWeight: FontWeight.w700,
-      );
-
   /// The style for the headline 6.
   static TextStyle get headline6 => _baseStyle.copyWith(
         fontSize: 16.sp,
@@ -74,13 +83,6 @@ class AppTextStyles {
   static TextStyle get buttonText => _baseStyle.copyWith(
         fontSize: 16.sp,
         fontWeight: FontWeight.w600,
-      );
-
-  /// The base style for all text styles.
-  static TextStyle get _baseStyle => TextStyle(
-        fontSize: 12.sp,
-        fontWeight: FontWeight.w500,
-        fontFamily: defaultFontFamily,
       );
 
   /// The style for the label text.

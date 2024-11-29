@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_task/core/services/localizations_service.dart';
@@ -167,6 +168,9 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                         itemBuilder: (context, index) {
                           return InkWell(
                             onTap: () {
+                              print(
+                                  "\x1B[31m[functionName] - [${DateTime.now()}] - error: \x1B[0m");
+
                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                 scrollToSelectedData(index);
                               });
@@ -210,13 +214,49 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             delegate: SliverChildBuilderDelegate(
               (BuildContext context, int index) {
                 return SingleChildScrollView(
+                  clipBehavior: Clip.hardEdge,
+                  controller: _scrollController,
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.manual,
+                  hitTestBehavior: HitTestBehavior.opaque,
                   scrollDirection: Axis.horizontal,
-                  child: DataTable(
-                    checkboxHorizontalMargin: 0,
-                    columnSpacing: 20,
-                    dataRowHeight: 60,
-                    columns: column,
-                    rows: rows,
+                  dragStartBehavior: DragStartBehavior.start,
+                  child: Row(
+                    children: [
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(
+                            maxWidth: double.infinity, minWidth: 1),
+                        child: DataTable(
+                          decoration: BoxDecoration(
+                            backgroundBlendMode: BlendMode.dstIn,
+                            color: Colors.white,
+                            border: Border.all(
+                              color: Colors.grey[200]!,
+                              width: 1,
+                            ),
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          // horizontalMargin: 20,
+                          dataTextStyle: Theme.of(context).textTheme.bodyMedium,
+
+                          clipBehavior: Clip.none,
+                          dividerThickness: 0,
+                          columnSpacing: 20.w,
+                          onSelectAll: (_) {
+                            print('-----------------------');
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              scrollToSelectedData(index);
+                            });
+                          },
+                          // checkboxHorizontalMargin: 0,
+                          // columnSpacing: 50,
+                          // dataRowHeight: 60,
+                          columns: column,
+                          rows: rows,
+                        ),
+                      )
+                    ],
                   ),
                 );
                 // استبدل هذا بمحتوى الـ DataRow الخاص بك
@@ -264,13 +304,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
             padding: const EdgeInsets.all(12),
             child: Wrap(
               children: [
-                ListView(
-                  shrinkWrap: true,
-                  children: [
-                    Text(
-                      task.title ?? '---',
-                    ),
-                  ],
+                Text(
+                  task.title ?? '---',
                 ),
                 // إذا كانت المهمة لم تنفذ بعد
               ],

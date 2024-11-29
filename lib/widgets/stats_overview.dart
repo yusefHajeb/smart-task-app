@@ -49,7 +49,9 @@ class StatsOverview extends StatelessWidget {
                 title: 'Overdue'.tr(context),
                 value: state.tasks
                     .where((task) =>
-                        !task.completed && task.dueDate.isAfter(DateTime.now()))
+                        !task.completed &&
+                        task.dueDate.isBefore(
+                            DateTime.now().subtract(const Duration(days: 1))))
                     .length
                     .toString(),
                 icon: Icons.warning_amber_rounded,

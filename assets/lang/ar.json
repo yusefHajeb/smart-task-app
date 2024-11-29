@@ -38,7 +38,7 @@
     "End": "نهاية",
     "Tasks": "المهام",
     "Task Name": "اسم المهمة",
-    "see all.." :"عرض الكل ..",
+    "See all.." :"عرض الكل ..",
     "Add New Category" :"إضافة فئة جديدة",
     "All" :"الكل",
     "Create Task" : "إنشاء مهمة",
@@ -69,6 +69,11 @@
     "1 hour" : "ساعة واحدة",
     "Please enter a description": "الرجاء إدخال وصف",
     "Track and manage your daily tasks efficiently" : "تتبع وإدارة مهامك بسهولة",
-    "deleted successfully.": "تم حذفه بنجاح."
+    "deleted successfully.": "تم حذفه بنجاح.",
+    "Edit Category" : "تعديل التصنيف",
+    "Edit Task" : "تعديل المهمة",
+    "Task" : "مهمة",
+    "Start:" : "بدء:",
+    "End:" : "نهاية:"
     
 }

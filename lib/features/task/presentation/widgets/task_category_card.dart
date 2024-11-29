@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_task/core/services/localizations_service.dart';
 
 import '../../data/models/task.dart';
 
@@ -74,12 +75,12 @@ class TaskCategoryCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Start: ${dateFormat.format(task.startTime!)} ${timeFormat.format(task.startTime!)}',
+                  '${"Start:".tr(context)} ${dateFormat.format(task.startTime!)} ${timeFormat.format(task.startTime!)}',
                   style: TextStyle(color: Colors.grey[600]),
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  'End: ${dateFormat.format(task.endTime!)} ${timeFormat.format(task.endTime!)}',
+                  '${"End:".tr(context)} ${dateFormat.format(task.endTime!)} ${timeFormat.format(task.endTime!)}',
                   style: TextStyle(color: Colors.grey[600]),
                 ),
                 if (task.isDailyReminder ?? false)
