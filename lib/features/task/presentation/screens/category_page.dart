@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_task/core/services/localizations_service.dart';
@@ -12,83 +12,155 @@ import '../bloc/task_cubit/task_cubit.dart';
 class CategoryTaskPage extends StatefulWidget {
   static const String routeName = '/category-screen';
 
-  const CategoryTaskPage({Key? key}) : super(key: key);
+  const CategoryTaskPage({super.key});
 
   @override
   State<CategoryTaskPage> createState() => _CategoryTaskPageState();
 }
 
 class _CategoryTaskPageState extends State<CategoryTaskPage> {
-  final ScrollController _scrollController = ScrollController();
-  void scrolleSelectedData(int index) {
-    for (int i = 0; i < 8; i++) {
-      Future.delayed(Duration(milliseconds: i * 50), () {
-        if (_scrollController.hasClients) {
-          _scrollController.animateTo(index * 50.0,
-              duration: Duration(milliseconds: 300), curve: Curves.easeIn);
-        }
-      });
+  late final ScrollController _scrollController;
+  @override
+  void initState() {
+    _scrollController = ScrollController();
+    // ..addListener(() {
+    //   if (_scrollController.position.pixels == 0) {
+    //     _scrollController.animateTo(1 * 50.0,
+    //         duration: const Duration(milliseconds: 300),
+    //         curve: Curves.easeIn);
+    //   }
+    // });
+    super.initState();
+  }
+
+  @override
+  // void dispose() {
+  //   _scrollController.dispose();
+  //   super.dispose();
+  // }
+
+  void _scrollToCategory(int index) {
+    if (_scrollController.hasClients) {
+      final renderBox = _scrollController.position.context.storageContext
+          .findRenderObject() as RenderBox;
+      final itemPosition = index * 50.0; // Assuming each item width is 50.0
+      final itemOffset = renderBox.localToGlobal(Offset(itemPosition, 0)).dx;
+
+      final screenWidth = MediaQuery.of(context).size.width;
+      final scrollPosition = _scrollController.position.pixels;
+
+      if (itemOffset < scrollPosition ||
+          itemOffset > (scrollPosition + screenWidth)) {
+        final targetScrollPosition = itemPosition -
+            (screenWidth / 2) +
+            25; // 25 is half of the item width
+        _scrollController.animateTo(
+          targetScrollPosition.clamp(
+            _scrollController.position.minScrollExtent,
+            _scrollController.position.maxScrollExtent,
+          ),
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+        );
+      } else if (itemOffset < scrollPosition ||
+          itemOffset < (scrollPosition + screenWidth)) {
+        final targetScrollPosition = itemPosition - (screenWidth / 2) + 2;
+        _scrollController.animateTo(
+          targetScrollPosition.clamp(
+            _scrollController.position.minScrollExtent,
+            _scrollController.position.maxScrollExtent,
+          ),
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeInOut,
+
+          // itemPosition - (screenWidth / 2) + 25,
+          // duration: const Duration(milliseconds: 300),
+          // curve: Curves.easeInOut,
+        );
+      }
+      // if (index > 3) {
+      //   _scrollController.animateTo(
+      //       (index * 50.0) + (MediaQuery.of(context).size.width / 2) + 25,
+      //       duration: const Duration(milliseconds: 300),
+      //       curve: Curves.easeInOut);
+      // }
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
-        child: BlocConsumer<CategoryTaskBloc, CategoryTaskState>(
-          listener: (context, state) {},
-          builder: (context, state) {
-            return state.maybeMap(
-              orElse: () => const Center(child: Text('Error')),
-              initial: (_) => const Center(child: CircularProgressIndicator()),
-              loading: (_) => _buildCategoryView(
-                  context,
-                  const Loaded(
-                      categories: [],
-                      categoryTasks: [],
-                      selectedCategory: null,
-                      tasks: [])),
-              loaded: (loaded) => _buildCategoryView(context, loaded),
-              error: (_) => const Center(child: Text('Error')),
-            );
-          },
-        ),
+      body: BlocConsumer<CategoryTaskBloc, CategoryTaskState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          return state.maybeMap(
+            orElse: () => const Center(child: Text('Error')),
+            initial: (_) => const Center(child: CircularProgressIndicator()),
+            loading: (_) => _buildCategoryView(
+                context,
+                const Loaded(
+                    categories: [],
+                    categoryTasks: [],
+                    selectedCategory: null,
+                    tasks: [])),
+            loaded: (loaded) => _buildCategoryView(context, loaded),
+            error: (_) => const Center(child: Text('Error')),
+          );
+        },
       ),
     );
   }
 
   Widget _buildCategoryView(BuildContext context, CategoryTaskState loaded) {
-    return ListView(
+    return CustomScrollView(
       shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      children: [
-        _buildCategoryScrollView(context, loaded),
-        const SizedBox(height: 16),
-        ...loaded.categoryTasks.map((task) => TaskCategoryCard(
-              task: task,
-              onEdit: (p0) {
-                Navigator.pushNamed(
-                  context, TaskCreationPage.routeName,
-                  arguments: task, // تمرير المهمة
-                );
-                context
-                    .read<CategoryTaskBloc>()
-                    .add(CategoryTaskEvent.categoryTaskChanged(p0));
-              },
-              onDelete: (value) {
-                context.read<TaskCubit>().deleteTask(task.id);
-                context
-                    .read<CategoryTaskBloc>()
-                    .add(CategoryTaskEvent.categoryTaskChanged(task));
-              },
-              onComplete: (task) {
-                context.read<TaskCubit>().changeTaskStatus(task);
-                context
-                    .read<CategoryTaskBloc>()
-                    .add(CategoryTaskEvent.categoryTaskChanged(task));
-              },
+      // physics: const NeverScrollableScrollPhysics(),
+      slivers: [
+        SliverAppBar(
+            automaticallyImplyLeading: false,
+            leading: null,
+            floating: false,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              background: _buildCategoryScrollView(context, loaded),
             )),
+
+        // const SizedBox(height: 16),
+        SliverList(
+            delegate:
+                SliverChildBuilderDelegate((BuildContext context, int index) {
+          return ListView(
+              physics: const NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              children: [
+                const SizedBox(height: 10),
+                ...loaded.categoryTasks.map((task) => TaskCategoryCard(
+                      task: task,
+                      onEdit: (p0) {
+                        Navigator.pushNamed(
+                          context, TaskCreationPage.routeName,
+                          arguments: task, // تمرير المهمة
+                        );
+                        context
+                            .read<CategoryTaskBloc>()
+                            .add(CategoryTaskEvent.categoryTaskChanged(p0));
+                      },
+                      onDelete: (value) {
+                        context.read<TaskCubit>().deleteTask(task.id);
+                        context
+                            .read<CategoryTaskBloc>()
+                            .add(CategoryTaskEvent.categoryTaskChanged(task));
+                      },
+                      onComplete: (task) {
+                        context.read<TaskCubit>().changeTaskStatus(task);
+                        context
+                            .read<CategoryTaskBloc>()
+                            .add(CategoryTaskEvent.categoryTaskChanged(task));
+                      },
+                    ))
+              ]);
+        }, childCount: 1)),
       ],
     );
   }
@@ -99,12 +171,18 @@ class _CategoryTaskPageState extends State<CategoryTaskPage> {
       scrollDirection: Axis.horizontal,
       controller: _scrollController,
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: List.generate(loaded.categories.length, (index) {
-          if ((loaded.categories[index] == loaded.selectedCategory &&
-              index < 4)) {
+          if ((loaded.categories[index] == loaded.selectedCategory)) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              scrolleSelectedData(index);
+              _scrollToCategory(index);
             });
+
+            // if (_scrollController.hasClients) {
+            //   _scrollController.animateTo(index * 50.0,
+            //       duration: const Duration(milliseconds: 300),
+            //       curve: Curves.easeInOut);
+            // }
           }
 
           final category = loaded.categories[index];
@@ -146,7 +224,8 @@ class _CategoryTaskPageState extends State<CategoryTaskPage> {
               : Theme.of(context).colorScheme.primary.withOpacity(0.1),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text(category.name),
           ],

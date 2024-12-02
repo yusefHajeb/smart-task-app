@@ -177,24 +177,25 @@ class TaskCreationPage extends StatelessWidget {
                       context,
                       TaskPriority.fromName(state.task?.priority ?? 'Medium'),
                     ),
-                    Row(
-                      children: [
-                        for (final priority in [
-                          'Low'.tr(context),
-                          'Medium'.tr(context),
-                          'High'.tr(context)
-                        ])
-                          GestureDetector(
-                              onTap: () {
-                                readTaskCubit.priorityChanged(priority);
-                              },
-                              child: CategoryChip(
-                                  category: priority,
-                                  color: state.task?.priority == priority
-                                      ? Theme.of(context).colorScheme.primary
-                                      : null)),
-                      ],
-                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    //   children: [
+                    //     for (final priority in [
+                    //       'Low'.tr(context),
+                    //       'Medium'.tr(context),
+                    //       'High'.tr(context)
+                    //     ])
+                    //       GestureDetector(
+                    //           onTap: () {
+                    //             readTaskCubit.priorityChanged(priority);
+                    //           },
+                    //           child: CategoryChip(
+                    //               category: priority,
+                    //               color: state.task?.priority == priority
+                    //                   ? Theme.of(context).colorScheme.primary
+                    //                   : null)),
+                    //   ],
+                    // ),
                     const SizedBox(height: 16),
                     Text('Description'.tr(context)),
                     const SizedBox(height: 8),

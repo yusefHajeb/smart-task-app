@@ -66,5 +66,10 @@
     "Sun": "Вс",
     "deleted successfully.": "успешно удалено.",
     "Start:": "Начать:",
-    "End:": "Конец:"
+    "End:": "Конец:",
+    "Add": "Добавить",
+    "Edit": "Изменить",
+    "Delete": "Удалить",
+    "Are you sure you want to delete this task?": "Вы уверены, что хотите удалить эту задачу?",
+    "This action cannot be undone.": "Это действие не может быть отменено."
 }

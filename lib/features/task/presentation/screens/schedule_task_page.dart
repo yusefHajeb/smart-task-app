@@ -140,131 +140,146 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     }
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverAppBar(
-              automaticallyImplyLeading: false,
-              leading: null,
-              floating: false,
-              pinned: true,
-              flexibleSpace: FlexibleSpaceBar(
-                background: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Container(
-                      height: 80,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          width: 1.5,
+      body: SafeArea(
+        child: CustomScrollView(
+          // controller: _scrollController,
+          shrinkWrap: true,
+          slivers: [
+            SliverAppBar(
+                automaticallyImplyLeading: false,
+                leading: null,
+                floating: false,
+                pinned: true,
+                toolbarHeight: 80,
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Stack(
+                    fit: StackFit.loose,
+                    children: [
+                      Container(
+                        height: 80,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            width: 1.5,
+                          ),
+                        ),
+                        child: ListView.builder(
+                          controller: _scrollController,
+                          shrinkWrap: true,
+                          itemExtent: 60.0,
+                          scrollDirection: Axis.horizontal,
+                          itemCount: getMonthDayList().length,
+                          itemBuilder: (context, index) {
+                            return InkWell(
+                              onTap: () {
+                                print(
+                                    "\x1B[31m[functionName] - [${DateTime.now()}] - error: \x1B[0m");
+
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  scrollToSelectedData(index);
+                                });
+                              },
+                              child: AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                width: 62.w,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(29),
+                                  color: int.parse(getMonthDayList()[index]) ==
+                                          DateTime.now().day
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Colors.transparent,
+                                ),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text(getDay(index),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .labelSmall),
+                                    const SizedBox(
+                                      height: 10,
+                                    ),
+                                    Text(
+                                      getMonthDayList()[index],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
                         ),
                       ),
-                      child: ListView.builder(
-                        controller: _scrollController,
-                        shrinkWrap: true,
-                        itemExtent: 60.0,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: getMonthDayList().length,
-                        itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: () {
-                              print(
-                                  "\x1B[31m[functionName] - [${DateTime.now()}] - error: \x1B[0m");
 
+                      //
+                    ],
+                  ),
+                )),
+            // SliverToBoxAdapter(
+            //   child: Container(
+            //     padding: const EdgeInsets.all(100),
+            //     child: const Text(
+            //       'Welcome to the world of Flutter Slivers!',
+            //       style: TextStyle(fontSize: 20),
+            //     ),
+            //   ),
+            // ),
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (BuildContext context, int index) {
+                  return SingleChildScrollView(
+                    clipBehavior: Clip.hardEdge,
+                    controller: _scrollController,
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.manual,
+                    hitTestBehavior: HitTestBehavior.opaque,
+                    scrollDirection: Axis.horizontal,
+                    dragStartBehavior: DragStartBehavior.start,
+                    child: Row(
+                      children: [
+                        ConstrainedBox(
+                          constraints: const BoxConstraints(
+                              maxWidth: double.infinity, minWidth: 1),
+                          child: DataTable(
+                            decoration: BoxDecoration(
+                              backgroundBlendMode: BlendMode.dstIn,
+                              color: Colors.white,
+                              border: Border.all(
+                                color: Colors.grey[200]!,
+                                width: 1,
+                              ),
+                              shape: BoxShape.rectangle,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            // horizontalMargin: 20,
+                            dataTextStyle:
+                                Theme.of(context).textTheme.bodyMedium,
+
+                            clipBehavior: Clip.none,
+                            dividerThickness: 0,
+                            columnSpacing: 20.w,
+                            onSelectAll: (_) {
                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                 scrollToSelectedData(index);
                               });
                             },
-                            child: AnimatedContainer(
-                              duration: const Duration(milliseconds: 300),
-                              width: 62.w,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(29),
-                                color: int.parse(getMonthDayList()[index]) ==
-                                        DateTime.now().day
-                                    ? Theme.of(context).colorScheme.primary
-                                    : Colors.transparent,
-                              ),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text(getDay(index),
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .labelSmall),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    getMonthDayList()[index],
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-
-                    //
-                  ],
-                ),
-              )),
-          SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (BuildContext context, int index) {
-                return SingleChildScrollView(
-                  clipBehavior: Clip.hardEdge,
-                  controller: _scrollController,
-                  keyboardDismissBehavior:
-                      ScrollViewKeyboardDismissBehavior.manual,
-                  hitTestBehavior: HitTestBehavior.opaque,
-                  scrollDirection: Axis.horizontal,
-                  dragStartBehavior: DragStartBehavior.start,
-                  child: Row(
-                    children: [
-                      ConstrainedBox(
-                        constraints: const BoxConstraints(
-                            maxWidth: double.infinity, minWidth: 1),
-                        child: DataTable(
-                          decoration: BoxDecoration(
-                            backgroundBlendMode: BlendMode.dstIn,
-                            color: Colors.white,
-                            border: Border.all(
-                              color: Colors.grey[200]!,
-                              width: 1,
-                            ),
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(10),
+                            // checkboxHorizontalMargin: 0,
+                            // columnSpacing: 50,
+                            // dataRowHeight: 60,
+                            columns: column,
+                            rows: rows,
                           ),
-                          // horizontalMargin: 20,
-                          dataTextStyle: Theme.of(context).textTheme.bodyMedium,
-
-                          clipBehavior: Clip.none,
-                          dividerThickness: 0,
-                          columnSpacing: 20.w,
-                          onSelectAll: (_) {
-                            print('-----------------------');
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              scrollToSelectedData(index);
-                            });
-                          },
-                          // checkboxHorizontalMargin: 0,
-                          // columnSpacing: 50,
-                          // dataRowHeight: 60,
-                          columns: column,
-                          rows: rows,
-                        ),
-                      )
-                    ],
-                  ),
-                );
-                // استبدل هذا بمحتوى الـ DataRow الخاص بك
-              },
-              childCount: 1,
+                        )
+                      ],
+                    ),
+                  );
+                  // استبدل هذا بمحتوى الـ DataRow الخاص بك
+                },
+                childCount: 1,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

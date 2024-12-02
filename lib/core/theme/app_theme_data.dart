@@ -41,7 +41,7 @@ class GlobalThemData {
     secondary: Color(0xFF241E30),
     onSecondary: Color(0xFFE6EBEB),
     error: Colors.redAccent,
-    inversePrimary: Color.fromARGB(255, 54, 131, 255),
+    inversePrimary: Color.fromARGB(255, 244, 247, 252),
     onSecondaryContainer: Color(0xFFE6EBEB),
     onTertiary: Color(0xFFE6EBEB),
     onTertiaryContainer: Color(0xFFE6EBEB),
@@ -194,7 +194,7 @@ class GlobalThemData {
         //button style
         elevatedButtonTheme: ElevatedButtonThemeData(
           style: ElevatedButton.styleFrom(
-            elevation: 8.0,
+            elevation: 2.0,
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(30.0)),
             minimumSize: const Size(double.infinity, 56.0),
@@ -212,14 +212,14 @@ class GlobalThemData {
         ),
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
-            elevation: 8.0,
+            elevation: 2.0,
             minimumSize: const Size(double.infinity, 56.0),
             shadowColor: colorScheme.primaryContainer,
             side: BorderSide(color: colorScheme.secondary, width: 1.5),
             disabledForegroundColor: Colors.grey,
             foregroundColor: colorScheme.primary,
             textStyle: TextStyle(
-                fontSize: 16.0,
+                fontSize: 16.0.sp,
                 fontWeight: FontWeight.bold,
                 color: colorScheme.secondary),
             padding:
@@ -229,8 +229,10 @@ class GlobalThemData {
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
+          counterStyle:
+              TextStyle(color: Colors.grey.withOpacity(0.9), fontSize: 12.0.sp),
           filled: true,
-          hintStyle: TextStyle(color: Colors.grey.withOpacity(0.4)),
+          hintStyle: TextStyle(color: Colors.grey.withOpacity(0.9)),
           floatingLabelBehavior: FloatingLabelBehavior.auto,
           border: OutlineInputBorder(
             borderSide:

@@ -12,6 +12,7 @@ import 'package:smart_task/features/task/data/datasources/base_database.dart';
 import 'package:smart_task/features/task/presentation/bloc/app_theme/app_theme_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
 import 'core/services/notifications.dart';
+import 'features/task/presentation/bloc/category_task_bloc/category_task_bloc.dart';
 import 'features/task/presentation/bloc/localizations_cubit/localizations_cubit.dart';
 
 void main() async {
@@ -32,7 +33,11 @@ void main() async {
       BlocProvider(create: (context) => sl<TaskCubit>()..fetchTasks()),
       BlocProvider(
         create: (context) => LocalizationsCubit()..getSavedLanguage(),
-      )
+      ),
+      BlocProvider<CategoryTaskBloc>(
+        create: (context) =>
+            sl<CategoryTaskBloc>()..add(const CategoryTaskEvent.started()),
+      ),
     ],
     child: TaskTrackerApp(
       appRoutes: AppRoutes(),

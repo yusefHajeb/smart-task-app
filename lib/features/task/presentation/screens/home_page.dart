@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/features/task/presentation/bloc/app_theme/app_theme_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
@@ -37,10 +38,14 @@ class HomePage extends StatelessWidget {
             icon: const Icon(Icons.menu),
           ),
         ),
-        body: Row(
+        // ignore: deprecated_member_use
+        body: Column(
           children: [
             Expanded(
-              child: BlocBuilder<BottomNavigationBloc, BottomNavigationState>(
+              child: BlocConsumer<BottomNavigationBloc, BottomNavigationState>(
+                listener: (context, state) {
+                  if (state.index == 0) {}
+                },
                 builder: (context, state) {
                   return content[state.index];
                 },
@@ -60,11 +65,13 @@ class HomePageBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ResponsiveCenterScrollable(
-      maxContentWidth: 800,
-      padding: const EdgeInsets.all(16.0),
+      // maxContentWidth: 800,
+      padding: EdgeInsets.symmetric(horizontal: 8.w),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               children: [
