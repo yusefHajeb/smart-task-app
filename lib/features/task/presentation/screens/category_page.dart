@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_task/core/services/localizations_service.dart';
@@ -23,37 +22,27 @@ class _CategoryTaskPageState extends State<CategoryTaskPage> {
   @override
   void initState() {
     _scrollController = ScrollController();
-    // ..addListener(() {
-    //   if (_scrollController.position.pixels == 0) {
-    //     _scrollController.animateTo(1 * 50.0,
-    //         duration: const Duration(milliseconds: 300),
-    //         curve: Curves.easeIn);
-    //   }
-    // });
     super.initState();
   }
 
   @override
-  // void dispose() {
-  //   _scrollController.dispose();
-  //   super.dispose();
-  // }
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   void _scrollToCategory(int index) {
     if (_scrollController.hasClients) {
-      final renderBox = _scrollController.position.context.storageContext
-          .findRenderObject() as RenderBox;
-      final itemPosition = index * 50.0; // Assuming each item width is 50.0
-      final itemOffset = renderBox.localToGlobal(Offset(itemPosition, 0)).dx;
-
+      const itemWidth = 150.0;
       final screenWidth = MediaQuery.of(context).size.width;
       final scrollPosition = _scrollController.position.pixels;
+      final itemPosition = index * itemWidth;
 
-      if (itemOffset < scrollPosition ||
-          itemOffset > (scrollPosition + screenWidth)) {
-        final targetScrollPosition = itemPosition -
-            (screenWidth / 2) +
-            25; // 25 is half of the item width
+      final targetScrollPosition =
+          itemPosition - (screenWidth / 2) + (itemWidth / 2);
+
+      if (targetScrollPosition < scrollPosition ||
+          targetScrollPosition > (scrollPosition + screenWidth)) {
         _scrollController.animateTo(
           targetScrollPosition.clamp(
             _scrollController.position.minScrollExtent,
@@ -61,29 +50,8 @@ class _CategoryTaskPageState extends State<CategoryTaskPage> {
           ),
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeInOut,
-        );
-      } else if (itemOffset < scrollPosition ||
-          itemOffset < (scrollPosition + screenWidth)) {
-        final targetScrollPosition = itemPosition - (screenWidth / 2) + 2;
-        _scrollController.animateTo(
-          targetScrollPosition.clamp(
-            _scrollController.position.minScrollExtent,
-            _scrollController.position.maxScrollExtent,
-          ),
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-
-          // itemPosition - (screenWidth / 2) + 25,
-          // duration: const Duration(milliseconds: 300),
-          // curve: Curves.easeInOut,
         );
       }
-      // if (index > 3) {
-      //   _scrollController.animateTo(
-      //       (index * 50.0) + (MediaQuery.of(context).size.width / 2) + 25,
-      //       duration: const Duration(milliseconds: 300),
-      //       curve: Curves.easeInOut);
-      // }
     }
   }
 
@@ -173,17 +141,7 @@ class _CategoryTaskPageState extends State<CategoryTaskPage> {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: List.generate(loaded.categories.length, (index) {
-          if ((loaded.categories[index] == loaded.selectedCategory)) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              _scrollToCategory(index);
-            });
-
-            // if (_scrollController.hasClients) {
-            //   _scrollController.animateTo(index * 50.0,
-            //       duration: const Duration(milliseconds: 300),
-            //       curve: Curves.easeInOut);
-            // }
-          }
+          if ((loaded.categories[index] == loaded.selectedCategory)) {}
 
           final category = loaded.categories[index];
           return Padding(
@@ -209,11 +167,6 @@ class _CategoryTaskPageState extends State<CategoryTaskPage> {
         context
             .read<CategoryTaskBloc>()
             .add(CategoryTaskEvent.categorySelected(category));
-        // _scrollController.animateTo(
-        //   index * 110,
-        //   duration: const Duration(milliseconds: 300),
-        //   curve: Curves.easeInOut,
-        // );
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
