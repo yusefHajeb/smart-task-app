@@ -3,7 +3,7 @@
 class Task {
   final int id;
   final int userId;
-  String? title;
+  String title;
   String? description;
   String? category;
   DateTime dueDate;
@@ -20,7 +20,7 @@ class Task {
   Task({
     required this.userId,
     required this.id,
-    this.title,
+    required this.title,
     this.description,
     required this.category,
     required this.dueDate,
@@ -116,7 +116,7 @@ class Task {
     return Task(
       id: 0,
       userId: 1,
-      title: null,
+      title: '',
       description: '',
       category: '',
       dueDate: DateTime.now(),

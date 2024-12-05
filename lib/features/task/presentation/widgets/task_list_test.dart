@@ -95,7 +95,7 @@ class TaskCard extends StatelessWidget {
           ListTile(
             leading: Icon(_getPriorityIcon()),
             title: Text(
-              task.title!,
+              task.title,
               style: TextStyle(
                 decoration: task.completed ? TextDecoration.lineThrough : null,
               ),

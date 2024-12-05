@@ -40,18 +40,19 @@ class _CategoryTaskPageState extends State<CategoryTaskPage> {
 
       final targetScrollPosition =
           itemPosition - (screenWidth / 2) + (itemWidth / 2);
-
-      if (targetScrollPosition < scrollPosition ||
-          targetScrollPosition > (scrollPosition + screenWidth)) {
-        _scrollController.animateTo(
-          targetScrollPosition.clamp(
-            _scrollController.position.minScrollExtent,
-            _scrollController.position.maxScrollExtent,
-          ),
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-        );
-      }
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (targetScrollPosition < scrollPosition ||
+            targetScrollPosition > (scrollPosition + screenWidth)) {
+          _scrollController.animateTo(
+            targetScrollPosition.clamp(
+              _scrollController.position.minScrollExtent,
+              _scrollController.position.maxScrollExtent,
+            ),
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        }
+      });
     }
   }
 
@@ -149,7 +150,7 @@ class _CategoryTaskPageState extends State<CategoryTaskPage> {
             child: _buildCategoryItem(context, category, index),
           );
         })
-          ..add(_buildAddCategoryButton(context)),
+          ..add(_AddCategoryButton(context: context)),
       ),
     );
   }
@@ -164,6 +165,7 @@ class _CategoryTaskPageState extends State<CategoryTaskPage> {
         _showDeleteCategoryDialog(context, category);
       },
       onTap: () {
+        _scrollToCategory(index);
         context
             .read<CategoryTaskBloc>()
             .add(CategoryTaskEvent.categorySelected(category));
@@ -184,69 +186,6 @@ class _CategoryTaskPageState extends State<CategoryTaskPage> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildAddCategoryButton(BuildContext context) {
-    return IconButton(
-      onPressed: () async {
-        final categoryName = await _showAddCategoryDialog(context);
-        if (categoryName != null &&
-            categoryName.isNotEmpty &&
-            context.mounted) {
-          context.read<CategoryTaskBloc>().add(CategoryTaskEvent.addCategory(
-                CategoryModel(
-                  name: categoryName,
-                  userId: 1,
-                  createdAt: DateTime.now(),
-                  updatedAt: DateTime.now(),
-                  categoryId: DateTime.now().millisecondsSinceEpoch,
-                ),
-              ));
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-                duration: const Duration(seconds: 2),
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: Theme.of(context).colorScheme.onPrimary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                elevation: 5,
-                margin: const EdgeInsets.all(8),
-                padding: const EdgeInsets.all(8),
-                showCloseIcon: true,
-                dismissDirection: DismissDirection.horizontal,
-                content: Text('Category "$categoryName" added successfully.')),
-          );
-        }
-      },
-      icon: const Icon(Icons.add),
-    );
-  }
-
-  Future<String?> _showAddCategoryDialog(BuildContext context) {
-    String name = '';
-    return showDialog<String>(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Add New Category'.tr(context)),
-          content: TextField(
-            onChanged: (value) => name = value,
-            decoration: InputDecoration(hintText: "Category Name".tr(context)),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cancel'.tr(context)),
-              onPressed: () => Navigator.of(context).pop(),
-            ),
-            TextButton(
-              child: Text('Add'.tr(context)),
-              onPressed: () => Navigator.of(context).pop(name),
-            ),
-          ],
-        );
-      },
     );
   }
 
@@ -302,5 +241,77 @@ class _CategoryTaskPageState extends State<CategoryTaskPage> {
                 ],
               ));
         });
+  }
+}
+
+class _AddCategoryButton extends StatelessWidget {
+  const _AddCategoryButton({
+    super.key,
+    required this.context,
+  });
+
+  final BuildContext context;
+
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      onPressed: () async {
+        final categoryName = await (BuildContext context) {
+          String name = '';
+          return showDialog<String>(
+            context: context,
+            builder: (context) {
+              return AlertDialog(
+                title: Text('Add New Category'.tr(context)),
+                content: TextField(
+                  onChanged: (value) => name = value,
+                  decoration:
+                      InputDecoration(hintText: "Category Name".tr(context)),
+                ),
+                actions: <Widget>[
+                  TextButton(
+                    child: Text('Cancel'.tr(context)),
+                    onPressed: () => Navigator.of(context).pop(),
+                  ),
+                  TextButton(
+                    child: Text('Add'.tr(context)),
+                    onPressed: () => Navigator.of(context).pop(name),
+                  ),
+                ],
+              );
+            },
+          );
+        }(context);
+        if (categoryName != null &&
+            categoryName.isNotEmpty &&
+            context.mounted) {
+          context.read<CategoryTaskBloc>().add(CategoryTaskEvent.addCategory(
+                CategoryModel(
+                  name: categoryName,
+                  userId: 1,
+                  createdAt: DateTime.now(),
+                  updatedAt: DateTime.now(),
+                  categoryId: DateTime.now().millisecondsSinceEpoch,
+                ),
+              ));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+                duration: const Duration(seconds: 2),
+                behavior: SnackBarBehavior.floating,
+                backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                elevation: 5,
+                margin: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
+                showCloseIcon: true,
+                dismissDirection: DismissDirection.horizontal,
+                content: Text('Category "$categoryName" added successfully.')),
+          );
+        }
+      },
+      icon: const Icon(Icons.add),
+    );
   }
 }

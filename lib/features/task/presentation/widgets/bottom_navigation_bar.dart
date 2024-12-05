@@ -7,6 +7,7 @@ class BottomNavigationBarWidget extends StatefulWidget {
   const BottomNavigationBarWidget({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _BottomNavigationBarWidgetState createState() =>
       _BottomNavigationBarWidgetState();
 }
@@ -66,7 +67,9 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                     });
                   },
                   icon: Icon(
-                    _selectedIndex == 1 ? Icons.search : Icons.search_outlined,
+                    _selectedIndex == 1
+                        ? Icons.calendar_month_rounded
+                        : Icons.calendar_month_outlined,
                     color: _selectedIndex == 1 ? Colors.pink : Colors.grey,
                     size: 30,
                   ),
@@ -74,10 +77,6 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                 const SizedBox(width: 60),
                 IconButton(
                   onPressed: () {
-                    // Navigator.pushNamed(
-                    //   context,
-                    //   CategoryTaskPage.routeName,
-                    // );
                     context
                         .read<BottomNavigationBloc>()
                         .add(BottomNavigationTabChanged(2));
@@ -123,11 +122,6 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                   context,
                   TaskCreationPage.routeName,
                 );
-                // showModalBottomSheet(
-                //   context: context,
-                //   isScrollControlled: true,
-                //   builder: (context) => const AddTaskModal(),
-                // );
               },
               child: Container(
                 height: 60,

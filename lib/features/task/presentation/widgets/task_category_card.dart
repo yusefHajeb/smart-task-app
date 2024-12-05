@@ -24,77 +24,76 @@ class TaskCategoryCard extends StatelessWidget {
     final dateFormat = DateFormat('dd MMM, yyyy');
 
     return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ListTile(
-            title: Text(
-              task.title ?? "",
-              style: TextStyle(
-                decoration: task.completed ? TextDecoration.lineThrough : null,
-              ),
-            ),
-            subtitle: Text(task.description ?? ""),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  icon: Icon(
-                    task.completed ? Icons.check_circle : Icons.circle_outlined,
-                    color: task.completed ? Colors.green : null,
+                Text(
+                  task.title,
+                  style: TextStyle(
+                    decoration:
+                        task.completed ? TextDecoration.lineThrough : null,
                   ),
-                  onPressed: () {
-                    if (onComplete != null) {
-                      onComplete!(task);
-                    }
-                  },
                 ),
-                IconButton(
-                  icon: const Icon(Icons.edit),
-                  onPressed: () {
-                    if (onEdit != null) {
-                      onEdit!(task);
-                    }
-                  },
-                ),
-                IconButton(
-                  icon: const Icon(Icons.delete),
-                  onPressed: () {
-                    if (onDelete != null) {
-                      onDelete!(task.id.toString());
-                    }
-                  },
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        task.completed
+                            ? Icons.check_circle
+                            : Icons.circle_outlined,
+                        color: task.completed ? Colors.green : null,
+                      ),
+                      onPressed: () {
+                        if (onComplete != null) {
+                          onComplete!(task);
+                        }
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.edit),
+                      onPressed: () {
+                        if (onEdit != null) {
+                          onEdit!(task);
+                        }
+                      },
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        if (onDelete != null) {
+                          onDelete!(task.id.toString());
+                        }
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
                   '${"Start:".tr(context)} ${dateFormat.format(task.startTime!)} ${timeFormat.format(task.startTime!)}',
                   style: TextStyle(color: Colors.grey[600]),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  '${"End:".tr(context)} ${dateFormat.format(task.endTime!)} ${timeFormat.format(task.endTime!)}',
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
-                if (task.isDailyReminder ?? false)
-                  if (task.isDailyReminder ?? false) ...[
-                    const SizedBox(height: 8),
-                    Chip(
-                      label: const Text('Daily'),
-                      backgroundColor: Theme.of(context).colorScheme.surface,
-                    ),
-                  ]
+                if (task.isDailyReminder ?? false) ...[
+                  const SizedBox(width: 8),
+                  Chip(
+                    label: const Text('Daily'),
+                    backgroundColor: Theme.of(context).colorScheme.surface,
+                  ),
+                ]
               ],
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

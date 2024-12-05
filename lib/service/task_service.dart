@@ -69,8 +69,6 @@ class TaskService {
   static int getTaskCountForDay(DateTime date, List<Task> tasks) {
     return tasks
         .where((task) =>
-            // task.completed &&
-            // task.completedAt != null &&
             task.createdAt!.year == date.year &&
             task.createdAt!.month == date.month &&
             task.createdAt!.day == date.day)

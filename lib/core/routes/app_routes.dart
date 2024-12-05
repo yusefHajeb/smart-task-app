@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_task/core/di/dependence_injection.dart';
 import 'package:smart_task/core/routes/animation_navigation.dart';
 import 'package:smart_task/core/routes/routes.dart';
+import 'package:smart_task/features/task/presentation/bloc/schedule_cubit/schedule_cubit.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_creation_cubit/task_creation_cubit.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
 import 'package:smart_task/features/task/presentation/screens/home_page.dart';
@@ -13,6 +14,7 @@ import '../../features/task/presentation/bloc/task_cubit/task_state.dart';
 import '../../features/task/presentation/screens/add_task_page.dart';
 import '../../features/task/presentation/screens/on_boarding.dart/on_barding_bloc.dart';
 import '../../features/task/presentation/screens/on_boarding.dart/onboarding_screen.dart';
+import '../../features/task/presentation/screens/schedule_task_page.dart';
 
 class AppRoutes {
   Route generateRoute(RouteSettings settings) {
@@ -47,7 +49,14 @@ class AppRoutes {
                       create: (context) => sl<OnboardingBloc>(),
                       child: const OnboardingScreen(),
                     ));
-
+      case Routes.schedulePage:
+        return MaterialPageRoute(
+          fullscreenDialog: true,
+          builder: (context) => BlocProvider(
+            create: (context) => sl<CalendarCubit>(),
+            child: const ScheduleScreen(),
+          ),
+        );
       default:
         return MaterialPageRoute(
           builder: (context) => BlocProvider(
@@ -58,12 +67,15 @@ class AppRoutes {
     }
   }
 
-  SlideRoute homePageSlidRoute() {
-    return SlideRoute(
+  MaterialPageRoute homePageSlidRoute() {
+    return MaterialPageRoute(
       builder: (_) => MultiBlocProvider(
         providers: [
           BlocProvider<BottomNavigationBloc>(
             create: (context) => sl<BottomNavigationBloc>(),
+          ),
+          BlocProvider<CalendarCubit>(
+            create: (context) => sl<CalendarCubit>(),
           ),
           // BlocProvider<CategoryTaskBloc>(
           //   create: (context) =>

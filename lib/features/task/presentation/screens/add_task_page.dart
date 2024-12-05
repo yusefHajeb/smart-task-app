@@ -16,9 +16,7 @@ class TaskCreationPage extends StatelessWidget {
   const TaskCreationPage({super.key});
 
   @override
-/*************  ✨ Codeium Command ⭐  *************/
-/******  e984910b-1234-42b2-bcb6-5597eec79ac3  *******/ Widget build(
-      BuildContext context) {
+  Widget build(BuildContext context) {
     final formKey = context.watch<TaskCreationCubit>().formKey;
 
     final readTaskCubit = context.read<TaskCreationCubit>();
@@ -40,8 +38,12 @@ class TaskCreationPage extends StatelessWidget {
                     Text('Task Name'.tr(context)),
                     const SizedBox(height: 8),
                     TextInputField(
-                      initialValue: state.task?.title,
-                      onChange: readTaskCubit.taskNameChanged,
+                      initialValue: state.task?.title ?? '',
+                      onChange: (value) {
+                        if (value.isNotEmpty) {
+                          readTaskCubit.taskNameChanged(value);
+                        }
+                      },
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a name'.tr(context);
@@ -78,6 +80,10 @@ class TaskCreationPage extends StatelessWidget {
                     Text('Due Date'.tr(context)),
                     const SizedBox(height: 8),
                     TextInputField(
+                      initialValue: state.task?.dueDate == null
+                          ? 'Enter Due Date'.tr(context)
+                          : DateFormat('MMM d, y')
+                              .format(state.task?.dueDate ?? DateTime.now()),
                       onTap: () async {
                         final selectedDate = await showDatePicker(
                           context: context,
@@ -200,7 +206,7 @@ class TaskCreationPage extends StatelessWidget {
                     Text('Description'.tr(context)),
                     const SizedBox(height: 8),
                     TextInputField(
-                      initialValue: state.task?.description,
+                      initialValue: state.task?.description ?? '',
                       keyBoardType: TextInputType.multiline,
                       onChange: readTaskCubit.descriptionChanged,
                       validator: (value) {
@@ -209,7 +215,7 @@ class TaskCreationPage extends StatelessWidget {
                         }
                         return null;
                       },
-                      hint: 'Enter Description'.tr(context),
+                      hint: 'Description Task'.tr(context),
                     ),
                     const SizedBox(height: 16),
                     _buildReminderSettings(state.task?.isDailyReminder,
@@ -249,50 +255,43 @@ class TaskCreationPage extends StatelessWidget {
   Widget _buildPrioritySelector(BuildContext context, TaskPriority priority) {
     return Padding(
       padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Priority'.tr(context),
-            style: const TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+      child: SizedBox(
+        width: double.infinity,
+        child: SegmentedButton<TaskPriority>(
+          style: SegmentedButton.styleFrom(
+            foregroundColor: Colors.black,
+            selectedForegroundColor: Colors.white,
+            backgroundColor:
+                Theme.of(context).colorScheme.primary.withOpacity(0.2),
+            selectedBackgroundColor: Theme.of(context).colorScheme.primary,
           ),
-          const SizedBox(height: 16),
-          SegmentedButton<TaskPriority>(
-            style: SegmentedButton.styleFrom(
-              foregroundColor: Colors.black,
-              selectedForegroundColor: Colors.white,
-              backgroundColor:
-                  Theme.of(context).colorScheme.primary.withOpacity(0.2),
-              selectedBackgroundColor: Theme.of(context).colorScheme.primary,
+          segments: [
+            ButtonSegment(
+              value: TaskPriority.high,
+              label: Text('High'.tr(context),
+                  style: Theme.of(context).textTheme.headlineSmall),
+              icon: const Icon(Icons.priority_high),
             ),
-            segments: [
-              ButtonSegment(
-                value: TaskPriority.high,
-                label: Text('High'.tr(context)),
-                icon: const Icon(Icons.priority_high),
-              ),
-              ButtonSegment(
-                value: TaskPriority.medium,
-                label: Text('Medium'.tr(context)),
-                icon: const Icon(Icons.remove),
-              ),
-              ButtonSegment(
-                value: TaskPriority.low,
-                label: Text('Low'.tr(context)),
-                icon: const Icon(Icons.arrow_downward),
-              ),
-            ],
-            selected: {priority},
-            onSelectionChanged: (Set<TaskPriority> newSelection) {
-              context
-                  .read<TaskCreationCubit>()
-                  .priorityChanged(newSelection.first.txt);
-            },
-          ),
-        ],
+            ButtonSegment(
+              value: TaskPriority.medium,
+              label: Text('Medium'.tr(context),
+                  style: Theme.of(context).textTheme.headlineSmall),
+              icon: const Icon(Icons.remove),
+            ),
+            ButtonSegment(
+              value: TaskPriority.low,
+              label: Text('Low'.tr(context),
+                  style: Theme.of(context).textTheme.headlineSmall),
+              icon: const Icon(Icons.arrow_downward),
+            ),
+          ],
+          selected: {priority},
+          onSelectionChanged: (Set<TaskPriority> newSelection) {
+            context
+                .read<TaskCreationCubit>()
+                .priorityChanged(newSelection.first.txt);
+          },
+        ),
       ),
     );
   }
@@ -350,6 +349,7 @@ class TaskCreationPage extends StatelessWidget {
     return InkWell(
       onTap: () async {},
       child: TextInputField(
+        initialValue: value?.format(context) ?? '',
         icon: Icons.access_time,
         hint: value?.format(context),
         readOnly: true,

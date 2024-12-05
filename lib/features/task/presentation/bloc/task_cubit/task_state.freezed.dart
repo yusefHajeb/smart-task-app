@@ -19,8 +19,7 @@ mixin _$TaskState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(List<Task> tasks, String? selectedCategory)
-        success,
+    required TResult Function(List<Task> tasks, int? searchByDay) success,
     required TResult Function() loading,
     required TResult Function(String message) error,
   }) =>
@@ -28,7 +27,7 @@ mixin _$TaskState {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(List<Task> tasks, String? selectedCategory)? success,
+    TResult? Function(List<Task> tasks, int? searchByDay)? success,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
   }) =>
@@ -36,7 +35,7 @@ mixin _$TaskState {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(List<Task> tasks, String? selectedCategory)? success,
+    TResult Function(List<Task> tasks, int? searchByDay)? success,
     TResult Function()? loading,
     TResult Function(String message)? error,
     required TResult orElse(),
@@ -131,8 +130,7 @@ class _$InitialImpl extends _Initial {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(List<Task> tasks, String? selectedCategory)
-        success,
+    required TResult Function(List<Task> tasks, int? searchByDay) success,
     required TResult Function() loading,
     required TResult Function(String message) error,
   }) {
@@ -143,7 +141,7 @@ class _$InitialImpl extends _Initial {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(List<Task> tasks, String? selectedCategory)? success,
+    TResult? Function(List<Task> tasks, int? searchByDay)? success,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
   }) {
@@ -154,7 +152,7 @@ class _$InitialImpl extends _Initial {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(List<Task> tasks, String? selectedCategory)? success,
+    TResult Function(List<Task> tasks, int? searchByDay)? success,
     TResult Function()? loading,
     TResult Function(String message)? error,
     required TResult orElse(),
@@ -214,7 +212,7 @@ abstract class _$$TaskSuccessImplCopyWith<$Res> {
           _$TaskSuccessImpl value, $Res Function(_$TaskSuccessImpl) then) =
       __$$TaskSuccessImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({List<Task> tasks, String? selectedCategory});
+  $Res call({List<Task> tasks, int? searchByDay});
 }
 
 /// @nodoc
@@ -231,17 +229,17 @@ class __$$TaskSuccessImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? tasks = null,
-    Object? selectedCategory = freezed,
+    Object? searchByDay = freezed,
   }) {
     return _then(_$TaskSuccessImpl(
       null == tasks
           ? _value._tasks
           : tasks // ignore: cast_nullable_to_non_nullable
               as List<Task>,
-      freezed == selectedCategory
-          ? _value.selectedCategory
-          : selectedCategory // ignore: cast_nullable_to_non_nullable
-              as String?,
+      freezed == searchByDay
+          ? _value.searchByDay
+          : searchByDay // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -249,7 +247,7 @@ class __$$TaskSuccessImplCopyWithImpl<$Res>
 /// @nodoc
 
 class _$TaskSuccessImpl extends TaskSuccess {
-  const _$TaskSuccessImpl(final List<Task> tasks, this.selectedCategory)
+  const _$TaskSuccessImpl(final List<Task> tasks, this.searchByDay)
       : _tasks = tasks,
         super._();
 
@@ -262,11 +260,11 @@ class _$TaskSuccessImpl extends TaskSuccess {
   }
 
   @override
-  final String? selectedCategory;
+  final int? searchByDay;
 
   @override
   String toString() {
-    return 'TaskState.success(tasks: $tasks, selectedCategory: $selectedCategory)';
+    return 'TaskState.success(tasks: $tasks, searchByDay: $searchByDay)';
   }
 
   @override
@@ -275,13 +273,13 @@ class _$TaskSuccessImpl extends TaskSuccess {
         (other.runtimeType == runtimeType &&
             other is _$TaskSuccessImpl &&
             const DeepCollectionEquality().equals(other._tasks, _tasks) &&
-            (identical(other.selectedCategory, selectedCategory) ||
-                other.selectedCategory == selectedCategory));
+            (identical(other.searchByDay, searchByDay) ||
+                other.searchByDay == searchByDay));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType,
-      const DeepCollectionEquality().hash(_tasks), selectedCategory);
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(_tasks), searchByDay);
 
   /// Create a copy of TaskState
   /// with the given fields replaced by the non-null parameter values.
@@ -295,36 +293,35 @@ class _$TaskSuccessImpl extends TaskSuccess {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(List<Task> tasks, String? selectedCategory)
-        success,
+    required TResult Function(List<Task> tasks, int? searchByDay) success,
     required TResult Function() loading,
     required TResult Function(String message) error,
   }) {
-    return success(tasks, selectedCategory);
+    return success(tasks, searchByDay);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(List<Task> tasks, String? selectedCategory)? success,
+    TResult? Function(List<Task> tasks, int? searchByDay)? success,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
   }) {
-    return success?.call(tasks, selectedCategory);
+    return success?.call(tasks, searchByDay);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(List<Task> tasks, String? selectedCategory)? success,
+    TResult Function(List<Task> tasks, int? searchByDay)? success,
     TResult Function()? loading,
     TResult Function(String message)? error,
     required TResult orElse(),
   }) {
     if (success != null) {
-      return success(tasks, selectedCategory);
+      return success(tasks, searchByDay);
     }
     return orElse();
   }
@@ -368,13 +365,12 @@ class _$TaskSuccessImpl extends TaskSuccess {
 }
 
 abstract class TaskSuccess extends TaskState {
-  const factory TaskSuccess(
-          final List<Task> tasks, final String? selectedCategory) =
+  const factory TaskSuccess(final List<Task> tasks, final int? searchByDay) =
       _$TaskSuccessImpl;
   const TaskSuccess._() : super._();
 
   List<Task> get tasks;
-  String? get selectedCategory;
+  int? get searchByDay;
 
   /// Create a copy of TaskState
   /// with the given fields replaced by the non-null parameter values.
@@ -425,8 +421,7 @@ class _$TaskLoadingImpl extends TaskLoading {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(List<Task> tasks, String? selectedCategory)
-        success,
+    required TResult Function(List<Task> tasks, int? searchByDay) success,
     required TResult Function() loading,
     required TResult Function(String message) error,
   }) {
@@ -437,7 +432,7 @@ class _$TaskLoadingImpl extends TaskLoading {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(List<Task> tasks, String? selectedCategory)? success,
+    TResult? Function(List<Task> tasks, int? searchByDay)? success,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
   }) {
@@ -448,7 +443,7 @@ class _$TaskLoadingImpl extends TaskLoading {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(List<Task> tasks, String? selectedCategory)? success,
+    TResult Function(List<Task> tasks, int? searchByDay)? success,
     TResult Function()? loading,
     TResult Function(String message)? error,
     required TResult orElse(),
@@ -571,8 +566,7 @@ class _$TaskErrorImpl extends TaskError {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(List<Task> tasks, String? selectedCategory)
-        success,
+    required TResult Function(List<Task> tasks, int? searchByDay) success,
     required TResult Function() loading,
     required TResult Function(String message) error,
   }) {
@@ -583,7 +577,7 @@ class _$TaskErrorImpl extends TaskError {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(List<Task> tasks, String? selectedCategory)? success,
+    TResult? Function(List<Task> tasks, int? searchByDay)? success,
     TResult? Function()? loading,
     TResult? Function(String message)? error,
   }) {
@@ -594,7 +588,7 @@ class _$TaskErrorImpl extends TaskError {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(List<Task> tasks, String? selectedCategory)? success,
+    TResult Function(List<Task> tasks, int? searchByDay)? success,
     TResult Function()? loading,
     TResult Function(String message)? error,
     required TResult orElse(),

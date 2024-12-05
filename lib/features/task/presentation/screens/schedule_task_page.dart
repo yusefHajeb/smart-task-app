@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_task/core/routes/routes.dart';
 import 'package:smart_task/core/services/localizations_service.dart';
+import 'package:smart_task/core/utils/extention.dart';
+import 'package:smart_task/features/task/presentation/bloc/schedule_cubit/schedule_cubit.dart';
 import 'package:smart_task/features/task/presentation/screens/schedule_test_for_task.dart';
-import '../../data/models/task.dart';
 import 'add_task_page.dart';
 
 // ignore: must_be_immutable
 class ScheduleScreen extends StatefulWidget {
   static String routeName = '/schedule-screen';
-  List<Task> tasksByDate;
 
-  ScheduleScreen({super.key, required this.tasksByDate});
+  const ScheduleScreen({
+    super.key,
+  });
 
   @override
   State<ScheduleScreen> createState() => _ScheduleScreenState();
@@ -20,41 +24,38 @@ class ScheduleScreen extends StatefulWidget {
 class _ScheduleScreenState extends State<ScheduleScreen> {
   final ScrollController _scrollController = ScrollController();
   final ScrollController _scrollTimeTask = ScrollController();
+
   void scrollToSelectedData(int selectedData) {
-    for (int i = 0; i < 8; i++) {
-      Future.delayed(Duration(milliseconds: i * 50), () {
-        if (_scrollController.hasClients) {
-          _scrollController.animateTo(selectedData * 50.0,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeIn);
-        }
-      });
+    // استخدام Timer بدلاً من Future.delayed في حلقة for
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        selectedData * 55.0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
     }
   }
 
   void scrollToTimeNow(int timeNow) {
-    for (int i = 0; i < 8; i++) {
-      Future.delayed(Duration(milliseconds: i * 100), () {
-        if (_scrollTimeTask.hasClients) {
-          _scrollTimeTask.animateTo(timeNow * 100.0,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.linear);
-        }
-      });
+    // استخدام Timer بدلاً من Future.delayed إذا كان هناك حاجة لذلك
+    if (_scrollTimeTask.hasClients) {
+      _scrollTimeTask.animateTo(
+        timeNow * 100.0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.linear,
+      );
     }
   }
 
   @override
   void initState() {
+    super.initState();
     scrollToSelectedData(DateTime.now().day - 1);
     final now = DateTime.now();
     final hour = now.hour >= 12
-        ? now.hour < 7
-            ? now.hour + 12 + 12
-            : now.hour + 12
+        ? (now.hour < 7 ? now.hour + 12 + 12 : now.hour + 12)
         : now.hour;
     scrollToTimeNow(hour);
-    super.initState();
   }
 
   @override
@@ -62,6 +63,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
     return _buildTaskTable(context);
   }
 
+  /// which is comprised of tasks organized by their scheduled dates.
   Widget _buildTaskTable(BuildContext context) {
     List<String> getMonthDayList() {
       final now = DateTime.now();
@@ -87,7 +89,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       return weekDaysEn[weekday];
     }
 
-    // Build columns
     final column = <DataColumn>[];
     column.add(const DataColumn(label: Text('')));
 
@@ -118,171 +119,141 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
       );
     }
     column.addAll(columnsTow);
-    // for (int i = 0; i < widget.tasksByDate.length; i++) {
-    //   rows.add(DataRow(
-    //     onLongPress: () {
-    //       showDialog(
-    //         context: context,
-    //         builder: (BuildContext context) {
-    //           return AlertDialog(
-    //             title: const Text(
-    //               'Task Details',
-    //               style: TextStyle(fontWeight: FontWeight.bold),
-    //             ),
-    //             content: Padding(
-    //               padding: const EdgeInsets.all(16.0),
-    //               child: _buildTaskCard(widget.tasksByDate[i]),
-    //             ),
-    //             actions: <Widget>[
-    //               TextButton(
-    //                 onPressed: () {
-    //                   Navigator.of(context).pop();
-    //                 },
-    //                 child: const Text('Close'),
-    //               ),
-    //             ],
-    //           );
-    //         },
-    //       );
-    //     },
-    //     cells: [
-    //       const DataCell(Text('===')),
-    //       ...getMonthDayList().map(
-    //         (day) => DataCell(
-    //           widget.tasksByDate[i].createdAt?.day == int.parse(day)
-    //               ? _buildTaskCard(widget.tasksByDate[i])
-    //               : const SizedBox(width: 1),
-    //         ),
-    //       ),
-    //     ],
-    //   ));
-    // }
 
-    return Scaffold(
-      body: SafeArea(
-        child: CustomScrollView(
-          controller: _scrollTimeTask,
-          shrinkWrap: true,
-          slivers: [
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  children: [
-                    Text(
-                      DateFormat('EEEE, MMMM d').format(DateTime.now()),
-                      style: const TextStyle(
-                          fontSize: 20, fontWeight: FontWeight.bold),
-                    ),
-                    const Spacer(),
-                    TextButton.icon(
-                      onPressed: () {
-                        Navigator.pushNamed(
-                          context,
-                          TaskCreationPage.routeName,
-                        );
-                      },
-                      icon: const Icon(Icons.add),
-                      label: const Text('Add Task'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SliverAppBar(
-                automaticallyImplyLeading: false,
-                leading: null,
-                floating: false,
-                pinned: true,
-                scrolledUnderElevation: 0,
-                elevation: 1,
-                shadowColor: Colors.transparent,
-                surfaceTintColor: Colors.transparent,
-                toolbarHeight: 80,
-                flexibleSpace: FlexibleSpaceBar(
-                  background: ListView.separated(
-                    separatorBuilder: (context, index) => const SizedBox(
-                      width: 7,
-                    ),
-                    controller: _scrollController,
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: getMonthDayList().length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          print(
-                              "\x1B[31m[functionName] - [${DateTime.now()}] - error: \x1B[0m");
+    return WillPopScope(
+      onWillPop: () async {
+        if (ModalRoute.of(context)?.canPop ?? false) {
+          context.read<CalendarCubit>().selectDay(DateTime.now().day);
 
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            scrollToSelectedData(index);
-                          });
-                        },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 300),
-                          transformAlignment: const Alignment(0, 0),
-                          width: 50.w,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(14),
-                            color: int.parse(getMonthDayList()[index]) ==
-                                    DateTime.now().day
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context)
-                                    .colorScheme
-                                    .primary
-                                    .withOpacity(0.165),
+          return true;
+        } else {
+          context.pushNamedAndRemoveUntil(
+            Routes.homePage,
+            (route) => false,
+          );
+          return false;
+        }
+      },
+      child: Scaffold(
+        body: SafeArea(
+          child: BlocBuilder<CalendarCubit, CalendarState>(
+            builder: (context, state) {
+              return CustomScrollView(
+                shrinkWrap: true,
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            DateFormat('EEEE, MMMM d').format(DateTime.now()),
+                            style: const TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
                           ),
+                          const Spacer(),
+                          TextButton.icon(
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                  context, TaskCreationPage.routeName);
+                            },
+                            icon: const Icon(Icons.add),
+                            label: const Text('Add Task'),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  SliverAppBar(
+                    automaticallyImplyLeading: false,
+                    leading: null,
+                    floating: false,
+                    pinned: true,
+                    elevation: 1,
+                    toolbarHeight: 80,
+                    flexibleSpace: FlexibleSpaceBar(
+                      background: ListView.separated(
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(width: 7),
+                        controller: _scrollController,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: getMonthDayList().length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              context
+                                  .read<CalendarCubit>()
+                                  .selectDay(index + 1);
+                              scrollToSelectedData(index);
+                            },
+                            child: BlocBuilder<CalendarCubit, CalendarState>(
+                              builder: (context, state) {
+                                return AnimatedContainer(
+                                  duration: const Duration(milliseconds: 300),
+                                  width: 50.w,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(14),
+                                    color:
+                                        int.parse(getMonthDayList()[index]) ==
+                                                (state).currentSelectedDay
+                                            ? Theme.of(context)
+                                                .colorScheme
+                                                .primary
+                                            : Theme.of(context)
+                                                .colorScheme
+                                                .primary
+                                                .withOpacity(0.165),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(getDay(index),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .labelSmall),
+                                      const SizedBox(height: 10),
+                                      Text(getMonthDayList()[index]),
+                                    ],
+                                  ),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 20),
+                  ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        return SingleChildScrollView(
+                          scrollDirection: Axis.vertical,
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text(getDay(index),
-                                  style:
-                                      Theme.of(context).textTheme.labelSmall),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                getMonthDayList()[index],
+                              ConstrainedBox(
+                                constraints: const BoxConstraints(
+                                    maxWidth: double.infinity, minWidth: 1),
+                                child: ScheduleTestForTask(
+                                  day: 1,
+                                  tasks: state.filteredTasks,
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                )),
-            const SliverToBoxAdapter(
-              child: SizedBox(
-                height: 20,
-              ),
-            ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return SingleChildScrollView(
-                    scrollDirection: Axis.vertical,
-                    child: Column(
-                      children: [
-                        ConstrainedBox(
-                          constraints: const BoxConstraints(
-                              maxWidth: double.infinity, minWidth: 1),
-                          child: ScheduleTestForTask(
-                            day: 1,
-                            tasks: widget.tasksByDate
-                                .where((days) =>
-                                    DateTime.now().day == days.createdAt?.day)
-                                .toList(),
-                          ),
-                        )
-                      ],
+                        );
+                      },
+                      childCount: 1,
                     ),
-                  );
-                },
-                childCount: 1,
-              ),
-            ),
-          ],
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );

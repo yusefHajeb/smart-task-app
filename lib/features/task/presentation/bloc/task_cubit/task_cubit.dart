@@ -36,7 +36,7 @@ class TaskCubit extends Cubit<TaskState> {
         await Future.delayed(const Duration(milliseconds: 10))
             .whenComplete(() async {
           final tasks = await fetchTask(1);
-          emit(TaskState.success(tasks, selectCategory));
+          emit(TaskState.success(tasks, DateTime.now().day));
         });
       } catch (e) {
         emit(TaskState.error(e.toString()));
@@ -91,6 +91,16 @@ class TaskCubit extends Cubit<TaskState> {
     emit(const TaskState.loading());
     try {
       await fetchTasks(selectCategory: category);
+    } catch (e) {
+      emit(TaskState.error(e.toString()));
+    }
+  }
+
+  Future<void> updateTasksForSelectedDay(int day) async {
+    emit(const TaskState.loading());
+    try {
+      final tasks = await fetchTask(day);
+      emit((state as TaskSuccess).copyWith(tasks: tasks, searchByDay: day));
     } catch (e) {
       emit(TaskState.error(e.toString()));
     }

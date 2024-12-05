@@ -8,7 +8,7 @@ import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_state
 import 'package:smart_task/service/task_service.dart';
 import 'package:smart_task/common_widgets/responsive_widgets_scrollable.dart';
 
-import '../features/task/presentation/bloc/task_cubit/task_cubit.dart';
+import '../bloc/task_cubit/task_cubit.dart';
 
 class ActivityGrid extends StatelessWidget {
   const ActivityGrid({super.key});
@@ -42,6 +42,7 @@ class ActivityGrid extends StatelessWidget {
                         SizedBox(
                           height: 160.h,
                           child: GridView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
                             gridDelegate:
                                 const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 7,

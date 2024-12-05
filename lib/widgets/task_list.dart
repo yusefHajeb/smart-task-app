@@ -53,13 +53,10 @@ class TaskList extends StatelessWidget {
                     ),
                     InkWell(
                       onTap: () {
-                        Navigator.push(
+                        Navigator.pushNamedAndRemoveUntil(
                           context,
-                          MaterialPageRoute(
-                            builder: (context) => ScheduleScreen(
-                              tasksByDate: sortedTasks,
-                            ),
-                          ),
+                          ScheduleScreen.routeName,
+                          (route) => false,
                         );
                       },
                       child: Text(
@@ -166,7 +163,7 @@ class _TaskItem extends StatelessWidget {
             await context.read<TaskCubit>().updateTask(task),
       ),
       title: Text(
-        task.title ?? '',
+        task.title,
         style: TextStyle(
           decoration: task.completed ? TextDecoration.lineThrough : null,
           color: task.completed ? Colors.grey : null,
@@ -225,7 +222,7 @@ class TaskItem extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Text(
-                      task.title ?? '',
+                      task.title,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           decoration: task.completed

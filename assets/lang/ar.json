@@ -74,6 +74,11 @@
     "Edit Task" : "تعديل المهمة",
     "Task" : "مهمة",
     "Start:" : "بدء:",
-    "End:" : "نهاية:"
+    "End:" : "نهاية:",
+    "Notification" : "الإشعارات",
+    "language": "اللغـة",
+    "Theme":"السمـة",
+    "Description Task": "وصف المهمة"
+
     
 }

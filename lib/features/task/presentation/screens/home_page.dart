@@ -2,24 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:smart_task/core/constant/size.dart';
-import 'package:smart_task/features/task/presentation/bloc/app_theme/app_theme_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import 'package:smart_task/common_widgets/responsive_widgets_scrollable.dart';
 import 'package:smart_task/features/task/presentation/screens/category_page.dart';
-import 'package:smart_task/widgets/activity_grid.dart';
-import 'package:smart_task/widgets/stats_overview.dart';
+import 'package:smart_task/features/task/presentation/screens/schedule_task_page.dart';
+import 'package:smart_task/features/task/presentation/widgets/activity_grid.dart';
+import 'package:smart_task/features/task/presentation/widgets/stats_overview.dart';
 import 'package:smart_task/widgets/task_list.dart';
-import '../bloc/localizations_cubit/localizations_cubit.dart';
 import '../widgets/bottom_navigation_bar.dart';
+import 'profile_page.dart';
 
 // ignore: must_be_immutable
 class HomePage extends StatelessWidget {
   HomePage({super.key});
   List<Widget> content = [
     const HomePageBody(),
-    const Text('search'),
+    const ScheduleScreen(),
     const CategoryTaskPage(),
-    const Text(''),
+    const ProfilePage(),
   ];
   static const String routeName = '/home-page';
   @override
@@ -38,7 +38,6 @@ class HomePage extends StatelessWidget {
             icon: const Icon(Icons.menu),
           ),
         ),
-        // ignore: deprecated_member_use
         body: Column(
           children: [
             Expanded(
@@ -73,53 +72,6 @@ class HomePageBody extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              children: [
-                BlocBuilder<AppThemeBloc, AppThemeState>(
-                  builder: (context, state) {
-                    return IconButton(
-                      onPressed: () {
-                        context.read<AppThemeBloc>().add(AppThemeChanged(
-                              themeMode: state.themeMode == ThemeMode.dark
-                                  ? ThemeMode.light
-                                  : ThemeMode.dark,
-                            ));
-                      },
-                      icon: Icon(
-                        state.themeMode == ThemeMode.dark
-                            ? Icons.light_mode_outlined
-                            : Icons.dark_mode_outlined,
-                      ),
-                    );
-                  },
-                ),
-                DropdownButton<String>(
-                  value: Localizations.localeOf(context).languageCode,
-                  icon: const Icon(Icons.language),
-                  onChanged: (String? newValue) async {
-                    if (newValue != null) {
-                      context
-                          .read<LocalizationsCubit>()
-                          .changeLanguage(newValue);
-                    }
-                  },
-                  items: const [
-                    DropdownMenuItem<String>(
-                      value: 'en',
-                      child: Text('ENGLISH'),
-                    ),
-                    DropdownMenuItem<String>(
-                      value: 'ar',
-                      child: Text('العربية'),
-                    ),
-                    DropdownMenuItem<String>(
-                      value: 'ru',
-                      child: Text('Russia'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
             AppSize.h16(),
             const ActivityGrid(),
             AppSize.h24(),

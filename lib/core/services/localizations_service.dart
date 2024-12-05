@@ -19,8 +19,6 @@ class AppLocalizations {
   late Map<String, String> _localizedStrings;
 
   Future loadJsonLanguage() async {
-    print('loading language');
-    print(locale!.languageCode);
     String jsonString =
         await rootBundle.loadString("assets/lang/${locale!.languageCode}.json");
 
