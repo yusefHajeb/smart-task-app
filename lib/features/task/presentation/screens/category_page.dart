@@ -99,6 +99,7 @@ class _CategoryTaskPageState extends State<CategoryTaskPage> {
             delegate:
                 SliverChildBuilderDelegate((BuildContext context, int index) {
           return ListView(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
               scrollDirection: Axis.vertical,
@@ -297,16 +298,6 @@ class _AddCategoryButton extends StatelessWidget {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
                 duration: const Duration(seconds: 2),
-                behavior: SnackBarBehavior.floating,
-                backgroundColor: Theme.of(context).colorScheme.onPrimary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                elevation: 5,
-                margin: const EdgeInsets.all(8),
-                padding: const EdgeInsets.all(8),
-                showCloseIcon: true,
-                dismissDirection: DismissDirection.horizontal,
                 content: Text('Category "$categoryName" added successfully.')),
           );
         }

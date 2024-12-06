@@ -33,13 +33,13 @@ class AppTextStyles {
 
   /// The style for the large headline.
   static TextStyle get largeHeadline => _baseStyle.copyWith(
-        fontSize: 20.sp,
+        fontSize: 18.sp,
         fontWeight: FontWeight.w700,
       );
 
   /// The style for the headline 1.
   static TextStyle get headline1 => _baseStyle.copyWith(
-        fontSize: 24.sp,
+        fontSize: 20.sp,
         fontWeight: FontWeight.w300,
       );
 
@@ -57,7 +57,7 @@ class AppTextStyles {
 
   /// The style for the small headline.
   static TextStyle get smallHeadline => _baseStyle.copyWith(
-        fontSize: 14.sp,
+        fontSize: 12.sp,
         fontWeight: FontWeight.w600,
       );
 

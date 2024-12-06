@@ -121,9 +121,22 @@ class ProfilePage extends StatelessWidget {
                         ),
                       ],
                     ),
+                    const Divider(),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Wrap(
+                        children: [
+                          Text('كن مرنا في تقبل المهام ولو كانت صغيرة'
+                              .tr(context))
+                        ],
+                      ),
+                    )
                   ],
                 )),
-          )
+          ),
+          const SizedBox(
+            height: 20,
+          ),
         ],
       ),
     );

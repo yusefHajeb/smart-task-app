@@ -178,7 +178,7 @@ class TaskCreationPage extends StatelessWidget {
                       ),
                     const SizedBox(height: 16),
                     Text('Priority'.tr(context)),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 4),
                     _buildPrioritySelector(
                       context,
                       TaskPriority.fromName(state.task?.priority ?? 'Medium'),
@@ -197,6 +197,7 @@ class TaskCreationPage extends StatelessWidget {
                     //           },
                     //           child: CategoryChip(
                     //               category: priority,
+                    //               isSelected: state.task?.priority == priority,
                     //               color: state.task?.priority == priority
                     //                   ? Theme.of(context).colorScheme.primary
                     //                   : null)),
@@ -209,12 +210,6 @@ class TaskCreationPage extends StatelessWidget {
                       initialValue: state.task?.description ?? '',
                       keyBoardType: TextInputType.multiline,
                       onChange: readTaskCubit.descriptionChanged,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a description'.tr(context);
-                        }
-                        return null;
-                      },
                       hint: 'Description Task'.tr(context),
                     ),
                     const SizedBox(height: 16),
@@ -254,7 +249,7 @@ class TaskCreationPage extends StatelessWidget {
 
   Widget _buildPrioritySelector(BuildContext context, TaskPriority priority) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(8),
       child: SizedBox(
         width: double.infinity,
         child: SegmentedButton<TaskPriority>(
@@ -408,7 +403,7 @@ class CategoryChip extends StatelessWidget {
           style: textTheme.bodyMedium?.copyWith(
             fontSize: 16,
             fontWeight: FontWeight.w500,
-            color: isSelected ? colorScheme.onPrimary : colorScheme.onSurface,
+            color: isSelected ? Colors.white : colorScheme.onSurface,
           ),
         ),
       ),

@@ -70,18 +70,35 @@ class TaskList extends StatelessWidget {
                 ),
                 const Divider(height: 1),
                 Column(
-                  children: sortedTasks
-                      .map((task) =>
-                          DateFormat('MMM d, y').format(task.dueDate) ==
-                                      DateFormat('MMM d, y')
-                                          .format(DateTime.now()) ||
-                                  (task.dueDate.isBefore(DateTime.now()) &&
-                                      task.completed == false)
-                              ? TaskItem(
-                                  task: task,
-                                )
-                              : Container())
-                      .toList(),
+                  children: [
+                    if (sortedTasks.any((task) =>
+                        DateFormat('MMM d, y').format(task.dueDate) ==
+                            DateFormat('MMM d, y').format(DateTime.now()) ||
+                        (task.dueDate.isBefore(DateTime.now()) &&
+                            task.completed == false)))
+                      ...sortedTasks
+                          .where((task) =>
+                              DateFormat('MMM d, y').format(task.dueDate) ==
+                                  DateFormat('MMM d, y')
+                                      .format(DateTime.now()) ||
+                              (task.dueDate.isBefore(DateTime.now()) &&
+                                  task.completed == false))
+                          .map((task) => TaskItem(task: task))
+                          .toList(),
+                    if (!sortedTasks.any((task) =>
+                        DateFormat('MMM d, y').format(task.dueDate) ==
+                            DateFormat('MMM d, y').format(DateTime.now()) ||
+                        (task.dueDate.isBefore(DateTime.now()) &&
+                            task.completed == false)))
+                      Center(
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Text(
+                            'No tasks for today'.tr(context),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ],
             );

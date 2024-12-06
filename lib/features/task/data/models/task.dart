@@ -39,10 +39,10 @@ class Task {
         'id': id,
         'user_id': 1, // temporarily hardcoded
         'title': title,
-        'description': description,
+        'description': description ?? '',
         'category': category,
         'due_date': dueDate.toIso8601String(),
-        'priority': priority,
+        'priority': priority ?? 'Medium',
         'completed': completed == true ? 1 : 0,
         'completed_at': completedAt?.toIso8601String(),
         'created_at': createdAt?.toIso8601String(),

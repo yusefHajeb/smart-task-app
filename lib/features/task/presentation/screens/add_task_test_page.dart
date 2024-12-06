@@ -29,7 +29,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
   void initState() {
     super.initState();
     if (widget.taskToEdit != null) {
-      _titleController.text = widget.taskToEdit!.title!;
+      _titleController.text = widget.taskToEdit!.title;
       _descriptionController.text = widget.taskToEdit!.description!;
       _startTime = widget.taskToEdit!.startTime;
       _endTime = widget.taskToEdit!.endTime;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_task/core/services/localizations_service.dart';
 
@@ -33,13 +34,18 @@ class TaskCategoryCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  task.title,
-                  style: TextStyle(
-                    decoration:
-                        task.completed ? TextDecoration.lineThrough : null,
-                  ),
-                ),
+                Text(task.title,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          fontSize: 15.sp,
+                          decoration: task.completed
+                              ? TextDecoration.lineThrough
+                              : null,
+                        )
+                    // style: TextStyle(
+                    //   decoration:
+                    //       task.completed ? TextDecoration.lineThrough : null,
+                    // ),
+                    ),
                 Row(
                   children: [
                     IconButton(
@@ -81,7 +87,10 @@ class TaskCategoryCard extends StatelessWidget {
               children: [
                 Text(
                   '${"Start:".tr(context)} ${dateFormat.format(task.startTime!)} ${timeFormat.format(task.startTime!)}',
-                  style: TextStyle(color: Colors.grey[600]),
+                  style: Theme.of(context)
+                      .textTheme
+                      .headlineSmall
+                      ?.copyWith(color: Colors.grey[600]),
                 ),
                 if (task.isDailyReminder ?? false) ...[
                   const SizedBox(width: 8),

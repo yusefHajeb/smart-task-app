@@ -108,12 +108,12 @@ class GlobalThemData {
         ),
         snackBarTheme: SnackBarThemeData(
             showCloseIcon: true,
-            backgroundColor: colorScheme.surface,
-            behavior: SnackBarBehavior.floating,
+            backgroundColor: colorScheme.onSecondary,
+            behavior: SnackBarBehavior.fixed,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
             ),
-            elevation: 3,
+            elevation: 0,
             dismissDirection: DismissDirection.horizontal,
             insetPadding:
                 const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
@@ -180,7 +180,7 @@ class GlobalThemData {
               letterSpacing: 0.15),
           titleSmall: AppTextStyles.bodyText.copyWith(
               color: colorScheme.onPrimary,
-              fontSize: 13.0.sp,
+              fontSize: 12.0.sp,
               fontWeight: FontWeight.w500,
               letterSpacing: 0.1),
         ),

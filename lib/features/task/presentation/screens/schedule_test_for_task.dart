@@ -39,7 +39,6 @@ class ScheduleTestForTask extends StatelessWidget {
           columns: const [
             DataColumn(label: Text('Time')),
             DataColumn(label: Text('Task')),
-            DataColumn(label: Text('Status')),
           ],
           rows: [
             for (int i = 7; i <= 6 + 24; i++) _buildDataRow(context, i % 24)
@@ -64,11 +63,10 @@ class ScheduleTestForTask extends StatelessWidget {
         ),
         DataCell(
           SizedBox(
-            width: MediaQuery.of(context).size.width / 1.3,
+            width: MediaQuery.of(context).size.width / 1.2,
             child: _taskContent(hour),
           ),
         ),
-        DataCell(_taskStatus(hour)),
       ],
     );
   }
@@ -137,14 +135,6 @@ class ScheduleTestForTask extends StatelessWidget {
           Random().nextInt(255),
         ).withOpacity(0.1);
   }
-
-  Widget _taskCard(List<Task> tasks, int i) {
-    final task = tasks.firstWhere((test) => test.startTime?.hour == i,
-        orElse: Task.toEmpty);
-    return task.completed
-        ? const Icon(Icons.done, color: Colors.green)
-        : const SizedBox();
-  }
 }
 
 class TaskSchedule extends StatelessWidget {
@@ -161,12 +151,13 @@ class TaskSchedule extends StatelessWidget {
       shrinkWrap: true,
       children: [
         Text(
-          task.title ?? '',
+          task.title,
           style: Theme.of(context)
               .textTheme
               .displayMedium
               ?.copyWith(fontWeight: FontWeight.bold),
         ),
+        const SizedBox(height: 5),
         Wrap(
           direction: Axis.horizontal,
           children: [
@@ -178,7 +169,10 @@ class TaskSchedule extends StatelessWidget {
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(width: 12),
-            const Icon(Icons.done, size: 16, color: Colors.green),
+            task.completed
+                ? const Icon(Icons.done, size: 16, color: Colors.green)
+                : Icon(Icons.circle_outlined,
+                    size: 16, color: Colors.grey[600]),
             const SizedBox(width: 4),
             Text(
               DateFormat('MMM d, y').format(task.dueDate),
@@ -186,7 +180,6 @@ class TaskSchedule extends StatelessWidget {
             ),
           ],
         ),
-        // const SizedBox(height: 8),
       ],
     );
   }

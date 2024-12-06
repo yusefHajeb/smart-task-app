@@ -53,14 +53,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               child: BlocBuilder<LocalizationsCubit, LocalizationsState>(
             builder: (context, state) {
               return Stack(
-                // shrinkWrap: true,
                 children: [
                   SizedBox(
                     height: MediaQuery.of(context).size.height,
                     child: PageView(
                       controller: _pageController,
                       physics: const PageScrollPhysics(),
-                      // physics: const NeverScrollableScrollPhysics(),
                       onPageChanged: (index) {
                         setState(() {
                           _pageController.jumpToPage(index);
@@ -74,6 +72,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                   .tr(context),
                           image: 'assets/svg/welcome.svg',
                           backgroundColor: const Color(0xFFF5F3FF),
+                          isFirstPage: true,
                         ),
                         OnboardingPage(
                           title: 'Easily Manage Tasks'.tr(context),
@@ -81,7 +80,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                               'Create new tasks, set deadlines, and receive reminders.'
                                   .tr(context),
                           image: 'assets/svg/manage_tasks.svg',
-                          backgroundColor: Color(0xFFE8F5E9),
+                          backgroundColor: const Color(0xFFE8F5E9),
                         ),
                         OnboardingPage(
                           title: 'Track Your Progress'.tr(context),
@@ -96,85 +95,83 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           description:
                               'Start organizing your tasks and boost your productivity.'
                                   .tr(context),
-                          image: 'assets/svg/get_started.svg',
-                          backgroundColor: const Color(0xFFFCE4EC),
+                          image: 'assets/svg/logo.svg',
+                          backgroundColor:
+                              const Color.fromARGB(255, 191, 198, 243),
                         ),
                       ],
                     ),
                   ),
                   Positioned(
                     bottom: 147,
-                    right: state.locale == const Locale('en') ? 40 : null,
+                    right: state.locale != const Locale('ar') ? 40 : null,
                     left: state.locale == const Locale('ar') ? 40 : null,
                     child: Center(
                       child: AnimatedBuilder(
-                          animation: _pageController,
-                          builder: (context, child) {
-                            return Transform.scale(
-                              scale: 1.0 +
-                                  ((_currentPage) - (_currentPage.round()))
-                                          .abs() *
-                                      0.2,
+                        animation: _pageController,
+                        builder: (context, child) {
+                          final progress =
+                              (_currentPage - _currentPage.round()).abs();
+                          return Transform.scale(
+                            scale: 1.0 + (progress * 0.2),
+                            child: Transform.rotate(
+                              angle: progress * 0.5,
                               child: child,
-                            );
-                          },
-                          child: InkWell(
-                            onTap: () {
-                              if (_currentPage == 3) {
-                                context
-                                    .read<OnboardingBloc>()
-                                    .add(CompleteOnboarding());
-                              } else {
-                                _pageController.nextPage(
-                                  duration: const Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut,
-                                );
-                              }
-                            },
-                            child: Stack(
-                              children: [
-                                Positioned(
-                                    bottom: 16.h,
-                                    right: state.locale == const Locale('ar')
-                                        ? null
-                                        : 16.w,
-                                    left: state.locale == const Locale('ar')
-                                        ? 16.w
-                                        : null,
-                                    child: Icon(
-                                      _currentPage == 3
-                                          ? Icons.check
-                                          : Icons.arrow_forward_ios_rounded,
-                                      color: _currentPage == 3
-                                          ? Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                          : Theme.of(context)
-                                              .colorScheme
-                                              .primary
-                                              .withOpacity(0.6),
-                                    )),
-                                SizedBox(
-                                  height: 50.h,
-                                  width: 50.w,
-                                  child: CircularProgressIndicator(
-                                    strokeAlign: 1.3,
-                                    backgroundColor: Theme.of(context)
-                                        .colorScheme
-                                        .primaryContainer
-                                        .withOpacity(0.2),
-                                    semanticsLabel: 'Loading...',
-                                    semanticsValue: '${_currentPage + 1} / 4',
-                                    valueColor: AlwaysStoppedAnimation(
-                                      Theme.of(context).colorScheme.primary,
-                                    ),
-                                    value: ((_currentPage) / 3),
-                                    strokeWidth: 6.0,
-                                  ),
-                                ),
-                              ],
                             ),
-                          )),
+                          );
+                        },
+                        child: InkWell(
+                          onTap: () {
+                            if (_currentPage == 3) {
+                              context
+                                  .read<OnboardingBloc>()
+                                  .add(CompleteOnboarding());
+                            } else {
+                              _pageController.nextPage(
+                                duration: const Duration(milliseconds: 500),
+                                curve: Curves.easeInOut,
+                              );
+                            }
+                          },
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                bottom: 15.h,
+                                right: state.locale == const Locale('ar')
+                                    ? null
+                                    : 15.w,
+                                left: state.locale == const Locale('ar')
+                                    ? 15.w
+                                    : null,
+                                child: Icon(
+                                  _currentPage == 3
+                                      ? Icons.check
+                                      : Icons.arrow_forward_ios_rounded,
+                                  color: _currentPage == 3
+                                      ? Theme.of(context).colorScheme.primary
+                                      : Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withOpacity(0.6),
+                                ),
+                              ),
+                              SizedBox(
+                                height: 50.h,
+                                width: 50.w,
+                                child: CircularProgressIndicator(
+                                  valueColor: AlwaysStoppedAnimation(
+                                    Theme.of(context).colorScheme.primary,
+                                  ),
+                                  value: ((_currentPage) / 3),
+                                  strokeWidth: 6.0,
+                                  semanticsLabel: 'Loading...',
+                                  semanticsValue: '${_currentPage + 1} / 4',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   Positioned(
@@ -183,7 +180,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: SizedBox(
-                        // height: 200,
                         child: Column(
                           children: [
                             SmoothPageIndicator(

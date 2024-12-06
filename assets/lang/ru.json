@@ -76,8 +76,12 @@
     "30 minutes" : "30 минут",
     "1 hour" : "1 час",
     "Description Task": "Описание задачи",
+    "Notification": "Уведомления",
     "Theme": "Тема",
     "language": "Язык",
-    "Activity": "Активность"
+    "Activity": "Активность",
+    "No tasks for today": "Нет задач для сегодня",
+    "Add Task": "Добавить задачу",
+    "كن مرنا في تقبل المهام ولو كانت صغيرة" : "be ready for the tasks and if it is small"
 
 }

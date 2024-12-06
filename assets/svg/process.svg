@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-  <rect width="200" height="200" fill="#E3F2FD"/>
+  <rect width="200" height="200" fill="#E3F2FD" rx="10"/>
   <circle cx="100" cy="100" r="60" stroke="#2196F3" stroke-width="8" fill="none"/>
-  <path d="M100 40 A60 60 0 0 1 160 100" stroke="#2196F3" stroke-width="8" fill="none"/>
-  <text x="85" y="110" font-family="Arial" font-size="24" fill="#2196F3">75%</text>
+  <path d="M100 40 A60 60 0 0 1 160 100" stroke="#2196F3" stroke-width="8" fill="none" stroke-dasharray="50,50"/>
+  <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="24" fill="#2196FD">75%</text>
 </svg>

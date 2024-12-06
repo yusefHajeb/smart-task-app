@@ -31,7 +31,7 @@
     "Priority": "الاولوية",
     "Description": "الوصف",
     "Remind me before": "تذكيرني قبل",
-    "Remind me every day at the start time": "تذكيرني كل يوم في وقت البدء",
+    "Remind me every day at the start time": "تذكيري كل يوم في وقت البدء",
     "Daily Reminder": "تذكير يومي",
     "Reminder Settings": "إعدادات التذكير",
     "Start": "بدء",
@@ -78,7 +78,9 @@
     "Notification" : "الإشعارات",
     "language": "اللغـة",
     "Theme":"السمـة",
-    "Description Task": "وصف المهمة"
-
+    "Description Task": "وصف المهمة",
+    "Add Task": "إضافة مهمة",
+    "كن مرنا في تقبل المهام ولو كانت صغيرة": "كن مرنا في تقبل المهام ولو كانت صغيرة",
+    "No tasks for today": "لا يوجد مهام لليوم"
     
 }

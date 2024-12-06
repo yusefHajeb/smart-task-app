@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:smart_task/core/routes/routes.dart';
 import 'package:smart_task/core/services/localizations_service.dart';
 import 'package:smart_task/core/utils/extention.dart';
+import 'package:smart_task/features/task/presentation/bloc/localizations_cubit/localizations_cubit.dart';
 import 'package:smart_task/features/task/presentation/bloc/schedule_cubit/schedule_cubit.dart';
 import 'package:smart_task/features/task/presentation/screens/schedule_test_for_task.dart';
 import 'add_task_page.dart';
@@ -147,9 +148,16 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                       child: Row(
                         children: [
                           Text(
-                            DateFormat('EEEE, MMMM d').format(DateTime.now()),
+                            DateFormat(
+                                    'EEEE, MMMM d',
+                                    context
+                                        .watch<LocalizationsCubit>()
+                                        .state
+                                        .locale
+                                        .toString())
+                                .format(DateTime.now()),
                             style: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                                fontSize: 15, fontWeight: FontWeight.bold),
                           ),
                           const Spacer(),
                           TextButton.icon(
@@ -158,7 +166,19 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                   context, TaskCreationPage.routeName);
                             },
                             icon: const Icon(Icons.add),
-                            label: const Text('Add Task'),
+                            label: Text(
+                              'Add Task'.tr(context),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimary
+                                        .withOpacity(0.7),
+                                  ),
+                            ),
                           ),
                         ],
                       ),

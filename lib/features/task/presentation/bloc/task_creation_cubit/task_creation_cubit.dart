@@ -63,10 +63,10 @@ class TaskCreationCubit extends Cubit<TaskCreationState> {
   Future<void> initialize(Task? task) async {
     final categories = await getCategories();
     if (task != null) {
-      print(task.toMap());
       emit(state.copyWith(
         categories: categories,
-        task: task,
+        task:
+            task.copyWith(priority: 'Medium', category: categories.first.name),
         isUpdateState: true,
       ));
     } else {
@@ -102,6 +102,7 @@ class TaskCreationCubit extends Cubit<TaskCreationState> {
       if (state.isUpdateState ?? false) {
         final task = state.task?.copyWith(
           updatedAt: DateTime.now(),
+          description: state.task?.description ?? "",
         );
         await updateTaskUseCase(task!);
         emit(state.copyWith(isUpdateState: false, task: Task.toEmpty()));
@@ -116,6 +117,7 @@ class TaskCreationCubit extends Cubit<TaskCreationState> {
         } catch (e) {
           print("catch e");
           print(e.toString());
+          print('\x1B[31m${e.toString()}\x1B[0m');
         }
       }
     }

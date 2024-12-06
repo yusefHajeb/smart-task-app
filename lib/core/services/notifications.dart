@@ -49,19 +49,23 @@ class NotificationService {
       'Task Reminder',
       'Reminder: ${task.title} will end at ${_formatTime(task.endTime!)}',
       tz.TZDateTime.from(reminderTime, tz.local),
-      const NotificationDetails(
+      NotificationDetails(
         android: AndroidNotificationDetails(
           'task_reminders',
           'Task Reminders',
           channelDescription: 'Notifications for task reminders',
           importance: Importance.high,
-          priority: Priority.high,
+          priority: task.priority == 'High' ? Priority.high : Priority.low,
         ),
       ),
       uiLocalNotificationDateInterpretation:
           UILocalNotificationDateInterpretation.absoluteTime,
       androidScheduleMode: AndroidScheduleMode.exact,
     );
+  }
+
+  String _formatTime(DateTime time) {
+    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
   }
 
   Future<void> _scheduleDailyReminder(Task task) async {
@@ -75,14 +79,15 @@ class NotificationService {
     );
 
     if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(seconds: 10));
+      scheduledDate =
+          scheduledDate.add(Duration(minutes: task.reminderMinutes ?? 0));
     }
 
     await _notifications.zonedSchedule(
       task.id.hashCode,
       'Daily Task Reminder',
       'Daily reminder: ${task.title}',
-      tz.TZDateTime.from(scheduledDate, tz.local),
+      tz.TZDateTime.from(scheduledDate, tz.local).toUtc(),
       const NotificationDetails(
         android: AndroidNotificationDetails(
           'daily_reminders',
@@ -103,7 +108,7 @@ class NotificationService {
     await _notifications.cancel(taskId.hashCode);
   }
 
-  String _formatTime(DateTime time) {
-    return '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+  Future<void> cancelScheduledTask(String taskId) async {
+    await cancelTaskReminder(taskId);
   }
 }
