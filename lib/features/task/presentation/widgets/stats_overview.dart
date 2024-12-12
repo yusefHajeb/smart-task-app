@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/core/services/localizations_service.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_state.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
@@ -31,7 +32,7 @@ class StatsOverview extends StatelessWidget {
                 color: Colors.blue,
               ),
             ),
-            const SizedBox(width: 16),
+            AppSize.width12(),
             Expanded(
               child: _StatCard(
                 title: 'Completed'.tr(context),
@@ -43,7 +44,7 @@ class StatsOverview extends StatelessWidget {
                 color: Colors.green,
               ),
             ),
-            const SizedBox(width: 16),
+            AppSize.width12(),
             Expanded(
               child: _StatCard(
                 title: 'Overdue'.tr(context),
@@ -88,14 +89,14 @@ class _StatCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Icon(icon, color: color),
-            const SizedBox(height: 8),
+            AppSize.height16(),
             Text(
               title,
               style: Theme.of(context).textTheme.bodySmall?.copyWith(
                     color: Colors.grey[600],
                   ),
             ),
-            const SizedBox(height: 4),
+            AppSize.height4(),
             Text(
               value,
               style: Theme.of(context).textTheme.headlineSmall?.copyWith(

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/core/theme/app_theme_model.dart';
 
 class GlobalThemData {
@@ -101,7 +100,7 @@ class GlobalThemData {
           buttonColor: colorScheme.secondary,
           textTheme: ButtonTextTheme.primary,
           disabledColor: colorScheme.onSecondary.withOpacity(0.4),
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+          padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 32.w),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(30.0),
           ),
@@ -115,8 +114,7 @@ class GlobalThemData {
             ),
             elevation: 0,
             dismissDirection: DismissDirection.horizontal,
-            insetPadding:
-                const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            insetPadding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 8.w),
             actionTextColor: colorScheme.onPrimary,
             contentTextStyle:
                 AppTextStyles.bodyText.copyWith(color: colorScheme.primary)),
@@ -187,7 +185,7 @@ class GlobalThemData {
         //icon theme
         iconTheme: IconThemeData(
           color: colorScheme.onPrimary,
-          size: 24,
+          size: 24.sp,
           opacity: 0.8,
           weight: const Icon(Icons.add).weight,
         ),
@@ -196,36 +194,31 @@ class GlobalThemData {
           style: ElevatedButton.styleFrom(
             elevation: 2.0,
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30.0)),
-            minimumSize: const Size(double.infinity, 56.0),
+                borderRadius: BorderRadius.circular(30.0.r)),
+            minimumSize: Size(double.infinity, 38.0.h),
             shadowColor: colorScheme.shadow,
             backgroundColor: colorScheme.primary,
             disabledBackgroundColor: colorScheme.primary.withOpacity(0.4),
             disabledForegroundColor: Colors.grey,
-            padding:
-                const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
-            textStyle: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-                color: colorScheme.secondary),
+            padding: EdgeInsets.symmetric(horizontal: 20.0.w, vertical: 16.0.h),
+            textStyle: AppTextStyles.bodyText
+                .copyWith(color: colorScheme.onPrimaryContainer),
           ),
         ),
         outlinedButtonTheme: OutlinedButtonThemeData(
           style: OutlinedButton.styleFrom(
             elevation: 2.0,
-            minimumSize: const Size(double.infinity, 56.0),
+            minimumSize: Size(double.infinity, 50.0.h),
             shadowColor: colorScheme.primaryContainer,
             side: BorderSide(color: colorScheme.secondary, width: 1.5),
             disabledForegroundColor: Colors.grey,
             foregroundColor: colorScheme.primary,
-            textStyle: TextStyle(
-                fontSize: 16.0.sp,
-                fontWeight: FontWeight.bold,
-                color: colorScheme.secondary),
+            textStyle:
+                AppTextStyles.bodyText.copyWith(color: colorScheme.onPrimary),
             padding:
                 const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
+                borderRadius: BorderRadius.circular(10.0.r)),
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
@@ -236,33 +229,33 @@ class GlobalThemData {
           floatingLabelBehavior: FloatingLabelBehavior.auto,
           border: OutlineInputBorder(
             borderSide:
-                BorderSide(color: Colors.grey.withOpacity(0.4), width: 1.0),
+                BorderSide(color: Colors.grey.withOpacity(0.4), width: 1.0.sp),
             borderRadius: const BorderRadius.all(Radius.circular(14)),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: colorScheme.primary, width: 1.0),
+            borderSide: BorderSide(color: colorScheme.primary, width: 1.0.sp),
             borderRadius: const BorderRadius.all(Radius.circular(14)),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide:
-                BorderSide(color: Colors.grey.withOpacity(0.4), width: 1.0),
-            borderRadius: const BorderRadius.all(Radius.circular(14)),
+                BorderSide(color: Colors.grey.withOpacity(0.4), width: 1.0.sp),
+            borderRadius: BorderRadius.all(Radius.circular(14.r)),
           ),
           errorBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: colorScheme.error, width: 1.0),
+            borderSide: BorderSide(color: colorScheme.error, width: 1.0.sp),
             borderRadius: const BorderRadius.all(Radius.circular(14)),
           ),
           focusedErrorBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: colorScheme.onError, width: 2.0),
-            borderRadius: const BorderRadius.all(Radius.circular(14)),
+            borderSide: BorderSide(color: colorScheme.onError, width: 2.0.sp),
+            borderRadius: BorderRadius.all(Radius.circular(14.r)),
           ),
         ),
         appBarTheme: AppBarTheme(
           actionsIconTheme: IconThemeData(color: colorScheme.onPrimary),
           iconTheme: IconThemeData(
             color: colorScheme.onPrimary,
-            size: 24,
-            opacity: 0.8,
+            size: 24.sp,
+            opacity: 0.8.sp,
             weight: const Icon(Icons.add).weight,
           ),
           shadowColor: Colors.transparent,
@@ -423,14 +416,14 @@ extension AppThemeData on ThemeData {
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(Sizes.p16),
+          padding: EdgeInsets.all(16.r),
           textStyle:
               const TextStyle(fontSize: 20.0, fontWeight: FontWeight.w500),
         ),
       ),
       segmentedButtonTheme: SegmentedButtonThemeData(
         style: SegmentedButton.styleFrom(
-          padding: const EdgeInsets.all(Sizes.p16),
+          padding: const EdgeInsets.all(16),
           textStyle: const TextStyle(fontSize: 18),
         ),
       ),

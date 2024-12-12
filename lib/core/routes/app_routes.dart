@@ -77,10 +77,6 @@ class AppRoutes {
           BlocProvider<CalendarCubit>(
             create: (context) => sl<CalendarCubit>(),
           ),
-          // BlocProvider<CategoryTaskBloc>(
-          //   create: (context) =>
-          //       sl<CategoryTaskBloc>()..add(const CategoryTaskEvent.started()),
-          // ),
         ],
         child: MultiBlocListener(
           listeners: [

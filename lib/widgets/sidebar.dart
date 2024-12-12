@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_task/core/constant/size.dart';
 
 class Sidebar extends StatelessWidget {
   final int selectedIndex;
@@ -26,7 +27,7 @@ class Sidebar extends StatelessWidget {
                   size: 32,
                   color: Theme.of(context).primaryColor,
                 ),
-                const SizedBox(width: 12),
+                AppSize.height12(),
                 const Text(
                   'TaskMaster',
                   style: TextStyle(
@@ -100,7 +101,7 @@ class _NavItem extends StatelessWidget {
                     ? Theme.of(context).primaryColor
                     : Colors.grey[600],
               ),
-              const SizedBox(width: 12),
+              AppSize.height12(),
               Text(
                 label,
                 style: TextStyle(

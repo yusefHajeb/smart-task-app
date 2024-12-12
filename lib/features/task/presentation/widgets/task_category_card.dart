@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/core/services/localizations_service.dart';
 
 import '../../data/models/task.dart';
@@ -81,7 +82,7 @@ class TaskCategoryCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 8),
+            AppSize.height8(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -93,7 +94,7 @@ class TaskCategoryCard extends StatelessWidget {
                       ?.copyWith(color: Colors.grey[600]),
                 ),
                 if (task.isDailyReminder ?? false) ...[
-                  const SizedBox(width: 8),
+                  AppSize.width8(),
                   Chip(
                     label: const Text('Daily'),
                     backgroundColor: Theme.of(context).colorScheme.surface,

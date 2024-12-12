@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/core/services/localizations_service.dart';
 import 'package:smart_task/features/task/presentation/bloc/app_theme/app_theme_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/localizations_cubit/localizations_cubit.dart';
@@ -37,7 +37,7 @@ class OnboardingPage extends StatelessWidget {
                   image,
                   height: 200,
                 ),
-                const SizedBox(height: 64),
+                AppSize.height32(),
                 Text(
                   title,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -46,7 +46,7 @@ class OnboardingPage extends StatelessWidget {
                       ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 24),
+                AppSize.height24(),
                 Text(
                   description,
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -55,7 +55,7 @@ class OnboardingPage extends StatelessWidget {
                       ),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 24.h),
+                AppSize.height24(),
                 if (isFirstPage != null && isFirstPage!)
                   Card(
                     child: Padding(

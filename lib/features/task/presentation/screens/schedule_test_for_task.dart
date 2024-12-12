@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/features/task/data/models/task.dart';
 
 class ScheduleTestForTask extends StatelessWidget {
@@ -157,23 +158,23 @@ class TaskSchedule extends StatelessWidget {
               .displayMedium
               ?.copyWith(fontWeight: FontWeight.bold),
         ),
-        const SizedBox(height: 5),
+        AppSize.height4(),
         Wrap(
           direction: Axis.horizontal,
           children: [
-            const SizedBox(width: 12),
+            AppSize.height12(),
             Icon(Icons.access_time, size: 16, color: Colors.grey[600]),
-            const SizedBox(width: 4),
+            AppSize.height4(),
             Text(
               '${DateFormat('HH:mm').format(task.startTime!)} - ${DateFormat('HH:mm').format(task.endTime!)}',
               style: Theme.of(context).textTheme.bodySmall,
             ),
-            const SizedBox(width: 12),
+            AppSize.height12(),
             task.completed
                 ? const Icon(Icons.done, size: 16, color: Colors.green)
                 : Icon(Icons.circle_outlined,
                     size: 16, color: Colors.grey[600]),
-            const SizedBox(width: 4),
+            AppSize.height4(),
             Text(
               DateFormat('MMM d, y').format(task.dueDate),
               style: Theme.of(context).textTheme.bodySmall,

@@ -16,7 +16,6 @@ class CalendarCubit extends Cubit<CalendarState> {
   }
 
   void initTasks(FetchTaskUseCase fetchTasks) async {
-    print('initTasks');
     final tasks = await fetchTasks.call(1);
     emit(state.copyWith(
         allTasks: tasks,

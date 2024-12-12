@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/core/services/localizations_service.dart';
 import 'package:smart_task/features/task/data/models/category.dart';
 import 'package:smart_task/features/task/presentation/bloc/category_task_bloc/category_task_bloc.dart';
@@ -94,7 +95,7 @@ class _CategoryTaskPageState extends State<CategoryTaskPage> {
               background: _buildCategoryScrollView(context, loaded),
             )),
 
-        // const SizedBox(height: 16),
+        // AppSize.height16(),
         SliverList(
             delegate:
                 SliverChildBuilderDelegate((BuildContext context, int index) {
@@ -234,7 +235,7 @@ class _CategoryTaskPageState extends State<CategoryTaskPage> {
                     'Are you sure you want to delete this task?'.tr(context),
                     style: Theme.of(context).textTheme.bodyMedium,
                   ),
-                  const SizedBox(height: 16),
+                  AppSize.height16(),
                   Text(
                     'This action cannot be undone.'.tr(context),
                     style: Theme.of(context).textTheme.bodySmall,

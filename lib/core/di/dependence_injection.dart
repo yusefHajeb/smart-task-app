@@ -16,6 +16,7 @@ import 'package:smart_task/features/task/domain/usecases/task/update_task.dart';
 import 'package:smart_task/features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/schedule_cubit/schedule_cubit.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
+import 'package:smart_task/features/task/presentation/bloc/update_task_cubit/update_task_cubit.dart';
 
 import '../../features/task/domain/usecases/category/get_categories.dart';
 import '../../features/task/domain/usecases/task/get_today_task.dart';
@@ -80,4 +81,8 @@ Future<void> setupGetIt() async {
       ));
   sl.registerFactory<OnboardingBloc>(() => OnboardingBloc());
   sl.registerFactory<CalendarCubit>(() => CalendarCubit(fetchTasks: sl()));
+  sl.registerFactory<UpdateTaskCubit>(() => UpdateTaskCubit(
+        sl(),
+        sl(),
+      ));
 }

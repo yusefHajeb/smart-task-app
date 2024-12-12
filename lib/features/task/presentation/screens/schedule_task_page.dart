@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/core/routes/routes.dart';
 import 'package:smart_task/core/services/localizations_service.dart';
 import 'package:smart_task/core/utils/extention.dart';
@@ -26,8 +27,8 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   final ScrollController _scrollController = ScrollController();
   final ScrollController _scrollTimeTask = ScrollController();
 
-  void scrollToSelectedData(int selectedData) {
-    // استخدام Timer بدلاً من Future.delayed في حلقة for
+  void scrollToSelectedData(int selectedData) async {
+    await Future.delayed(const Duration(milliseconds: 400));
     if (_scrollController.hasClients) {
       _scrollController.animateTo(
         selectedData * 55.0,
@@ -38,7 +39,6 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
   }
 
   void scrollToTimeNow(int timeNow) {
-    // استخدام Timer بدلاً من Future.delayed إذا كان هناك حاجة لذلك
     if (_scrollTimeTask.hasClients) {
       _scrollTimeTask.animateTo(
         timeNow * 100.0,
@@ -193,8 +193,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     toolbarHeight: 80,
                     flexibleSpace: FlexibleSpaceBar(
                       background: ListView.separated(
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(width: 7),
+                        separatorBuilder: (context, index) => AppSize.width4(),
                         controller: _scrollController,
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
@@ -233,7 +232,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelSmall),
-                                      const SizedBox(height: 10),
+                                      AppSize.height12(),
                                       Text(getMonthDayList()[index]),
                                     ],
                                   ),

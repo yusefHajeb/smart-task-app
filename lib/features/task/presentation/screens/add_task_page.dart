@@ -25,7 +25,7 @@ class TaskCreationPage extends StatelessWidget {
         title: Text('Create Task'.tr(context)),
       ),
       body: ResponsiveCenterScrollable(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.symmetric(horizontal: 8.w),
         child: SingleChildScrollView(
           child: BlocBuilder<TaskCreationCubit, TaskCreationState>(
             builder: (context, state) {
@@ -34,9 +34,9 @@ class TaskCreationPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const SizedBox(height: 16),
+                    AppSize.height16(),
                     Text('Task Name'.tr(context)),
-                    const SizedBox(height: 8),
+                    AppSize.height8(),
                     TextInputField(
                       initialValue: state.task?.title ?? '',
                       onChange: (value) {
@@ -52,9 +52,9 @@ class TaskCreationPage extends StatelessWidget {
                       },
                       hint: 'Enter Name'.tr(context),
                     ),
-                    const SizedBox(height: 16),
+                    AppSize.height16(),
                     Text('Category'.tr(context)),
-                    const SizedBox(height: 8),
+                    AppSize.height8(),
                     SingleChildScrollView(
                       scrollDirection: Axis.horizontal,
                       child: Row(
@@ -76,9 +76,9 @@ class TaskCreationPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    AppSize.height16(),
                     Text('Due Date'.tr(context)),
-                    const SizedBox(height: 8),
+                    AppSize.height8(),
                     TextInputField(
                       initialValue: state.task?.dueDate == null
                           ? 'Enter Due Date'.tr(context)
@@ -126,10 +126,11 @@ class TaskCreationPage extends StatelessWidget {
                           : DateFormat('MMM d, y')
                               .format(state.task?.dueDate ?? DateTime.now()),
                     ),
-                    const SizedBox(height: 16),
+                    AppSize.height12(),
+
                     if (state.task?.dueDate != null &&
                         state.task?.startTime != null &&
-                        state.task?.endTime != null)
+                        state.task?.endTime != null) ...[
                       Flex(
                         direction: Axis.horizontal,
                         children: [
@@ -139,7 +140,7 @@ class TaskCreationPage extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text('Start Time'.tr(context)),
-                                const SizedBox(height: 8),
+                                AppSize.height16(),
                                 _buildTimeSelector(
                                   label: 'Start Time',
                                   value: TimeOfDay.fromDateTime(
@@ -152,16 +153,14 @@ class TaskCreationPage extends StatelessWidget {
                               ],
                             ),
                           ),
-                          const SizedBox(
-                            width: 10,
-                          ),
+                          AppSize.width12(),
                           Flexible(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.start,
                               children: [
                                 Text('End Time'.tr(context)),
-                                const SizedBox(height: 8),
+                                AppSize.height12(),
                                 _buildTimeSelector(
                                   label: 'End Time'.tr(context),
                                   value: TimeOfDay.fromDateTime(
@@ -176,9 +175,10 @@ class TaskCreationPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                    const SizedBox(height: 16),
+                      AppSize.height12(),
+                    ],
                     Text('Priority'.tr(context)),
-                    const SizedBox(height: 4),
+                    AppSize.height12(),
                     _buildPrioritySelector(
                       context,
                       TaskPriority.fromName(state.task?.priority ?? 'Medium'),
@@ -203,23 +203,25 @@ class TaskCreationPage extends StatelessWidget {
                     //                   : null)),
                     //   ],
                     // ),
-                    const SizedBox(height: 16),
+                    AppSize.height12(),
+
                     Text('Description'.tr(context)),
-                    const SizedBox(height: 8),
+                    AppSize.height12(),
                     TextInputField(
                       initialValue: state.task?.description ?? '',
                       keyBoardType: TextInputType.multiline,
                       onChange: readTaskCubit.descriptionChanged,
                       hint: 'Description Task'.tr(context),
                     ),
-                    const SizedBox(height: 16),
+                    AppSize.height12(),
+
                     _buildReminderSettings(state.task?.isDailyReminder,
                         (value) {
                       readTaskCubit.reminderMinutes(value);
                     }, (value) {
                       readTaskCubit.isDailyReminderChanged(value);
                     }, context),
-                    AppSize.h16(),
+                    AppSize.height12(),
                     ElevatedButton(
                       onPressed: () async {
                         if (formKey.currentState?.validate() ?? false) {
@@ -232,9 +234,7 @@ class TaskCreationPage extends StatelessWidget {
                         }
                       },
                       child: Text(
-                        'Create Task',
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary),
+                        'Create Task'.tr(context),
                       ),
                     ),
                   ],
@@ -265,19 +265,26 @@ class TaskCreationPage extends StatelessWidget {
               value: TaskPriority.high,
               label: Text('High'.tr(context),
                   style: Theme.of(context).textTheme.headlineSmall),
-              icon: const Icon(Icons.priority_high),
+              icon: Icon(
+                Icons.priority_high,
+                color: Theme.of(context).colorScheme.error,
+              ),
             ),
             ButtonSegment(
               value: TaskPriority.medium,
               label: Text('Medium'.tr(context),
                   style: Theme.of(context).textTheme.headlineSmall),
-              icon: const Icon(Icons.remove),
+              icon: Icon(Icons.remove,
+                  color: Theme.of(context).colorScheme.onSurface),
             ),
             ButtonSegment(
               value: TaskPriority.low,
               label: Text('Low'.tr(context),
                   style: Theme.of(context).textTheme.headlineSmall),
-              icon: const Icon(Icons.arrow_downward),
+              icon: Icon(
+                Icons.arrow_downward,
+                color: Colors.green,
+              ),
             ),
           ],
           selected: {priority},
@@ -303,7 +310,7 @@ class TaskCreationPage extends StatelessWidget {
           'Reminder Settings'.tr(context),
         ),
         if (isDailyReminder ?? false) ...[
-          const SizedBox(height: 16),
+          AppSize.height16(),
           DropdownButtonFormField<int>(
             hint: Text('Remind me before'.tr(context)),
             items: [
@@ -320,7 +327,7 @@ class TaskCreationPage extends StatelessWidget {
             },
           ),
         ],
-        const SizedBox(height: 16),
+        AppSize.height16(),
         SwitchListTile(
           title: Text(
             'Daily Reminder'.tr(context),

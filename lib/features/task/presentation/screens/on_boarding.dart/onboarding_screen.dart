@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/core/services/localizations_service.dart';
 import 'package:smart_task/features/task/presentation/bloc/localizations_cubit/localizations_cubit.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -197,8 +198,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 spacing: 8,
                               ),
                             ),
-                            const SizedBox(height: 16),
-                            const SizedBox(height: 16),
+                            AppSize.height16(),
+                            AppSize.height16(),
                           ],
                         ),
                       ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_task/core/constant/proiority_icons.dart';
+import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_creation_cubit/task_creation_cubit.dart';
 
 import '../../data/models/task.dart';
@@ -64,7 +65,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 return null;
               },
             ),
-            const SizedBox(height: 16),
+            AppSize.height16(),
             TextFormField(
               controller: _descriptionController,
               decoration: const InputDecoration(
@@ -73,23 +74,23 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
               ),
               maxLines: 3,
             ),
-            const SizedBox(height: 16),
+            AppSize.height16(),
             _buildPrioritySelector(),
-            const SizedBox(height: 16),
+            AppSize.height16(),
             _buildTimeSelector(
               label: 'Start Time',
               value: _startTime,
               onSelect: (time) => setState(() => _startTime = time),
             ),
-            const SizedBox(height: 16),
+            AppSize.height16(),
             _buildTimeSelector(
               label: 'End Time',
               value: _endTime,
               onSelect: (time) => setState(() => _endTime = time),
             ),
-            const SizedBox(height: 16),
+            AppSize.height16(),
             _buildCategorySelector(),
-            const SizedBox(height: 16),
+            AppSize.height16(),
             _buildReminderSettings(),
           ],
         ),
@@ -116,7 +117,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16),
+            AppSize.height16(),
             SegmentedButton<TaskPriority>(
               segments: const [
                 ButtonSegment(
@@ -226,7 +227,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 16),
+            AppSize.height16(),
             DropdownButtonFormField<int>(
               decoration: const InputDecoration(
                 labelText: 'Remind me before',
@@ -244,7 +245,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 }
               },
             ),
-            const SizedBox(height: 16),
+            AppSize.height16(),
             SwitchListTile(
               title: const Text('Daily Reminder'),
               subtitle: const Text('Remind me every day at the start time'),

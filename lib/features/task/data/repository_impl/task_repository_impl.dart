@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:smart_task/features/task/data/datasources/base_database.dart';
 import 'package:smart_task/features/task/data/models/task.dart';
@@ -31,9 +33,14 @@ class TaskRepositoryImpl implements TaskRepository {
 
   @override
   Future<Task> updateTask(Task task) async {
-    await database.update('tasks', task.toMap(), where: 'id = ${task.id}');
-
-    return Future.value(task);
+    log(task.toMap().toString());
+    try {
+      await database.update('tasks', task.toMap(), where: 'id = ${task.id}');
+      return task;
+    } catch (e, s) {
+      print('\x1B[31mError: ${e.toString()}\n$s\x1B[0m');
+      return task;
+    }
   }
 
   @override

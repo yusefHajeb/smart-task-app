@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
+import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/core/services/localizations_service.dart';
 import 'package:smart_task/core/services/sheard_prefrence_service.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_state.dart';
@@ -38,7 +39,7 @@ class ActivityGrid extends StatelessWidget {
                                     fontWeight: FontWeight.w600,
                                   ),
                         ),
-                        const SizedBox(height: 16),
+                        AppSize.height16(),
                         SizedBox(
                           height: 160.h,
                           child: GridView.builder(
@@ -66,7 +67,7 @@ class ActivityGrid extends StatelessWidget {
                             },
                           ),
                         ),
-                        const SizedBox(height: 8),
+                        AppSize.height16(),
                         FutureBuilder<String>(
                             future: SharedPrefrenceHelper.getData("language")
                                 .then((value) => value ?? 'en'),
@@ -118,7 +119,7 @@ class InitialActivity extends StatelessWidget {
     return Column(children: [
       Center(
         child: SizedBox(
-          height: 120,
+          height: 120.h,
           child: GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 7,
@@ -154,7 +155,7 @@ class InitialActivity extends StatelessWidget {
           },
         ),
       ),
-      // const SizedBox(height: 8),
+      // AppSize.height16(),
     ]);
   }
 }

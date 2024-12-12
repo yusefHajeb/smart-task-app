@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:smart_task/core/constant/proiority_icons.dart';
+import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/features/task/data/models/task.dart';
 import 'package:intl/intl.dart';
 
@@ -146,7 +147,7 @@ class TaskCard extends StatelessWidget {
                       'Start: ${dateFormat.format(task.startTime!)} ${timeFormat.format(task.startTime!)}',
                       style: TextStyle(color: Colors.grey[600]),
                     ),
-                    const SizedBox(height: 4),
+                    AppSize.height4(),
                     Text(
                       'End: ${dateFormat.format(task.endTime!)} ${timeFormat.format(task.endTime!)}',
                       style: TextStyle(color: Colors.grey[600]),

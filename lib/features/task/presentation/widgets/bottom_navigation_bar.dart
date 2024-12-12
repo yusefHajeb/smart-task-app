@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/features/task/presentation/bloc/bottom_navigation/bottom_navigation_bloc.dart';
 import 'package:smart_task/features/task/presentation/screens/add_task_page.dart';
 
@@ -18,10 +20,10 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 70,
+      height: 55.h,
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(20.r),
         boxShadow: [
           BoxShadow(
             color: Colors.grey.withOpacity(0.3),
@@ -36,7 +38,7 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
         alignment: Alignment.center,
         children: [
           Positioned(
-            bottom: 10,
+            bottom: 9.h,
             left: 0,
             right: 0,
             child: Row(
@@ -52,10 +54,11 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                     });
                   },
                   icon: Icon(
-                    _selectedIndex == 0 ? Icons.home : Icons.home_outlined,
-                    color: _selectedIndex == 0 ? Colors.pink : Colors.grey,
-                    size: 30,
-                  ),
+                      _selectedIndex == 0
+                          ? Icons.home_rounded
+                          : Icons.home_outlined,
+                      color: _selectedIndex == 0 ? Colors.pink : Colors.grey,
+                      size: 24.h),
                 ),
                 IconButton(
                   onPressed: () {
@@ -71,10 +74,10 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                         ? Icons.calendar_month_rounded
                         : Icons.calendar_month_outlined,
                     color: _selectedIndex == 1 ? Colors.pink : Colors.grey,
-                    size: 30,
+                    size: 24.h,
                   ),
                 ),
-                const SizedBox(width: 60),
+                AppSize.width52(),
                 IconButton(
                   onPressed: () {
                     context
@@ -86,10 +89,10 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                   },
                   icon: Icon(
                     _selectedIndex == 2
-                        ? Icons.category
+                        ? Icons.category_rounded
                         : Icons.category_outlined,
                     color: _selectedIndex == 2 ? Colors.pink : Colors.grey,
-                    size: 30,
+                    size: 24.h,
                   ),
                 ),
                 IconButton(
@@ -103,17 +106,17 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                   },
                   icon: Icon(
                     _selectedIndex == 3
-                        ? Icons.person
+                        ? Icons.person_rounded
                         : Icons.person_2_outlined,
                     color: _selectedIndex == 3 ? Colors.pink : Colors.grey,
-                    size: 30,
+                    size: 24.h,
                   ),
                 ),
               ],
             ),
           ),
           Positioned(
-            top: -20,
+            top: -20.h,
             left: 0,
             right: 0,
             child: GestureDetector(
@@ -124,8 +127,8 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                 );
               },
               child: Container(
-                height: 60,
-                width: 60,
+                height: 50.h,
+                width: 50.w,
                 decoration: const BoxDecoration(
                   shape: BoxShape.circle,
                   color: Colors.pink,
@@ -138,10 +141,10 @@ class _BottomNavigationBarWidgetState extends State<BottomNavigationBarWidget> {
                     ),
                   ],
                 ),
-                child: const Icon(
+                child: Icon(
                   Icons.add,
                   color: Colors.white,
-                  size: 30,
+                  size: 30.w,
                 ),
               ),
             ),

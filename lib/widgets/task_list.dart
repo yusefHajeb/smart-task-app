@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
 import 'package:smart_task/core/constant/proiority_icons.dart';
+import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/core/services/localizations_service.dart';
 import 'package:smart_task/features/task/data/models/task.dart';
 import 'package:smart_task/features/task/presentation/bloc/task_cubit/task_cubit.dart';
-import 'package:smart_task/features/task/presentation/screens/add_task_page.dart';
+import 'package:smart_task/features/task/presentation/bloc/update_task_cubit/update_task_cubit.dart';
 import 'package:smart_task/features/task/presentation/screens/schedule_task_page.dart';
+import 'package:smart_task/features/task/presentation/screens/update_task.dart';
 
 import '../features/task/presentation/bloc/task_cubit/task_state.dart';
 
@@ -14,7 +17,31 @@ class TaskList extends StatelessWidget {
   const TaskList({super.key});
 
   @override
-  Widget build(BuildContext context) {
+/*************  ✨ Codeium Command ⭐  *************/
+  ///
+  /// Returns a widget that displays the list of tasks. The list is sorted by
+  /// priority and completion status. The tasks are displayed in a vertical
+  /// list view. If there are no tasks for today, a message is displayed.
+  ///
+  /// The widget is wrapped in a [BlocConsumer] widget, which listens to the
+  /// [TaskState] stream and builds the widget based on the state.
+  ///
+  /// If the state is [TaskState.initial], a [CircularProgressIndicator] is
+  /// displayed.
+  ///
+  /// If the state is [TaskState.error], a message is displayed with the error
+  /// message.
+  ///
+  /// If the state is [TaskState.loading], a [CircularProgressIndicator] is
+  /// displayed.
+  ///
+  /// If the state is [TaskState.success], the list of tasks is displayed. The
+  /// list is sorted by priority and completion status. The tasks are displayed
+  /// in a vertical list view. If there are no tasks for today, a message is
+  /// displayed.
+  ///
+/******  ea0f0a9e-e610-4f1e-9e2d-e027bd01e480  *******/ Widget build(
+      BuildContext context) {
     return BlocConsumer<TaskCubit, TaskState>(
       listener: (context, state) {},
       builder: (context, state) {
@@ -25,8 +52,9 @@ class TaskList extends StatelessWidget {
             return Center(child: Text(message));
           },
           loading: () {
-            return const SizedBox(
-                height: 200, child: Center(child: CircularProgressIndicator()));
+            return SizedBox(
+                height: 200.h,
+                child: const Center(child: CircularProgressIndicator()));
           },
           success: (tasks, selectedCategory) {
             final sortedTasks = List<Task>.from(tasks)
@@ -38,6 +66,7 @@ class TaskList extends StatelessWidget {
                     .index
                     .compareTo(TaskPriority.fromName(a.priority!).index);
               });
+
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -69,7 +98,9 @@ class TaskList extends StatelessWidget {
                   ],
                 ),
                 const Divider(height: 1),
-                Column(
+                ListView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
                   children: [
                     if (sortedTasks.any((task) =>
                         DateFormat('MMM d, y').format(task.dueDate) ==
@@ -189,11 +220,11 @@ class _TaskItem extends StatelessWidget {
       subtitle: Wrap(
         children: [
           Icon(Icons.label_outline, size: 16, color: Colors.grey[600]),
-          const SizedBox(width: 4),
+          AppSize.width4(),
           Text(task.category!),
-          const SizedBox(width: 16),
+          AppSize.width16(),
           Icon(Icons.calendar_today, size: 16, color: Colors.grey[600]),
-          const SizedBox(width: 4),
+          AppSize.width4(),
           Text(DateFormat('MMM d, y').format(task.dueDate)),
         ],
       ),
@@ -215,14 +246,8 @@ class TaskItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        Navigator.pushNamed(
-          context, TaskCreationPage.routeName,
-          arguments: task, // تمرير المهمة
-        ).then((value) {
-          if (context.mounted) {
-            context.read<TaskCubit>().fetchTasks();
-          }
-        });
+        showUpdateTaskBottomSheet(context, task);
+        context.read<UpdateTaskCubit>().setTaskForUpdate(task);
       },
       child: Card(
         surfaceTintColor: (task.dueDate
@@ -260,7 +285,7 @@ class TaskItem extends StatelessWidget {
                 task.description!,
                 style: Theme.of(context).textTheme.bodySmall,
               ),
-              const SizedBox(height: 16),
+              AppSize.height16(),
               Row(
                 children: [
                   Checkbox(
@@ -272,9 +297,9 @@ class TaskItem extends StatelessWidget {
                         borderRadius: BorderRadius.circular(4)),
                     value: task.completed,
                   ),
-                  const SizedBox(width: 12),
+                  AppSize.width12(),
                   PriorityIconWidget(priority: task.priority!),
-                  const SizedBox(width: 12),
+                  AppSize.width12(),
                   Icon(Icons.calendar_today, size: 16, color: Colors.grey[600]),
                   const SizedBox(width: 4),
                   Text(

@@ -26,16 +26,12 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Row(
+          title: Row(
             children: [
-              Icon(Icons.check_box_outlined, size: 32),
-              SizedBox(width: 12),
-              Text('TaskSmart'),
+              const Icon(Icons.check_box_outlined, size: 32),
+              AppSize.width12(),
+              const Text('TaskSmart'),
             ],
-          ),
-          leading: IconButton(
-            onPressed: () {},
-            icon: const Icon(Icons.menu),
           ),
         ),
         body: Column(
@@ -72,11 +68,11 @@ class HomePageBody extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
-            AppSize.h16(),
+            AppSize.height16(),
             const ActivityGrid(),
-            AppSize.h24(),
+            AppSize.height24(),
             const StatsOverview(),
-            AppSize.h24(),
+            AppSize.height24(),
             const TaskList(),
           ],
         ),
