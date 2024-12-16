@@ -66,7 +66,11 @@ Future<void> setupGetIt() async {
   // sl.registerFactory<AppThemeBloc>(() => AppThemeBloc());
   sl.registerFactory<BottomNavigationBloc>(() => BottomNavigationBloc());
   sl.registerFactory<TaskCubit>(() => TaskCubit(
-      insertTask: sl(), changeTaskStatus: sl(), fetchTask: sl(), delete: sl()));
+      insertTask: sl(),
+      changeTaskStatus: sl(),
+      fetchTask: sl(),
+      delete: sl(),
+      notificationService: sl()));
   sl.registerFactory<TaskCreationCubit>(() => TaskCreationCubit(
       insertTask: sl(),
       getCategories: sl(),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_task/core/services/notifications.dart';
 import 'package:smart_task/features/task/domain/usecases/task/add_task.dart';
 import 'package:smart_task/features/task/domain/usecases/task/change_task_status.dart';
 import 'package:smart_task/features/task/domain/usecases/task/get_task.dart';
@@ -9,6 +10,8 @@ import '../../../domain/usecases/task/delete_task.dart';
 import 'task_state.dart';
 
 class TaskCubit extends Cubit<TaskState> {
+  final NotificationService notificationService;
+
   final InsertTaskUseCase insertTask;
   final ChangeTaskStatusUseCase changeTaskStatus;
   final FetchTaskUseCase fetchTask;
@@ -20,6 +23,7 @@ class TaskCubit extends Cubit<TaskState> {
     required this.changeTaskStatus,
     required this.fetchTask,
     required this.delete,
+    required this.notificationService,
   }) : super(const TaskState.initial());
 
   Future<void> fetchTasks({String? selectCategory}) async {
@@ -61,6 +65,10 @@ class TaskCubit extends Cubit<TaskState> {
       await changeTaskStatus(task);
       try {
         final tasks = await fetchTask(1);
+        if (task.isDailyReminder ?? false) {
+          await notificationService.scheduleTaskReminder(task);
+        }
+        await notificationService.cancelTaskReminder(task.id.toString());
         emit((state as TaskSuccess).copyWith(tasks: tasks));
       } catch (e) {
         emit(TaskState.error(e.toString()));
@@ -73,6 +81,7 @@ class TaskCubit extends Cubit<TaskState> {
       try {
         await delete(taskId);
         final tasks = await fetchTask(1);
+        await notificationService.cancelTaskReminder(taskId.toString());
         emit((state as TaskSuccess).copyWith(tasks: tasks));
       } catch (e) {
         emit(TaskState.error(e.toString()));

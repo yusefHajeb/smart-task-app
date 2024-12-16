@@ -12,7 +12,7 @@ import '../home_page.dart';
 import 'on_barding_bloc.dart';
 
 class OnboardingScreen extends StatefulWidget {
-  static const String routeName = '/onboarding';
+  static const String routeName = '/';
   const OnboardingScreen({super.key});
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
@@ -45,7 +45,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     return BlocListener<OnboardingBloc, OnboardingState>(
       listener: (context, state) {
         if (state is OnboardingCompleted) {
-          Navigator.of(context).pushReplacementNamed(HomePage.routeName);
+          Navigator.of(context)
+              .pushNamedAndRemoveUntil(HomePage.routeName, (_) => false);
         }
       },
       child: Scaffold(

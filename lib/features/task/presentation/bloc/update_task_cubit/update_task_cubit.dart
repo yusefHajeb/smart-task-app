@@ -39,4 +39,10 @@ class UpdateTaskCubit extends Cubit<UpdateTaskState> {
       task: state.task?.copyWith(isDailyReminder: value),
     ));
   }
+
+  void changeReminderMinutes(int value) {
+    emit(state.copyWith(
+      task: state.task?.copyWith(reminderMinutes: value),
+    ));
+  }
 }

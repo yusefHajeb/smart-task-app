@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_task/core/constant/size.dart';
 import 'package:smart_task/features/task/data/models/task.dart';
+import 'package:smart_task/features/task/presentation/bloc/category_task_bloc/category_task_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/update_task_cubit/update_task_cubit.dart';
 
 import '../bloc/task_cubit/task_cubit.dart';
 
-Future<void> showUpdateTaskBottomSheet(BuildContext context, Task task) async {
+Future<void> showUpdateTaskBottomSheet(BuildContext context, Task task,
+    {bool? isEditFromCategory}) async {
   final TextEditingController titleController =
       TextEditingController(text: task.title);
   final TextEditingController descriptionController =
@@ -31,12 +33,24 @@ Future<void> showUpdateTaskBottomSheet(BuildContext context, Task task) async {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
-                const Text(
-                  'Update Task',
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Update Task',
+                      style: TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        context.read<TaskCubit>().deleteTask(task.id);
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
                 ),
                 AppSize.height16(),
                 _buildTextField(
@@ -55,7 +69,23 @@ Future<void> showUpdateTaskBottomSheet(BuildContext context, Task task) async {
                 // _buildCategoryDropdown(context, state),
                 AppSize.height16(),
                 SwitchListTile(
-                  title: const Text('Daily Reminder'),
+                  title: const Row(
+                    children: [
+                      Text('Daily Reminder'),
+                      // SizedBox(width: 8),
+                      // IconButton(
+                      //   icon: Icon(task.isDailyReminder ?? false
+                      //       ? Icons.check_circle
+                      //       : Icons.cancel),
+                      //   onPressed: () {
+                      //     context.read<TaskCubit>().updateTask(task.copyWith(
+                      //           isDailyReminder:
+                      //               !(task.isDailyReminder ?? false),
+                      //         ));
+                      //   },
+                      // ),
+                    ],
+                  ),
                   value: isDailyReminder,
                   onChanged: (value) {
                     context.read<UpdateTaskCubit>().changeDailyReminder(value);
@@ -63,7 +93,13 @@ Future<void> showUpdateTaskBottomSheet(BuildContext context, Task task) async {
                   },
                 ),
                 AppSize.height16(),
-                if (isDailyReminder) _buildReminderDropdown(),
+                if (isDailyReminder)
+                  _buildReminderDropdown(state.task?.reminderMinutes ?? 0,
+                      (value) {
+                    return context
+                        .read<UpdateTaskCubit>()
+                        .changeReminderMinutes(value ?? 10);
+                  }),
                 AppSize.height16(),
                 ElevatedButton(
                   child: Text(
@@ -81,6 +117,10 @@ Future<void> showUpdateTaskBottomSheet(BuildContext context, Task task) async {
                           isDailyReminder: state.task?.isDailyReminder ?? false,
                         ));
                     context.read<TaskCubit>().fetchTasks();
+                    if (isEditFromCategory ?? false) {
+                      context.read<CategoryTaskBloc>().add(
+                          CategoryTaskEvent.categoryTaskChanged(state.task!));
+                    }
                     Navigator.pop(context);
                   },
                 ),
@@ -111,21 +151,36 @@ Widget _buildTextField({
   );
 }
 
-Widget _buildReminderDropdown() {
+// Widget _buildCategoryDropdown(BuildContext context, UpdateTaskState state) {
+//   return DropdownButtonFormField<CategoryModel>(
+//     decoration: const InputDecoration(
+//       labelText: 'Category',
+//       border: OutlineInputBorder(),
+//     ),
+//     items: state.categories.map<DropdownMenuItem<CategoryModel>>((category) {
+//       return DropdownMenuItem<CategoryModel>(
+//         value: category,
+//         child: Text(category.name),
+//       );
+//     }).toList(),
+//     onChanged: (value) {
+//       // handle category change
+//     },
+//   );
+// }
+
+Widget _buildReminderDropdown(int reminderMinutes, Function(int?)? onChanged) {
   return DropdownButtonFormField<int>(
-    value: 10,
-    decoration: const InputDecoration(
-      labelText: 'Remind me before',
-      border: OutlineInputBorder(),
-    ),
-    items: [10, 30, 60].map<DropdownMenuItem<int>>((int time) {
-      return DropdownMenuItem<int>(
-        value: time,
-        child: Text('$time minutes'),
-      );
-    }).toList(),
-    onChanged: (value) {
-      // handle reminder minutes change
-    },
-  );
+      value: reminderMinutes,
+      decoration: const InputDecoration(
+        labelText: 'Remind me before',
+        border: OutlineInputBorder(),
+      ),
+      items: [10, 30, 60].map<DropdownMenuItem<int>>((int time) {
+        return DropdownMenuItem<int>(
+          value: time,
+          child: Text('$time minutes'),
+        );
+      }).toList(),
+      onChanged: (value) => onChanged);
 }

@@ -190,10 +190,10 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                     floating: false,
                     pinned: true,
                     elevation: 1,
-                    toolbarHeight: 80,
+                    toolbarHeight: 76,
                     flexibleSpace: FlexibleSpaceBar(
                       background: ListView.separated(
-                        separatorBuilder: (context, index) => AppSize.width4(),
+                        separatorBuilder: (context, index) => AppSize.width8(),
                         controller: _scrollController,
                         shrinkWrap: true,
                         scrollDirection: Axis.horizontal,
@@ -223,7 +223,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                             : Theme.of(context)
                                                 .colorScheme
                                                 .primary
-                                                .withOpacity(0.165),
+                                                .withOpacity(0.1),
                                   ),
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
@@ -232,7 +232,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
                                           style: Theme.of(context)
                                               .textTheme
                                               .labelSmall),
-                                      AppSize.height12(),
+                                      AppSize.height8(),
                                       Text(getMonthDayList()[index]),
                                     ],
                                   ),

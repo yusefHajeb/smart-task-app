@@ -38,27 +38,27 @@ extension CategoryTaskStateX on CategoryTaskState {
 
   bool get isLoaded => this is Loaded;
 
-  List<Task> get tasks => this.maybeMap(
+  List<Task> get tasks => maybeMap(
         loaded: (loaded) => loaded.tasks,
         orElse: () => [],
       );
 
-  List<CategoryModel> get categories => this.maybeMap(
+  List<CategoryModel> get categories => maybeMap(
         loaded: (loaded) => loaded.categories,
         orElse: () => [],
       );
 
-  List<Task> get categoryTasks => this.maybeMap(
+  List<Task> get categoryTasks => maybeMap(
         loaded: (loaded) => loaded.categoryTasks,
         orElse: () => [],
       );
 
-  CategoryModel? get selectedCategory => this.maybeMap(
+  CategoryModel? get selectedCategory => maybeMap(
         loaded: (loaded) => loaded.selectedCategory,
         orElse: () => null,
       );
 
-  String get errorMessage => this.maybeMap(
+  String get errorMessage => maybeMap(
         error: (error) => error.errorMessage,
         orElse: () => '',
       );

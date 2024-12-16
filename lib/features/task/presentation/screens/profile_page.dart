@@ -125,10 +125,7 @@ class ProfilePage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Wrap(
-                        children: [
-                          Text('كن مرنا في تقبل المهام ولو كانت صغيرة'
-                              .tr(context))
-                        ],
+                        children: [Text('© 2023 Smart Task By Yousef Hageb')],
                       ),
                     )
                   ],

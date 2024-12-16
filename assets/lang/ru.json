@@ -39,7 +39,7 @@
     "End": "Конец",
     "Tasks": "Задачи",
     "Task Name": "Название задачи",
-    "See all..": "посмотреть все..",
+    "See all": "посмотреть все..",
     "Add New Category": "Добавить новую категорию",
     "All": "Все",
     "Create Task": "Создать задачу",
@@ -83,6 +83,11 @@
     "No tasks for today": "Нет задач для сегодня",
     "Add Task": "Добавить задачу",
     "كن مرنا في تقبل المهام ولو كانت صغيرة" : "be ready for the tasks and if it is small",
-    "Update": "Обновить"
-   
+    "Update": "Обновить",
+    "Are you sure you want to delete ": "Вы уверены, что хотите удалить",
+
+    "This will delete all tasks in this category and cannot be undone.": "Это удалит все задачи в этой категории и нельзя отменить."
+    ,"Delete Category": "Удалить категорию",
+    "No tasks in this category" : "Нет задач в этой категории",
+    "Add some tasks to get started!" : "Добавьте несколько задач, чтобы начать!"
 }

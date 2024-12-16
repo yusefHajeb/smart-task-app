@@ -21,9 +21,10 @@ class HomePage extends StatelessWidget {
     const CategoryTaskPage(),
     const ProfilePage(),
   ];
-  static const String routeName = '/home-page';
+  static const String routeName = 'home-page';
   @override
   Widget build(BuildContext context) {
+    print('======================');
     return Scaffold(
         appBar: AppBar(
           title: Row(

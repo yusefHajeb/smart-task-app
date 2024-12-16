@@ -38,7 +38,7 @@
     "End": "نهاية",
     "Tasks": "المهام",
     "Task Name": "اسم المهمة",
-    "See all.." :"عرض الكل ..",
+    "See all" :"عرض الكل ..",
     "Add New Category" :"إضافة فئة جديدة",
     "All" :"الكل",
     "Create Task" : "إنشاء مهمة",
@@ -54,8 +54,9 @@
     "Add New Task":"إضافة مهمة جديدة",
     "Category Name":"اسم الفئة",
     "Add":"إضافة",
-    "Are you sure you want to delete this category?" : "هل أنت متأكد من حذف هذا التصنيف؟",
-    "The category and all associated tasks will be deleted.": "سوف يتم حذف التصنيف وجميع المهام المرتبطة به من قبل والتي لا تتوفَّر بعد ذلك.",
+    "Are you sure you want to delete": "هل أنت متأكد من حذف",
+    "This will delete all tasks in this category and cannot be undone." : "سوف يتم حذف الفئة وجميع المهام المرتبطة به من قبل والتي لا تتوفَّر بعد ذلك.",
+    "Delete Category" : "حذف الفئة",
     "Yes, delete":"نعم حذف",
     "Mon":"الاثنين",
     "Tue":"الثلاثاء",
@@ -77,11 +78,14 @@
     "End:" : "نهاية:",
     "Notification" : "الإشعارات",
     "language": "اللغـة",
-    "Theme":"السمـة",
+    "Theme":"الوضع",
     "Description Task": "وصف المهمة",
     "Add Task": "إضافة مهمة",
     "كن مرنا في تقبل المهام ولو كانت صغيرة": "كن مرنا في تقبل المهام ولو كانت صغيرة",
     "No tasks for today": "لا يوجد مهام لليوم",
-    "Update ": "تحديث"
+    "Update ": "تحديث",
+    "No tasks in this category" : "الفئة لا تحتوي على مهام",
+    "Add some tasks to get started!" : "أضف بعض المهام للبدء!"
+    
     
 }

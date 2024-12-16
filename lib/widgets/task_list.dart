@@ -17,224 +17,215 @@ class TaskList extends StatelessWidget {
   const TaskList({super.key});
 
   @override
-/*************  ✨ Codeium Command ⭐  *************/
-  ///
-  /// Returns a widget that displays the list of tasks. The list is sorted by
-  /// priority and completion status. The tasks are displayed in a vertical
-  /// list view. If there are no tasks for today, a message is displayed.
-  ///
-  /// The widget is wrapped in a [BlocConsumer] widget, which listens to the
-  /// [TaskState] stream and builds the widget based on the state.
-  ///
-  /// If the state is [TaskState.initial], a [CircularProgressIndicator] is
-  /// displayed.
-  ///
-  /// If the state is [TaskState.error], a message is displayed with the error
-  /// message.
-  ///
-  /// If the state is [TaskState.loading], a [CircularProgressIndicator] is
-  /// displayed.
-  ///
-  /// If the state is [TaskState.success], the list of tasks is displayed. The
-  /// list is sorted by priority and completion status. The tasks are displayed
-  /// in a vertical list view. If there are no tasks for today, a message is
-  /// displayed.
-  ///
-/******  ea0f0a9e-e610-4f1e-9e2d-e027bd01e480  *******/ Widget build(
-      BuildContext context) {
+  Widget build(BuildContext context) {
     return BlocConsumer<TaskCubit, TaskState>(
       listener: (context, state) {},
       builder: (context, state) {
         return state.maybeWhen(
-          initial: () => const Center(child: CircularProgressIndicator()),
-          orElse: () => const Center(child: Text('Error')),
-          error: (message) {
-            return Center(child: Text(message));
-          },
-          loading: () {
-            return SizedBox(
-                height: 200.h,
-                child: const Center(child: CircularProgressIndicator()));
-          },
-          success: (tasks, selectedCategory) {
-            final sortedTasks = List<Task>.from(tasks)
-              ..sort((a, b) {
-                if (a.completed != b.completed) {
-                  return a.completed ? 1 : -1;
-                }
-                return TaskPriority.fromName(b.priority!)
-                    .index
-                    .compareTo(TaskPriority.fromName(a.priority!).index);
-              });
-
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Text(
-                        'Tasks'.tr(context),
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.pushNamedAndRemoveUntil(
-                          context,
-                          ScheduleScreen.routeName,
-                          (route) => false,
-                        );
-                      },
-                      child: Text(
-                        'See all..'.tr(context),
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                              color: Colors.blue,
-                            ),
-                      ),
-                    ),
-                  ],
-                ),
-                const Divider(height: 1),
-                ListView(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  children: [
-                    if (sortedTasks.any((task) =>
-                        DateFormat('MMM d, y').format(task.dueDate) ==
-                            DateFormat('MMM d, y').format(DateTime.now()) ||
-                        (task.dueDate.isBefore(DateTime.now()) &&
-                            task.completed == false)))
-                      ...sortedTasks
-                          .where((task) =>
-                              DateFormat('MMM d, y').format(task.dueDate) ==
-                                  DateFormat('MMM d, y')
-                                      .format(DateTime.now()) ||
-                              (task.dueDate.isBefore(DateTime.now()) &&
-                                  task.completed == false))
-                          .map((task) => TaskItem(task: task))
-                          .toList(),
-                    if (!sortedTasks.any((task) =>
-                        DateFormat('MMM d, y').format(task.dueDate) ==
-                            DateFormat('MMM d, y').format(DateTime.now()) ||
-                        (task.dueDate.isBefore(DateTime.now()) &&
-                            task.completed == false)))
-                      Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Text(
-                            'No tasks for today'.tr(context),
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-              ],
-            );
-          },
+          initial: () => _buildLoadingState(),
+          loading: () => _buildLoadingState(),
+          error: (message) => _buildErrorState(message),
+          success: (tasks, selectedCategory) =>
+              _buildSuccessState(context, tasks),
+          orElse: () => _buildErrorState('Unknown error occurred'),
         );
       },
     );
   }
-}
 
-// ignore: unused_element
-class _CategoryFilter extends StatelessWidget {
-  const _CategoryFilter({required this.tasks, this.selectedCategory});
-  final List<Task> tasks;
-  final String? selectedCategory;
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: Row(
+  Widget _buildLoadingState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const _AddNewCategory(),
-          _FilterChip(
-            label: 'All',
-            selected: selectedCategory != null,
-            onSelected: (_) {
-              context.read<TaskCubit>().fetchTasks();
-            },
+          const CircularProgressIndicator(),
+          AppSize.height16(),
+          Text(
+            'Loading tasks...',
+            style: TextStyle(
+              fontSize: 16.sp,
+              color: Colors.grey[600],
+            ),
           ),
-          ...tasks.map((task) => Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: _FilterChip(
-                label: task.category!,
-                selected: task.category == selectedCategory,
-                onSelected: (_) => context
-                    .read<TaskCubit>()
-                    .setSelectedCategory(task.category),
-              ))),
         ],
       ),
     );
   }
-}
 
-class _FilterChip extends StatelessWidget {
-  final String label;
-  final bool selected;
-  final ValueChanged<bool> onSelected;
-
-  const _FilterChip({
-    required this.label,
-    required this.selected,
-    required this.onSelected,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return FilterChip(
-      label: Text(label),
-      selected: selected,
-      onSelected: onSelected,
-      selectedColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+  Widget _buildErrorState(String message) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.error_outline, size: 48.sp, color: Colors.red),
+          AppSize.height16(),
+          Text(
+            message,
+            style: TextStyle(fontSize: 16.sp, color: Colors.red),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
-}
 
-class _TaskItem extends StatelessWidget {
-  final Task task;
+  Widget _buildSuccessState(BuildContext context, List<Task> tasks) {
+    final sortedTasks = _getSortedTasks(tasks);
+    final today = DateTime.now();
 
-  const _TaskItem({required this.task});
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _buildHeader(context),
+        const Divider(height: 1),
+        _buildTasksList(context, sortedTasks, today),
+      ],
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Checkbox(
-        value: task.completed,
-        onChanged: (_) async =>
-            await context.read<TaskCubit>().updateTask(task),
+  Widget _buildHeader(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 2,
+            offset: const Offset(0, 1),
+          ),
+        ],
       ),
-      title: Text(
-        task.title,
-        style: TextStyle(
-          decoration: task.completed ? TextDecoration.lineThrough : null,
-          color: task.completed ? Colors.grey : null,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Icon(
+                Icons.task_alt,
+                color: Theme.of(context).colorScheme.primary,
+                size: 24.sp,
+              ),
+              AppSize.width12(),
+              Text(
+                'Today\'s Tasks'.tr(context),
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20.sp,
+                    ),
+              ),
+            ],
+          ),
+          _buildSeeAllButton(context),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSeeAllButton(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => Navigator.pushNamedAndRemoveUntil(
+          context,
+          ScheduleScreen.routeName,
+          (route) => false,
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+          child: Row(
+            children: [
+              Text(
+                'See all'.tr(context),
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.primary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14.sp,
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward_ios,
+                size: 14.sp,
+                color: Theme.of(context).colorScheme.primary,
+              ),
+            ],
+          ),
         ),
       ),
-      subtitle: Wrap(
-        children: [
-          Icon(Icons.label_outline, size: 16, color: Colors.grey[600]),
-          AppSize.width4(),
-          Text(task.category!),
-          AppSize.width16(),
-          Icon(Icons.calendar_today, size: 16, color: Colors.grey[600]),
-          AppSize.width4(),
-          Text(DateFormat('MMM d, y').format(task.dueDate)),
-        ],
-      ),
-      trailing: IconButton(
-        icon: const Icon(Icons.delete_outline),
-        onPressed: () {
-          context.read<TaskCubit>().deleteTask(task.id);
-        },
+    );
+  }
+
+  Widget _buildTasksList(
+      BuildContext context, List<Task> sortedTasks, DateTime today) {
+    final todaysTasks = sortedTasks
+        .where((task) =>
+            DateFormat('MMM d, y').format(task.dueDate) ==
+                DateFormat('MMM d, y').format(today) ||
+            (task.dueDate.isBefore(today) && !task.completed))
+        .toList();
+
+    if (todaysTasks.isEmpty) {
+      return _buildEmptyState(context);
+    }
+
+    return ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemCount: todaysTasks.length,
+      itemBuilder: (context, index) => Padding(
+        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+        child: TaskItem(task: todaysTasks[index]),
       ),
     );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.all(32.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.task_outlined,
+              size: 64.sp,
+              color: Colors.grey[400],
+            ),
+            AppSize.height16(),
+            Text(
+              'No tasks for today'.tr(context),
+              style: TextStyle(
+                fontSize: 18.sp,
+                color: Colors.grey[600],
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            AppSize.height8(),
+            Text(
+              'Time to add some new tasks!'.tr(context),
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: Colors.grey[500],
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<Task> _getSortedTasks(List<Task> tasks) {
+    return List<Task>.from(tasks)
+      ..sort((a, b) {
+        if (a.completed != b.completed) {
+          return a.completed ? 1 : -1;
+        }
+        return TaskPriority.fromName(b.priority!)
+            .index
+            .compareTo(TaskPriority.fromName(a.priority!).index);
+      });
   }
 }
 
@@ -244,120 +235,175 @@ class TaskItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        showUpdateTaskBottomSheet(context, task);
-        context.read<UpdateTaskCubit>().setTaskForUpdate(task);
-      },
-      child: Card(
-        surfaceTintColor: (task.dueDate
-                .isBefore(DateTime.now().subtract(const Duration(days: 1))))
-            ? Colors.red
-            : null,
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+        side: BorderSide(
+          color: _getCardBorderColor(task),
+          width: 1,
+        ),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: () => _handleTaskTap(context),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.all(16.w),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      task.title,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          decoration: task.completed
-                              ? TextDecoration.lineThrough
-                              : null),
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.cancel_outlined, color: Colors.red),
-                    onPressed: () {
-                      context.read<TaskCubit>().deleteTask(task.id);
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Text(
-                task.description!,
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
+              _buildTaskHeader(context),
+              if (task.description?.isNotEmpty ?? false) ...[
+                AppSize.height12(),
+                _buildDescription(context),
+              ],
               AppSize.height16(),
-              Row(
-                children: [
-                  Checkbox(
-                    onChanged: (value) {
-                      context.read<TaskCubit>().updateTask(task);
-                    },
-                    activeColor: Colors.green,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(4)),
-                    value: task.completed,
-                  ),
-                  AppSize.width12(),
-                  PriorityIconWidget(priority: task.priority!),
-                  AppSize.width12(),
-                  Icon(Icons.calendar_today, size: 16, color: Colors.grey[600]),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${DateFormat.jm().format(task.startTime!)} - ${DateFormat.jm().format(task.endTime!)}',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                ],
-              ),
+              _buildTaskFooter(context),
             ],
           ),
         ),
       ),
     );
   }
-}
 
-class PriorityIconWidget extends StatelessWidget {
-  const PriorityIconWidget({
-    Key? key,
-    required this.priority,
-  }) : super(key: key);
+  Widget _buildTaskHeader(BuildContext context) {
+    return Row(
+      children: [
+        _buildCheckbox(context),
+        AppSize.width12(),
+        Expanded(
+          child: Text(
+            task.title,
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  decoration:
+                      task.completed ? TextDecoration.lineThrough : null,
+                  color: task.completed ? Colors.grey : null,
+                ),
+          ),
+        ),
+        _buildDeleteButton(context),
+      ],
+    );
+  }
 
-  final String priority;
+  Widget _buildDescription(BuildContext context) {
+    return Text(
+      task.description!,
+      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            color: Colors.grey[600],
+            height: 1.5,
+          ),
+      maxLines: 2,
+      overflow: TextOverflow.ellipsis,
+    );
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 4),
-      child: Icon(
-        TaskPriority.fromName(priority).icon,
-        size: 24,
-        color: TaskPriority.fromName(priority).color,
+  Widget _buildTaskFooter(BuildContext context) {
+    return Row(
+      children: [
+        // PriorityIconWidget(priority: task.priority!),
+        AppSize.width16(),
+        Icon(Icons.access_time_rounded, size: 18.sp, color: Colors.grey[600]),
+        AppSize.width8(),
+        Text(
+          '${DateFormat.jm().format(task.startTime!)} - ${DateFormat.jm().format(task.endTime!)}',
+          style: TextStyle(
+            color: Colors.grey[600],
+            fontSize: 13.sp,
+          ),
+        ),
+        if (task.isDailyReminder ?? false) ...[
+          const Spacer(),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.repeat_rounded,
+                  size: 14.sp,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                AppSize.width4(),
+                Text(
+                  'Daily',
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.primary,
+                    fontSize: 12.sp,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildCheckbox(BuildContext context) {
+    return Transform.scale(
+      scale: 1.1,
+      child: Checkbox(
+        value: task.completed,
+        onChanged: (_) => context.read<TaskCubit>().updateTask(task),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        activeColor: Colors.green,
       ),
     );
   }
-}
 
-// please build priorityIcons
-
-class _AddNewCategory extends StatelessWidget {
-  const _AddNewCategory();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(50),
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+  Widget _buildDeleteButton(BuildContext context) {
+    return IconButton(
+      icon: Icon(
+        Icons.delete_outline_rounded,
+        color: Colors.red[300],
+        size: 24.sp,
       ),
-      child: IconButton(
-        icon: const Icon(Icons.add),
-        onPressed: () {
-          // Add new category logic here
-        },
-        color: Theme.of(context).colorScheme.primary,
-        iconSize: 30.0,
-        splashRadius: 25.0,
-        tooltip: 'Add New Category'.tr(context),
+      onPressed: () => _showDeleteConfirmation(context),
+    );
+  }
+
+  Color _getCardBorderColor(Task task) {
+    if (task.dueDate
+        .isBefore(DateTime.now().subtract(const Duration(days: 1)))) {
+      return Colors.red.withOpacity(0.5);
+    }
+    return Colors.transparent;
+  }
+
+  void _handleTaskTap(BuildContext context) {
+    showUpdateTaskBottomSheet(context, task);
+    context.read<UpdateTaskCubit>().setTaskForUpdate(task);
+  }
+
+  void _showDeleteConfirmation(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Delete Task'.tr(context)),
+        content: Text('Are you sure you want to delete this task?'.tr(context)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancel'.tr(context)),
+          ),
+          TextButton(
+            onPressed: () {
+              context.read<TaskCubit>().deleteTask(task.id);
+              Navigator.pop(context);
+            },
+            child: Text(
+              'Delete'.tr(context),
+              style: const TextStyle(color: Colors.red),
+            ),
+          ),
+        ],
       ),
     );
   }
