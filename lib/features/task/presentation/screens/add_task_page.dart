@@ -233,9 +233,11 @@ class TaskCreationPage extends StatelessWidget {
                           });
                         }
                       },
-                      child: Text(
-                        'Create Task'.tr(context),
-                      ),
+                      child: Text('Create Task'.tr(context),
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall
+                              ?.copyWith(fontSize: 14.sp)),
                     ),
                   ],
                 ),

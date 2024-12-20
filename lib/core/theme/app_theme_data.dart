@@ -218,23 +218,40 @@ class GlobalThemData {
             padding:
                 const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0.r)),
+              borderRadius: BorderRadius.circular(10.0.r),
+            ),
+          ).copyWith(
+            backgroundColor: MaterialStateProperty.resolveWith<Color>(
+              (Set<MaterialState> states) {
+                if (states.contains(MaterialState.pressed))
+                  return colorScheme.primary.withOpacity(0.5);
+                return colorScheme.surface; // Default Color
+              },
+            ),
+            overlayColor: MaterialStateProperty.all(
+                colorScheme.primary.withOpacity(0.1)), // Ripple color
+            animationDuration: Duration(milliseconds: 200),
           ),
         ),
         inputDecorationTheme: InputDecorationTheme(
+          focusColor: colorScheme.primary,
+          hoverColor: colorScheme.primary,
+          labelStyle: AppTextStyles.bodyText,
+          helperStyle: AppTextStyles.bodyText,
           counterStyle:
               TextStyle(color: Colors.grey.withOpacity(0.9), fontSize: 12.0.sp),
           filled: true,
-          hintStyle: TextStyle(color: Colors.grey.withOpacity(0.9)),
+          hintStyle: AppTextStyles.bodyText
+              .copyWith(color: Colors.grey.withOpacity(0.9)),
           floatingLabelBehavior: FloatingLabelBehavior.auto,
           border: OutlineInputBorder(
             borderSide:
                 BorderSide(color: Colors.grey.withOpacity(0.4), width: 1.0.sp),
-            borderRadius: const BorderRadius.all(Radius.circular(14)),
+            borderRadius: BorderRadius.all(Radius.circular(14.r)),
           ),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(color: colorScheme.primary, width: 1.0.sp),
-            borderRadius: const BorderRadius.all(Radius.circular(14)),
+            borderRadius: BorderRadius.all(Radius.circular(14.r)),
           ),
           enabledBorder: OutlineInputBorder(
             borderSide:
@@ -243,7 +260,7 @@ class GlobalThemData {
           ),
           errorBorder: OutlineInputBorder(
             borderSide: BorderSide(color: colorScheme.error, width: 1.0.sp),
-            borderRadius: const BorderRadius.all(Radius.circular(14)),
+            borderRadius: BorderRadius.all(Radius.circular(14.r)),
           ),
           focusedErrorBorder: OutlineInputBorder(
             borderSide: BorderSide(color: colorScheme.onError, width: 2.0.sp),

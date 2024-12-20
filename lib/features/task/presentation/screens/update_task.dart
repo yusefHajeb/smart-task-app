@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_task/core/constant/size.dart';
+import 'package:smart_task/core/services/localizations_service.dart';
 import 'package:smart_task/features/task/data/models/task.dart';
 import 'package:smart_task/features/task/presentation/bloc/category_task_bloc/category_task_bloc.dart';
 import 'package:smart_task/features/task/presentation/bloc/update_task_cubit/update_task_cubit.dart';
@@ -36,13 +37,8 @@ Future<void> showUpdateTaskBottomSheet(BuildContext context, Task task,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
-                      'Update Task',
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    Text('Update Task'.tr(context),
+                        style: Theme.of(context).textTheme.bodyLarge),
                     IconButton(
                       icon: const Icon(Icons.delete),
                       onPressed: () {
@@ -103,7 +99,7 @@ Future<void> showUpdateTaskBottomSheet(BuildContext context, Task task,
                 AppSize.height16(),
                 ElevatedButton(
                   child: Text(
-                    'Update ${task.id}',
+                    'Update '.tr(context),
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.onPrimary),
                   ),

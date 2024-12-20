@@ -122,10 +122,10 @@ class ProfilePage extends StatelessWidget {
                       ],
                     ),
                     const Divider(),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
+                    const Padding(
+                      padding: EdgeInsets.all(8.0),
                       child: Wrap(
-                        children: [Text('© 2023 Smart Task By Yousef Hageb')],
+                        children: [Text('© 2024 Smart Task By Yousef Hageb')],
                       ),
                     )
                   ],
