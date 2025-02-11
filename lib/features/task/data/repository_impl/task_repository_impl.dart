@@ -22,13 +22,12 @@ class TaskRepositoryImpl implements TaskRepository {
 
   @override
   Future<void> insertTask(Task task) async {
-    print('task to Map');
-    print(task.toMap());
-    database.insert('tasks', task.toMap());
-
-    database.insertUserTasks({'task_id': task.id, 'user_id': 1});
-
-    return Future.value();
+    try {
+      await database.insert('tasks', task.toMap());
+      await database.insertUserTasks({'task_id': task.id, 'user_id': 1});
+    } catch (e, s) {
+      log('Error inserting task: ${e.toString()}\n$s', level: 1000);
+    }
   }
 
   @override

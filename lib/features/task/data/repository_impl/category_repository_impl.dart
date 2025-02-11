@@ -43,25 +43,25 @@ class CategoryRepositoryImpl extends CategoryRepository {
     return Future.value(categoryNotifier.value.length);
   }
 
-  @override
-  Future<List<CategoryModel>> insertCategoryTasks(Map<String, dynamic> data) {
-    database.insertCategoryTasks(data);
+  // @override
+  // Future<List<CategoryModel>> insertCategoryTasks(Map<String, dynamic> data) {
+  //   database.insertCategoryTasks(data);
 
-    return Future.value();
-  }
+  //   return Future.value();
+  // }
 
-  @override
-  Future<List<CategoryModel>> insertUserCategory(
-      Map<String, dynamic> data) async {
-    await database.insertUserCategories(data);
-    return Future.value();
-  }
+  // @override
+  // Future<List<CategoryModel>> insertUserCategory(
+  //     Map<String, dynamic> data) async {
+  //   await database.insertUserCategories(data);
+  //   return Future.value();
+  // }
 
-  @override
-  Future<List<CategoryModel>> updateCategory(CategoryModel category) async {
-    database.update('categories', category.toMap());
-    return Future.value();
-  }
+  // @override
+  // Future<List<CategoryModel>> updateCategory(CategoryModel category) async {
+  //   database.update('categories', category.toMap());
+  //   return Future.value();
+  // }
 }
 
 extension on List<CategoryModel> {

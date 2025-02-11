@@ -23,6 +23,10 @@ class ActivityGrid extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: ResponsiveCenterScrollable(
           child: BlocBuilder<TaskCubit, TaskState>(
+            buildWhen: (previous, current) => (previous is TaskSuccess
+                ? previous.tasks.length >
+                    (current is TaskSuccess ? current.tasks.length : 0)
+                : true),
             builder: (context, state) => state.maybeMap(
               orElse: () => const SizedBox(),
               error: (message) => Text(message.message),
@@ -108,30 +112,37 @@ class FadeInActivityCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: Future.delayed(delay),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.done) {
-          return TweenAnimationBuilder<double>(
-            tween: Tween(begin: 0, end: completion + 0.5),
-            duration: const Duration(milliseconds: 900),
-            curve: Curves.easeOut,
-            builder: (context, value, child) {
-              return Opacity(
-                opacity: value,
-                child: child,
-              );
-            },
-            child: _ActivityCell(
+        future: Future.delayed(delay),
+        builder: (context, snapshot) {
+          print('snapshot $snapshot');
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SizedBox.shrink();
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            return TweenAnimationBuilder<double>(
+              tween: Tween(begin: 0, end: completion + 0.5),
+              duration: const Duration(milliseconds: 900),
+              curve: Curves.easeOut,
+              builder: (context, value, child) {
+                return Opacity(
+                  opacity: value,
+                  child: child,
+                );
+              },
+              child: _ActivityCell(
+                date: date,
+                count: count,
+                completion: completion,
+              ),
+            );
+          } else {
+            return _ActivityCell(
               date: date,
               count: count,
               completion: completion,
-            ),
-          );
-        } else {
-          return const SizedBox.shrink();
-        }
-      },
-    );
+            );
+          }
+        });
   }
 }
 
@@ -147,14 +158,15 @@ class _ActivityCell extends StatelessWidget {
   });
 
   Color _getColorForCompletion(double completion) {
-    if (completion >= 0.95) return const Color.fromARGB(82, 47, 112, 25);
+    print('completion $completion');
+    if (completion >= 0.23) return const Color.fromARGB(82, 47, 112, 25);
 
-    if (completion >= 0.9) return const Color.fromARGB(255, 32, 114, 36);
+    if (completion >= 0.20) return const Color.fromARGB(255, 32, 114, 36);
 
-    if (completion >= 0.8) return Colors.green[800]!;
-    if (completion >= 0.5) return const Color.fromARGB(255, 109, 202, 114);
-    if (completion >= 0.3) return const Color.fromARGB(255, 141, 222, 145);
-    if (completion > 0) return const Color.fromARGB(255, 171, 227, 173);
+    if (completion >= 0.15) return Colors.green[800]!;
+    if (completion >= 0.14) return const Color.fromARGB(255, 109, 202, 114);
+    if (completion >= 0.13) return const Color.fromARGB(255, 141, 222, 145);
+    if (completion > 0.1) return const Color.fromARGB(255, 171, 227, 173);
     return Colors.grey[600]!.withOpacity(0.5);
   }
 

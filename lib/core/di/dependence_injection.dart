@@ -41,8 +41,8 @@ Future<void> setupGetIt() async {
       ));
 
 //== task UseCase
-  sl.registerLazySingleton<InsertTaskUseCase>(() => InsertTaskUseCase(sl()));
-  sl.registerLazySingleton<FetchTaskUseCase>(() => FetchTaskUseCase(sl.call()));
+  sl.registerSingleton<InsertTaskUseCase>(InsertTaskUseCase(sl()));
+  sl.registerLazySingleton<FetchTaskUseCase>(() => FetchTaskUseCase(sl()));
   sl.registerLazySingleton<GetTodayTasks>(() => GetTodayTasks(sl.call()));
   sl.registerLazySingleton<DeleteTaskUseCase>(
       () => DeleteTaskUseCase(sl.call()));
