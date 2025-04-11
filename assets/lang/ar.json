@@ -86,7 +86,10 @@
     "Update ": "تحديث",
     "No tasks in this category" : "الفئة لا تحتوي على مهام",
     "Add some tasks to get started!" : "أضف بعض المهام للبدء!",
-    "Update Task" : "تعديل المهمة"
+    "Update Task" : "تعديل المهمة",
+    "Delete Task": "حذف المهمة",
+    "Are you sure you want to delete this task?" : "هل أنت متأكد من حذف هذه المهمة؟",
+    "Delete": "حذف"
     
     
 }

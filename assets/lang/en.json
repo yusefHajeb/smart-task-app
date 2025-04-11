@@ -82,8 +82,10 @@
     "Update": "Update",
     "Delete Category" : "Delete Category",
     "No tasks in this category" : "No tasks in this category",
-    "Add some tasks to get started!" : "Add some tasks to get started!"
-
+    "Add some tasks to get started!" : "Add some tasks to get started!",
+    "Delete Task": "Delete Task",
+    "Are you sure you want to delete this task?" : "Are you sure you want to delete this task?",
+    "Delete": "Delete"
     
 
 

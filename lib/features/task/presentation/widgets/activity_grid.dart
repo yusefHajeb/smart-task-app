@@ -88,7 +88,7 @@ class _AnimatedActivityGrid extends StatelessWidget {
         return FadeInActivityCell(
           date: date,
           count: count,
-          completion: double.parse(completion.toStringAsFixed(2)),
+          completion: double.parse(completion.toStringAsFixed(10)),
           delay: delay,
         );
       },
@@ -120,12 +120,12 @@ class FadeInActivityCell extends StatelessWidget {
           }
           if (snapshot.connectionState == ConnectionState.done) {
             return TweenAnimationBuilder<double>(
-              tween: Tween(begin: 0, end: completion + 0.5),
+              tween: Tween<double>(begin: 0 + 0.1, end: 1),
               duration: const Duration(milliseconds: 900),
               curve: Curves.easeOut,
               builder: (context, value, child) {
-                return Opacity(
-                  opacity: value,
+                return Transform.scale(
+                  scale: value,
                   child: child,
                 );
               },
@@ -159,14 +159,22 @@ class _ActivityCell extends StatelessWidget {
 
   Color _getColorForCompletion(double completion) {
     print('completion $completion');
-    if (completion >= 0.23) return const Color.fromARGB(82, 47, 112, 25);
+    if (completion >= 0.3) return const Color.fromARGB(82, 47, 112, 25);
 
-    if (completion >= 0.20) return const Color.fromARGB(255, 32, 114, 36);
+    if (completion > 0.20) return const Color.fromARGB(255, 32, 114, 36);
 
-    if (completion >= 0.15) return Colors.green[800]!;
-    if (completion >= 0.14) return const Color.fromARGB(255, 109, 202, 114);
-    if (completion >= 0.13) return const Color.fromARGB(255, 141, 222, 145);
-    if (completion > 0.1) return const Color.fromARGB(255, 171, 227, 173);
+    if (completion >= 0.20) return Colors.green[600]!;
+    if (completion >= 0.16) return const Color.fromARGB(255, 61, 151, 86);
+    if (completion >= 0.14) return const Color.fromARGB(255, 81, 181, 105);
+    if (completion >= 0.11) return const Color.fromARGB(255, 109, 202, 114);
+    if (completion >= 0.10) return const Color.fromARGB(255, 121, 212, 126);
+    if (completion >= 0.09) return const Color.fromARGB(255, 141, 222, 145);
+    if (completion >= 0.08) return const Color.fromARGB(255, 161, 227, 166);
+    if (completion >= 0.07) return const Color.fromARGB(255, 171, 227, 173);
+    if (completion >= 0.05) return const Color.fromARGB(255, 191, 232, 191);
+    if (completion >= 0.03) return const Color.fromARGB(255, 211, 242, 211);
+    if (completion >= 0.01) return const Color.fromARGB(255, 221, 252, 221);
+
     return Colors.grey[600]!.withOpacity(0.5);
   }
 
