@@ -403,10 +403,7 @@ class _AddCategoryButton extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         title: Text(
           'Add New Category'.tr(context),
-          style: TextStyle(
-            fontSize: 20.sp,
-            fontWeight: FontWeight.bold,
-          ),
+          style: Theme.of(context).textTheme.displayLarge,
         ),
         content: TextField(
           controller: controller,

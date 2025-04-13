@@ -17,22 +17,31 @@ class ActivityGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      // elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: ResponsiveCenterScrollable(
           child: BlocBuilder<TaskCubit, TaskState>(
-            buildWhen: (previous, current) => (previous is TaskSuccess
-                ? previous.tasks.length >
-                    (current is TaskSuccess ? current.tasks.length : 0)
-                : true),
+            // Only rebuild when the task list changes in a meaningful way
+            buildWhen: (previous, current) {
+              final previousTasks =
+                  previous is TaskSuccess ? previous.tasks : [];
+              final currentTasks = current is TaskSuccess ? current.tasks : [];
+              return previousTasks.length != currentTasks.length;
+            },
             builder: (context, state) => state.maybeMap(
               orElse: () => const SizedBox(),
-              error: (message) => Text(message.message),
+              error: (message) => Center(
+                child: Text(
+                  message.message,
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: Colors.red,
+                      ),
+                ),
+              ),
               initial: (_) => const InitialActivity(),
-              loading: (_) => const SizedBox(
-                child: Text('fdfdfd'),
+              loading: (_) => const Center(
+                child: CircularProgressIndicator(),
               ),
               success: (tasks) {
                 return Column(
@@ -45,12 +54,34 @@ class ActivityGrid extends StatelessWidget {
                           ),
                     ),
                     AppSize.height16(),
-                    SizedBox(
-                      height: 160.h,
-                      child: _AnimatedActivityGrid(tasks: tasks.tasks),
-                    ),
+                    FutureBuilder<String>(
+                        future: SharedPrefrenceHelper.getData("language")
+                            .then((value) => value ?? 'en'),
+                        builder: (context, snapshot) {
+                          // Show loading indicator while fetching locale
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: LinearProgressIndicator());
+                          }
+
+                          // Handle errors
+                          if (snapshot.hasError) {
+                            return Text(
+                              'Error loading language',
+                              style: Theme.of(context).textTheme.bodySmall,
+                            );
+                          }
+
+                          final locale = snapshot.data ?? 'en';
+                          return SizedBox(
+                            height: 160.h,
+                            child: _AnimatedActivityGrid(
+                                tasks: tasks.tasks, local: locale),
+                          );
+                        }),
                     AppSize.height16(),
-                    _WeekdayLabels(),
+                    const _WeekdayLabels(),
                   ],
                 );
               },
@@ -62,33 +93,56 @@ class ActivityGrid extends StatelessWidget {
   }
 }
 
+/// Constants for the activity grid
+class _ActivityGridConstants {
+  static const int daysToShow = 28;
+  static const int crossAxisCount = 7;
+  static const double spacing = 4.0;
+  static const double animationDelayPerCell = 50.0;
+  static const double animationBaseDelay = 100.0;
+  // static const double animationDuration = 900.0;
+  static const double defaultCompletion = 0.3;
+  static const double cellAspectRatio = 1.0;
+}
+
+/// A grid that displays animated activity cells
 class _AnimatedActivityGrid extends StatelessWidget {
+  final String local;
   final List<Task> tasks;
 
-  const _AnimatedActivityGrid({required this.tasks});
+  const _AnimatedActivityGrid({required this.tasks, required this.local});
 
   @override
   Widget build(BuildContext context) {
     return GridView.builder(
-      itemCount: 28,
+      itemCount: _ActivityGridConstants.daysToShow,
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 7,
-        mainAxisSpacing: 4,
-        crossAxisSpacing: 4,
-        childAspectRatio: 1,
+        crossAxisCount: _ActivityGridConstants.crossAxisCount,
+        mainAxisSpacing: _ActivityGridConstants.spacing,
+        crossAxisSpacing: _ActivityGridConstants.spacing,
+        childAspectRatio: _ActivityGridConstants.cellAspectRatio,
       ),
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        final date = DateTime.now().subtract(Duration(days: 27 - index));
+        final date = DateTime.now()
+            .subtract(Duration(days: local == 'ar' ? 1 - index : index));
         final count = TaskService.getTaskCountForDay(date, tasks);
-        final completion = tasks.isNotEmpty ? count / tasks.length : 0.3;
 
-        final delay = Duration(milliseconds: index * 50 + 100);
+        // Calculate completion rate with a fallback for empty task lists
+        final completion = tasks.isNotEmpty
+            ? count / tasks.length
+            : _ActivityGridConstants.defaultCompletion;
+
+        final delay = Duration(
+            milliseconds:
+                (index * _ActivityGridConstants.animationDelayPerCell +
+                        _ActivityGridConstants.animationBaseDelay)
+                    .toInt());
 
         return FadeInActivityCell(
           date: date,
           count: count,
-          completion: double.parse(completion.toStringAsFixed(10)),
+          completion: double.parse(completion.toStringAsFixed(2)),
           delay: delay,
         );
       },
@@ -96,7 +150,8 @@ class _AnimatedActivityGrid extends StatelessWidget {
   }
 }
 
-class FadeInActivityCell extends StatelessWidget {
+/// A widget that fades in an activity cell with a delay
+class FadeInActivityCell extends StatefulWidget {
   final DateTime date;
   final double completion;
   final int count;
@@ -110,42 +165,55 @@ class FadeInActivityCell extends StatelessWidget {
   });
 
   @override
+  State<FadeInActivityCell> createState() => _FadeInActivityCellState();
+}
+
+class _FadeInActivityCellState extends State<FadeInActivityCell> {
+  bool _isVisible = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _startAnimation();
+  }
+
+  Future<void> _startAnimation() async {
+    await Future.delayed(widget.delay);
+    if (mounted) {
+      setState(() {
+        _isVisible = true;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-        future: Future.delayed(delay),
-        builder: (context, snapshot) {
-          print('snapshot $snapshot');
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const SizedBox.shrink();
-          }
-          if (snapshot.connectionState == ConnectionState.done) {
-            return TweenAnimationBuilder<double>(
-              tween: Tween<double>(begin: 0 + 0.1, end: 1),
-              duration: const Duration(milliseconds: 900),
-              curve: Curves.easeOut,
-              builder: (context, value, child) {
-                return Transform.scale(
-                  scale: value,
-                  child: child,
-                );
-              },
-              child: _ActivityCell(
-                date: date,
-                count: count,
-                completion: completion,
-              ),
-            );
-          } else {
-            return _ActivityCell(
-              date: date,
-              count: count,
-              completion: completion,
-            );
-          }
-        });
+    if (!_isVisible) {
+      return const SizedBox.shrink();
+    }
+
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0.1, end: 1.0),
+      duration: const Duration(
+          milliseconds:
+              900), // Using the value directly instead of calling toInt()
+      curve: Curves.easeOut,
+      builder: (context, value, child) {
+        return Transform.scale(
+          scale: value,
+          child: child,
+        );
+      },
+      child: _ActivityCell(
+        date: widget.date,
+        count: widget.count,
+        completion: widget.completion,
+      ),
+    );
   }
 }
 
+/// A single cell in the activity grid that represents task completion for a day
 class _ActivityCell extends StatelessWidget {
   final DateTime date;
   final double completion;
@@ -157,13 +225,11 @@ class _ActivityCell extends StatelessWidget {
     required this.count,
   });
 
+  /// Returns a color based on the completion percentage
   Color _getColorForCompletion(double completion) {
-    print('completion $completion');
-    if (completion >= 0.3) return const Color.fromARGB(82, 47, 112, 25);
-
-    if (completion > 0.20) return const Color.fromARGB(255, 32, 114, 36);
-
-    if (completion >= 0.20) return Colors.green[600]!;
+    // Fixed color mapping with proper progression
+    if (completion >= 0.3) return const Color.fromARGB(255, 32, 114, 36);
+    if (completion >= 0.2) return Colors.green[600]!;
     if (completion >= 0.16) return const Color.fromARGB(255, 61, 151, 86);
     if (completion >= 0.14) return const Color.fromARGB(255, 81, 181, 105);
     if (completion >= 0.11) return const Color.fromARGB(255, 109, 202, 114);
@@ -175,11 +241,15 @@ class _ActivityCell extends StatelessWidget {
     if (completion >= 0.03) return const Color.fromARGB(255, 211, 242, 211);
     if (completion >= 0.01) return const Color.fromARGB(255, 221, 252, 221);
 
+    // Default color for no activity
     return Colors.grey[600]!.withOpacity(0.5);
   }
 
   @override
   Widget build(BuildContext context) {
+    final formattedDate = DateFormat('MMM d').format(date);
+    final taskText = count == 1 ? 'task' : 'tasks';
+
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeInOut,
@@ -188,31 +258,66 @@ class _ActivityCell extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       child: Tooltip(
-        message: '${DateFormat('MMM d').format(date)}: $count tasks',
-        child: const SizedBox(),
+        message: '$formattedDate: $count $taskText',
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(4),
+            onTap: () {
+              // Could add functionality to show tasks for this day
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('$count $taskText on $formattedDate'),
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            },
+            child: const SizedBox(),
+          ),
+        ),
       ),
     );
   }
 }
 
+/// A widget that displays the weekday labels below the activity grid
 class _WeekdayLabels extends StatelessWidget {
+  const _WeekdayLabels();
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String>(
       future: SharedPrefrenceHelper.getData("language")
           .then((value) => value ?? 'en'),
       builder: (context, snapshot) {
+        // Show loading indicator while fetching locale
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: LinearProgressIndicator());
+        }
+
+        // Handle errors
+        if (snapshot.hasError) {
+          return Text(
+            'Error loading language',
+            style: Theme.of(context).textTheme.bodySmall,
+          );
+        }
+
         final locale = snapshot.data ?? 'en';
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(7, (index) {
-            final date = DateTime.now().subtract(Duration(days: 6 - index));
-            return Text(
-              DateFormat('E', locale).format(date),
-              style: Theme.of(context)
-                  .textTheme
-                  .bodySmall
-                  ?.copyWith(color: Colors.grey.shade600),
+            final date = DateTime.now().subtract(
+                Duration(days: snapshot.data == 'en' ? index : 1 - index));
+            return Semantics(
+              label: 'Weekday ${DateFormat('EEEE', locale).format(date)}',
+              child: Text(
+                DateFormat('E', locale).format(date),
+                style: Theme.of(context)
+                    .textTheme
+                    .bodySmall
+                    ?.copyWith(color: Colors.grey.shade600),
+              ),
             );
           }),
         );
@@ -221,28 +326,42 @@ class _WeekdayLabels extends StatelessWidget {
   }
 }
 
+/// A widget that displays the initial state of the activity grid when no data is available
 class InitialActivity extends StatelessWidget {
   const InitialActivity({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Text(
+          'Activity Overview'.tr(context),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.w600,
+              ),
+        ),
+        AppSize.height16(),
         Center(
           child: SizedBox(
             height: 160.h,
             child: GridView.builder(
-              itemCount: 28,
+              itemCount: _ActivityGridConstants.daysToShow,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 7,
-                mainAxisSpacing: 4,
-                crossAxisSpacing: 4,
+                crossAxisCount: _ActivityGridConstants.crossAxisCount,
+                mainAxisSpacing: _ActivityGridConstants.spacing,
+                crossAxisSpacing: _ActivityGridConstants.spacing,
+                childAspectRatio: _ActivityGridConstants.cellAspectRatio,
               ),
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
-                final delay = Duration(milliseconds: index * 50);
+                final delay = Duration(
+                    milliseconds:
+                        (index * _ActivityGridConstants.animationDelayPerCell)
+                            .toInt());
                 return FadeInActivityCell(
-                  date: DateTime.now(),
+                  date: DateTime.now().subtract(Duration(
+                      days: _ActivityGridConstants.daysToShow - 1 - index)),
                   count: 0,
                   completion: 0,
                   delay: delay,
@@ -252,7 +371,7 @@ class InitialActivity extends StatelessWidget {
           ),
         ),
         AppSize.height16(),
-        _WeekdayLabels(),
+        const _WeekdayLabels(),
       ],
     );
   }

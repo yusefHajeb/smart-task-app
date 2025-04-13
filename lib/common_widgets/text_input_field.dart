@@ -17,6 +17,7 @@ class TextInputField extends StatefulWidget {
     this.maxLines,
     this.readOnly = false,
     this.onTap,
+    this.hintStyle,
     this.controller,
     this.contentPadding =
         const EdgeInsets.symmetric(horizontal: 14, vertical: 16),
@@ -31,7 +32,7 @@ class TextInputField extends StatefulWidget {
   final FormFieldValidator<String>? validator;
   final FormFieldSetter<String>? onSaved;
   final IconData? icon;
-
+  final TextStyle? hintStyle;
   final bool isPassword, enabled, readOnly;
   final double radius;
   final int? maxLines;
@@ -73,6 +74,7 @@ class _TextInputFieldState extends State<TextInputField> {
       onTap: widget.onTap,
       textAlign: TextAlign.start,
       decoration: InputDecoration(
+        hintStyle: widget.hintStyle,
         prefixIcon: widget.icon != null
             ? Icon(
                 widget.icon!,

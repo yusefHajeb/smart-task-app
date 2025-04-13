@@ -80,6 +80,11 @@ class TaskCreationPage extends StatelessWidget {
                     Text('Due Date'.tr(context)),
                     AppSize.height8(),
                     TextInputField(
+                      hintStyle: state.task?.dueDate == null
+                          ? null
+                          : TextStyle(
+                              color: Colors.grey[200],
+                            ),
                       initialValue: state.task?.dueDate == null
                           ? 'Enter Due Date'.tr(context)
                           : DateFormat('MMM d, y')
@@ -353,6 +358,9 @@ class TaskCreationPage extends StatelessWidget {
     return InkWell(
       onTap: () async {},
       child: TextInputField(
+        hintStyle: TextStyle(
+          color: Colors.grey[200],
+        ),
         initialValue: value?.format(context) ?? '',
         icon: Icons.access_time,
         hint: value?.format(context),
