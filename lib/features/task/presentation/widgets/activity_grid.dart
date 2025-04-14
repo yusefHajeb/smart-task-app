@@ -41,7 +41,7 @@ class ActivityGrid extends StatelessWidget {
               ),
               initial: (_) => const InitialActivity(),
               loading: (_) => const Center(
-                child: CircularProgressIndicator(),
+                child: InitialActivity(),
               ),
               success: (tasks) {
                 return Column(
@@ -125,7 +125,7 @@ class _AnimatedActivityGrid extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final date = DateTime.now()
-            .subtract(Duration(days: local == 'ar' ? 1 - index : index));
+            .subtract(Duration(days: local == 'ar' ? 1 - index : 1 - index));
         final count = TaskService.getTaskCountForDay(date, tasks);
 
         // Calculate completion rate with a fallback for empty task lists
@@ -228,10 +228,10 @@ class _ActivityCell extends StatelessWidget {
   /// Returns a color based on the completion percentage
   Color _getColorForCompletion(double completion) {
     // Fixed color mapping with proper progression
-    if (completion >= 0.3) return const Color.fromARGB(255, 32, 114, 36);
-    if (completion >= 0.2) return Colors.green[600]!;
-    if (completion >= 0.16) return const Color.fromARGB(255, 61, 151, 86);
-    if (completion >= 0.14) return const Color.fromARGB(255, 81, 181, 105);
+    if (completion >= 0.3) return const Color.fromARGB(255, 16, 176, 24);
+    if (completion >= 0.2) return const Color.fromARGB(237, 67, 160, 72);
+    if (completion >= 0.16) return const Color.fromARGB(245, 61, 151, 86);
+    if (completion >= 0.14) return const Color.fromARGB(245, 81, 181, 104);
     if (completion >= 0.11) return const Color.fromARGB(255, 109, 202, 114);
     if (completion >= 0.10) return const Color.fromARGB(255, 121, 212, 126);
     if (completion >= 0.09) return const Color.fromARGB(255, 141, 222, 145);
@@ -308,7 +308,7 @@ class _WeekdayLabels extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: List.generate(7, (index) {
             final date = DateTime.now().subtract(
-                Duration(days: snapshot.data == 'en' ? index : 1 - index));
+                Duration(days: snapshot.data == 'en' ? 1 - index : 1 - index));
             return Semantics(
               label: 'Weekday ${DateFormat('EEEE', locale).format(date)}',
               child: Text(
